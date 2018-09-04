@@ -7,14 +7,19 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		44A7A9AAA2275B9D5B8AEF01 /* Pods_SandiskConnectPOC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B497F8CD6FF9B80E33B8D8D9 /* Pods_SandiskConnectPOC.framework */; };
 		C4E3312B2137351E0076FE72 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4E3312A2137351E0076FE72 /* AppDelegate.swift */; };
 		C4E3312D2137351F0076FE72 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4E3312C2137351F0076FE72 /* ViewController.swift */; };
 		C4E331302137351F0076FE72 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C4E3312E2137351F0076FE72 /* Main.storyboard */; };
 		C4E33132213735210076FE72 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C4E33131213735210076FE72 /* Assets.xcassets */; };
 		C4E33135213735210076FE72 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C4E33133213735210076FE72 /* LaunchScreen.storyboard */; };
+		C4F5A16C213EE6C2003B6DFC /* WriteStarlordFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4F5A16B213EE6C2003B6DFC /* WriteStarlordFile.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		314EE7B2809FE5C419419F86 /* Pods-SandiskConnectPOC.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SandiskConnectPOC.release.xcconfig"; path = "Pods/Target Support Files/Pods-SandiskConnectPOC/Pods-SandiskConnectPOC.release.xcconfig"; sourceTree = "<group>"; };
+		677E186D3414121B14FF7CB5 /* Pods-SandiskConnectPOC.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SandiskConnectPOC.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SandiskConnectPOC/Pods-SandiskConnectPOC.debug.xcconfig"; sourceTree = "<group>"; };
+		B497F8CD6FF9B80E33B8D8D9 /* Pods_SandiskConnectPOC.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SandiskConnectPOC.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C4E331272137351E0076FE72 /* SandiskConnectPOC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SandiskConnectPOC.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C4E3312A2137351E0076FE72 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C4E3312C2137351F0076FE72 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -22,6 +27,7 @@
 		C4E33131213735210076FE72 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C4E33134213735210076FE72 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		C4E33136213735210076FE72 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C4F5A16B213EE6C2003B6DFC /* WriteStarlordFile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteStarlordFile.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -29,17 +35,28 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				44A7A9AAA2275B9D5B8AEF01 /* Pods_SandiskConnectPOC.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5B850DBF7C4113880DC7B7EF /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				B497F8CD6FF9B80E33B8D8D9 /* Pods_SandiskConnectPOC.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		C4E3311E2137351E0076FE72 = {
 			isa = PBXGroup;
 			children = (
 				C4E331292137351E0076FE72 /* SandiskConnectPOC */,
 				C4E331282137351E0076FE72 /* Products */,
+				E8FDB74ADE2EB325FB3AB9C0 /* Pods */,
+				5B850DBF7C4113880DC7B7EF /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -60,8 +77,18 @@
 				C4E33131213735210076FE72 /* Assets.xcassets */,
 				C4E33133213735210076FE72 /* LaunchScreen.storyboard */,
 				C4E33136213735210076FE72 /* Info.plist */,
+				C4F5A16B213EE6C2003B6DFC /* WriteStarlordFile.swift */,
 			);
 			path = SandiskConnectPOC;
+			sourceTree = "<group>";
+		};
+		E8FDB74ADE2EB325FB3AB9C0 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				677E186D3414121B14FF7CB5 /* Pods-SandiskConnectPOC.debug.xcconfig */,
+				314EE7B2809FE5C419419F86 /* Pods-SandiskConnectPOC.release.xcconfig */,
+			);
+			name = Pods;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -71,9 +98,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = C4E33139213735210076FE72 /* Build configuration list for PBXNativeTarget "SandiskConnectPOC" */;
 			buildPhases = (
+				FA72591F2F0D4411AA5A4C74 /* [CP] Check Pods Manifest.lock */,
 				C4E331232137351E0076FE72 /* Sources */,
 				C4E331242137351E0076FE72 /* Frameworks */,
 				C4E331252137351E0076FE72 /* Resources */,
+				68E90D9FC92CBE035E0B1CB4 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -130,12 +159,52 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		68E90D9FC92CBE035E0B1CB4 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-SandiskConnectPOC/Pods-SandiskConnectPOC-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/FilesProvider/FilesProvider.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FilesProvider.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-SandiskConnectPOC/Pods-SandiskConnectPOC-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		FA72591F2F0D4411AA5A4C74 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-SandiskConnectPOC-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		C4E331232137351E0076FE72 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				C4E3312D2137351F0076FE72 /* ViewController.swift in Sources */,
+				C4F5A16C213EE6C2003B6DFC /* WriteStarlordFile.swift in Sources */,
 				C4E3312B2137351E0076FE72 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -278,9 +347,15 @@
 		};
 		C4E3313A213735210076FE72 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 677E186D3414121B14FF7CB5 /* Pods-SandiskConnectPOC.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = D77H469HEK;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/SandiskConnectPOC",
+				);
 				INFOPLIST_FILE = SandiskConnectPOC/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -295,9 +370,15 @@
 		};
 		C4E3313B213735210076FE72 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 314EE7B2809FE5C419419F86 /* Pods-SandiskConnectPOC.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = D77H469HEK;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/SandiskConnectPOC",
+				);
 				INFOPLIST_FILE = SandiskConnectPOC/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

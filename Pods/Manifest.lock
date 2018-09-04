@@ -1,0 +1,16 @@
+PODS:
+  - FilesProvider (0.20.1)
+
+DEPENDENCIES:
+  - FilesProvider
+
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - FilesProvider
+
+SPEC CHECKSUMS:
+  FilesProvider: c88f6eff9bba7e551745bbbb08760351b4951448
+
+PODFILE CHECKSUM: 46a2176b7999fddd1ee1c8b6b01834ddb5c03f58
+
+COCOAPODS: 1.5.3

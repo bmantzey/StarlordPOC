@@ -1,0 +1,6 @@
+framework module Pods_SandiskConnectPOC {
+  umbrella header "Pods-SandiskConnectPOC-umbrella.h"
+
+  export *
+  module * { export * }
+}

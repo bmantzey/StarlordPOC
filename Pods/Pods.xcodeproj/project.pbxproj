@@ -1,0 +1,757 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0181BA2C800A0709B3086389800640DF /* FoundationExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1605249676FD3C23A9E4A79259B7A47A /* FoundationExtensions.swift */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-all-checks"; }; };
+		02C87FA8A7EF659C1FDE4F5EDF08D717 /* Pods-SandiskConnectPOC-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 441F1B8B6B9D9A172AB31516164083B1 /* Pods-SandiskConnectPOC-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		0403D2786A45FFE003827807FB06E7C1 /* CIFSTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = F620EFC6C54E7ED172AE69C54EB96C04 /* CIFSTypes.swift */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-all-checks"; }; };
+		0B52067B7EA9256736616F207B5FA7C9 /* Options.swift in Sources */ = {isa = PBXBuildFile; fileRef = F60F3240E1AB36A747845F977A6D9118 /* Options.swift */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-all-checks"; }; };
+		0BD29CD2B4E6161D969C07BBD83CFFAE /* LocalHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D8C8C4DCD3BC0F53D390D4DB3F1E46B /* LocalHelper.swift */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-all-checks"; }; };
+		0C9D2589DFBD9F6C32E661ECC2D2F773 /* FileProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3A3F2E4CC9EB0FCB5FB3138ED3C69A1 /* FileProvider.swift */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-all-checks"; }; };
+		11F3E9B31D4EDE773645E8C05D53BF7E /* SMB2QueryTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B3658A69B03AED0A1EC90A01F449DF5 /* SMB2QueryTypes.swift */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-all-checks"; }; };
+		15AE24B081A57535CE4E1FC2DED5ADEB /* FilesProvider-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = EF7D55B8643076BAE6BDBA4B7BE88196 /* FilesProvider-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		1FBE6C647261DF33EE74A64EA8E467C4 /* SMB2FileOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 956D352434EBFD6D13C63BB24DD84D1E /* SMB2FileOperation.swift */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-all-checks"; }; };
+		27F0D2F87F01C3D071C04A8A4240B5C7 /* LocalFileProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = A64AC38CA8FBB87FF67AC0C0F1CE0557 /* LocalFileProvider.swift */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-all-checks"; }; };
+		2DD670EBF0C5C6CA23ABA812BC4FC5B7 /* HTTPFileProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22830352A49CDC4E1B67985E30508703 /* HTTPFileProvider.swift */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-all-checks"; }; };
+		369AD9DCB0C08518B0EA04D692E44AD5 /* ExtendedLocalFileProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = E910DAC712EB4AFB3C75BF48A0EA5BA0 /* ExtendedLocalFileProvider.swift */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-all-checks"; }; };
+		371EF3BF80FB1D3AEF600E496BF889C7 /* CloudFileProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E52D720E3203F0EDC6FD956AC2D9BDD /* CloudFileProvider.swift */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-all-checks"; }; };
+		430E3BA642B0C6DB028FDD9C07295BF5 /* FTPFileProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0590E0B13B23B74C1999E598BBD8FD0 /* FTPFileProvider.swift */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-all-checks"; }; };
+		686B398E4BD85B12BC7ED5A249788BCF /* SMBFileProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA712E11BB995C3FD4CED69B23DC2800 /* SMBFileProvider.swift */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-all-checks"; }; };
+		687A605AE65A607242229FE9583325C4 /* DropboxFileProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5E6719B8D99185DF8AE7AD3CFE53FF6 /* DropboxFileProvider.swift */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-all-checks"; }; };
+		6A1E81F7DF9577EF49D3576DA8BFE783 /* SMB2IOCtl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 176BBFDBFEB32B05ABBC65665B94B599 /* SMB2IOCtl.swift */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-all-checks"; }; };
+		73DF7F64273D5749584F3C7D1474C0F4 /* DropboxHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB2C95FFE714213981EA41A1129E0A5 /* DropboxHelper.swift */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-all-checks"; }; };
+		75AB401A347444E0F37233C048D4F9EC /* Pods-SandiskConnectPOC-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 497041F17CD6FAC32CFD2D18DBC5EB89 /* Pods-SandiskConnectPOC-dummy.m */; };
+		7679E2179C1422D6114AD916C74E0022 /* SMB2Types.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFA1DFFEA9D1748ED395B083A7FA7990 /* SMB2Types.swift */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-all-checks"; }; };
+		7841B80CE77AC069D3C23A1FD228ECC8 /* FTPHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 682EB75BC447D6698EB7F102CF7A1841 /* FTPHelper.swift */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-all-checks"; }; };
+		78FFABD04B14ED3568965DF6C312FF32 /* Element.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF3F2ABBD98D73B42E99B3790731DD3E /* Element.swift */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-all-checks"; }; };
+		7900D16EEC1CFE12F7C14A53C51FAEDB /* SMB2SetInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD65767F40DF05BE75E3E96343F588D8 /* SMB2SetInfo.swift */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-all-checks"; }; };
+		82F0437E41971CCB327B98946D475E9A /* FPSStreamTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9B7A158438B7750C7195F212ACE2F29 /* FPSStreamTask.swift */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-all-checks"; }; };
+		83E0280F2FBAE32D877BEA201FC4917E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A16F4CFC63FAC439D7A04994F579A03 /* Foundation.framework */; };
+		A7B269F2EC71BC1EEDFE5BF4413A8C48 /* SMB2Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E895B615B11CCEA92A21B6EED48194 /* SMB2Session.swift */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-all-checks"; }; };
+		AA614CD9873CFFA4744464D9A546F1B8 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A16F4CFC63FAC439D7A04994F579A03 /* Foundation.framework */; };
+		ACDEB43E249E195711318389381B3127 /* SMB2DataTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = E847279754B93C892008D59CA0D6032E /* SMB2DataTypes.swift */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-all-checks"; }; };
+		BE96E5339DDDFFE91022FB52DB5E09AE /* SMBClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = D35656342588D514F8E98D7A9A5E9D60 /* SMBClient.swift */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-all-checks"; }; };
+		C760A0631F05DB2022B4C5979D8385B3 /* SMB2Tree.swift in Sources */ = {isa = PBXBuildFile; fileRef = B392B8A0CDD0966651DD1F3A735C3688 /* SMB2Tree.swift */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-all-checks"; }; };
+		C9CDE5D3492ACCDC2F9F5EBCC36127FD /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = E257593A2918A85216B07A6E6EC93E06 /* Error.swift */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-all-checks"; }; };
+		CFAB1264B1F9A639B7807147E95CBED8 /* FileObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23E41DA478C28DD64651C39E47134F30 /* FileObject.swift */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-all-checks"; }; };
+		D52C3DCD863A85181823C6F8D25AA42E /* Document.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CFAE8D60EE876A3F7521DACAD8D70EE /* Document.swift */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-all-checks"; }; };
+		DAD2E59B57F1A3F67CD94055781E4B9B /* SMBErrorType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CCF266DC05B6544B293E40288A6A9E6 /* SMBErrorType.swift */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-all-checks"; }; };
+		DB26299101591E9C8AB9AA10D3211F3F /* SMB2FileHandle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DA8F58D7C244CACFEB791154DE7DABD /* SMB2FileHandle.swift */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-all-checks"; }; };
+		E3B0ED57F573DAA26D7161ABAD4F940E /* OneDriveHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27FAEFFE6D29526FE3D8A47175801F6C /* OneDriveHelper.swift */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-all-checks"; }; };
+		E4EAD383E7522A8D41B55BC2D89D94D4 /* RemoteSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB4F224D37AFDD241E0E1C6DC5ABC859 /* RemoteSession.swift */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-all-checks"; }; };
+		E6005A6134E4A9E00110C4D384AC90FF /* OneDriveFileProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39EBEA45A9BD1CDB1678B72C154B994D /* OneDriveFileProvider.swift */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-all-checks"; }; };
+		E660DF516D0860B528A79FE440C0E770 /* WebDAVFileProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25FE4E25431F554099B8957755867A87 /* WebDAVFileProvider.swift */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-all-checks"; }; };
+		EC794E2E7D44E3DC59658B80684E78D1 /* HashMAC.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE82B73D27467636876C4DE7CE45E41D /* HashMAC.swift */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-all-checks"; }; };
+		EEFDC9E85D24E1CABC3BD4227CF6197C /* SMB2Query.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEF22631B78651679D0F9EB41339474F /* SMB2Query.swift */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-all-checks"; }; };
+		EFA8867E1F1309E0727FB172BA5005B0 /* FilesProvider-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = D5059CFB9EDDD2D5F8971F21EE2EB5AE /* FilesProvider-dummy.m */; };
+		EFFD4BFE09AF89162B1D661968827D4E /* Parser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B158D70F425EFC665F5440FA521E049 /* Parser.swift */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-all-checks"; }; };
+		F7A6CB47568EF18C55EA7735687E6D7D /* SMB2Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = A939DCD82AE47744BC7347A0DF2CD977 /* SMB2Notification.swift */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-all-checks"; }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		71F3D2FC17B550CCB239D977A3EB7CD5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D41D8CD98F00B204E9800998ECF8427E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 30CADEF6242D974417D55C3CC082DC15;
+			remoteInfo = FilesProvider;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		0A2CD9B1373715D6C7805EC3DC05AE43 /* Pods-SandiskConnectPOC-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-SandiskConnectPOC-frameworks.sh"; sourceTree = "<group>"; };
+		149D6E343427C66FC8F9D1D941E620E1 /* FilesProvider.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = FilesProvider.framework; path = FilesProvider.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		1605249676FD3C23A9E4A79259B7A47A /* FoundationExtensions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FoundationExtensions.swift; path = Sources/Extensions/FoundationExtensions.swift; sourceTree = "<group>"; };
+		176BBFDBFEB32B05ABBC65665B94B599 /* SMB2IOCtl.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SMB2IOCtl.swift; path = Sources/SMBTypes/SMB2IOCtl.swift; sourceTree = "<group>"; };
+		22830352A49CDC4E1B67985E30508703 /* HTTPFileProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = HTTPFileProvider.swift; path = Sources/HTTPFileProvider.swift; sourceTree = "<group>"; };
+		23E41DA478C28DD64651C39E47134F30 /* FileObject.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FileObject.swift; path = Sources/FileObject.swift; sourceTree = "<group>"; };
+		25FE4E25431F554099B8957755867A87 /* WebDAVFileProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = WebDAVFileProvider.swift; path = Sources/WebDAVFileProvider.swift; sourceTree = "<group>"; };
+		27FAEFFE6D29526FE3D8A47175801F6C /* OneDriveHelper.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OneDriveHelper.swift; path = Sources/OneDriveHelper.swift; sourceTree = "<group>"; };
+		2B3658A69B03AED0A1EC90A01F449DF5 /* SMB2QueryTypes.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SMB2QueryTypes.swift; path = Sources/SMBTypes/SMB2QueryTypes.swift; sourceTree = "<group>"; };
+		38E895B615B11CCEA92A21B6EED48194 /* SMB2Session.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SMB2Session.swift; path = Sources/SMBTypes/SMB2Session.swift; sourceTree = "<group>"; };
+		39EBEA45A9BD1CDB1678B72C154B994D /* OneDriveFileProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OneDriveFileProvider.swift; path = Sources/OneDriveFileProvider.swift; sourceTree = "<group>"; };
+		3E52D720E3203F0EDC6FD956AC2D9BDD /* CloudFileProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CloudFileProvider.swift; path = Sources/CloudFileProvider.swift; sourceTree = "<group>"; };
+		3ED8D79E6F01E7B97D0D8BCCDFAEFC6D /* FilesProvider.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = FilesProvider.xcconfig; sourceTree = "<group>"; };
+		441F1B8B6B9D9A172AB31516164083B1 /* Pods-SandiskConnectPOC-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-SandiskConnectPOC-umbrella.h"; sourceTree = "<group>"; };
+		497041F17CD6FAC32CFD2D18DBC5EB89 /* Pods-SandiskConnectPOC-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-SandiskConnectPOC-dummy.m"; sourceTree = "<group>"; };
+		4B158D70F425EFC665F5440FA521E049 /* Parser.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Parser.swift; path = Sources/AEXML/Parser.swift; sourceTree = "<group>"; };
+		5A16F4CFC63FAC439D7A04994F579A03 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS11.3.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
+		5B2B67063C16F3B0813424863CFEFD02 /* Pods-SandiskConnectPOC-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-SandiskConnectPOC-acknowledgements.markdown"; sourceTree = "<group>"; };
+		5D8C8C4DCD3BC0F53D390D4DB3F1E46B /* LocalHelper.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = LocalHelper.swift; path = Sources/LocalHelper.swift; sourceTree = "<group>"; };
+		5DA8F58D7C244CACFEB791154DE7DABD /* SMB2FileHandle.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SMB2FileHandle.swift; path = Sources/SMBTypes/SMB2FileHandle.swift; sourceTree = "<group>"; };
+		682EB75BC447D6698EB7F102CF7A1841 /* FTPHelper.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FTPHelper.swift; path = Sources/FTPHelper.swift; sourceTree = "<group>"; };
+		6D07AD4FF87E862681B40312B2D55A12 /* Pods-SandiskConnectPOC.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-SandiskConnectPOC.debug.xcconfig"; sourceTree = "<group>"; };
+		723C8F80B70132BCAECD9CDA4B45DADB /* Pods-SandiskConnectPOC.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-SandiskConnectPOC.release.xcconfig"; sourceTree = "<group>"; };
+		7CD21969664195EDD316000D4B0691BD /* Pods_SandiskConnectPOC.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = Pods_SandiskConnectPOC.framework; path = "Pods-SandiskConnectPOC.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
+		7CFAE8D60EE876A3F7521DACAD8D70EE /* Document.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Document.swift; path = Sources/AEXML/Document.swift; sourceTree = "<group>"; };
+		8CCF266DC05B6544B293E40288A6A9E6 /* SMBErrorType.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SMBErrorType.swift; path = Sources/SMBTypes/SMBErrorType.swift; sourceTree = "<group>"; };
+		93A4A3777CF96A4AAC1D13BA6DCCEA73 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; lastKnownFileType = text; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		954C932679B4702C5C469E02976EAA79 /* Pods-SandiskConnectPOC-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-SandiskConnectPOC-acknowledgements.plist"; sourceTree = "<group>"; };
+		956D352434EBFD6D13C63BB24DD84D1E /* SMB2FileOperation.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SMB2FileOperation.swift; path = Sources/SMBTypes/SMB2FileOperation.swift; sourceTree = "<group>"; };
+		9AC48A02206F96785F347C7EA2541893 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		9B543E138AF2B5ABC624F7C85628F8DB /* FilesProvider-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "FilesProvider-prefix.pch"; sourceTree = "<group>"; };
+		A3A3F2E4CC9EB0FCB5FB3138ED3C69A1 /* FileProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FileProvider.swift; path = Sources/FileProvider.swift; sourceTree = "<group>"; };
+		A64AC38CA8FBB87FF67AC0C0F1CE0557 /* LocalFileProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = LocalFileProvider.swift; path = Sources/LocalFileProvider.swift; sourceTree = "<group>"; };
+		A939DCD82AE47744BC7347A0DF2CD977 /* SMB2Notification.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SMB2Notification.swift; path = Sources/SMBTypes/SMB2Notification.swift; sourceTree = "<group>"; };
+		AB4F224D37AFDD241E0E1C6DC5ABC859 /* RemoteSession.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RemoteSession.swift; path = Sources/RemoteSession.swift; sourceTree = "<group>"; };
+		AF3F2ABBD98D73B42E99B3790731DD3E /* Element.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Element.swift; path = Sources/AEXML/Element.swift; sourceTree = "<group>"; };
+		B392B8A0CDD0966651DD1F3A735C3688 /* SMB2Tree.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SMB2Tree.swift; path = Sources/SMBTypes/SMB2Tree.swift; sourceTree = "<group>"; };
+		B9308450575A399525DF817F2D6DE7A7 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		BCA09CD80B0ED0935789775F59B029EA /* FilesProvider.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = FilesProvider.modulemap; sourceTree = "<group>"; };
+		C0590E0B13B23B74C1999E598BBD8FD0 /* FTPFileProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FTPFileProvider.swift; path = Sources/FTPFileProvider.swift; sourceTree = "<group>"; };
+		C0E5A25CF4824D50F16C5E0F255E79F7 /* Pods-SandiskConnectPOC.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-SandiskConnectPOC.modulemap"; sourceTree = "<group>"; };
+		CD65767F40DF05BE75E3E96343F588D8 /* SMB2SetInfo.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SMB2SetInfo.swift; path = Sources/SMBTypes/SMB2SetInfo.swift; sourceTree = "<group>"; };
+		CEF22631B78651679D0F9EB41339474F /* SMB2Query.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SMB2Query.swift; path = Sources/SMBTypes/SMB2Query.swift; sourceTree = "<group>"; };
+		D35656342588D514F8E98D7A9A5E9D60 /* SMBClient.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SMBClient.swift; path = Sources/SMBClient.swift; sourceTree = "<group>"; };
+		D4D86E753E7CFA4EF4A058BFA4ACC1A3 /* Pods-SandiskConnectPOC-resources.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-SandiskConnectPOC-resources.sh"; sourceTree = "<group>"; };
+		D5059CFB9EDDD2D5F8971F21EE2EB5AE /* FilesProvider-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "FilesProvider-dummy.m"; sourceTree = "<group>"; };
+		DA712E11BB995C3FD4CED69B23DC2800 /* SMBFileProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SMBFileProvider.swift; path = Sources/SMBFileProvider.swift; sourceTree = "<group>"; };
+		DE82B73D27467636876C4DE7CE45E41D /* HashMAC.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = HashMAC.swift; path = Sources/Extensions/HashMAC.swift; sourceTree = "<group>"; };
+		E257593A2918A85216B07A6E6EC93E06 /* Error.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Error.swift; path = Sources/AEXML/Error.swift; sourceTree = "<group>"; };
+		E5E6719B8D99185DF8AE7AD3CFE53FF6 /* DropboxFileProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DropboxFileProvider.swift; path = Sources/DropboxFileProvider.swift; sourceTree = "<group>"; };
+		E847279754B93C892008D59CA0D6032E /* SMB2DataTypes.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SMB2DataTypes.swift; path = Sources/SMBTypes/SMB2DataTypes.swift; sourceTree = "<group>"; };
+		E910DAC712EB4AFB3C75BF48A0EA5BA0 /* ExtendedLocalFileProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExtendedLocalFileProvider.swift; path = Sources/ExtendedLocalFileProvider.swift; sourceTree = "<group>"; };
+		EF7D55B8643076BAE6BDBA4B7BE88196 /* FilesProvider-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "FilesProvider-umbrella.h"; sourceTree = "<group>"; };
+		F60F3240E1AB36A747845F977A6D9118 /* Options.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Options.swift; path = Sources/AEXML/Options.swift; sourceTree = "<group>"; };
+		F620EFC6C54E7ED172AE69C54EB96C04 /* CIFSTypes.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CIFSTypes.swift; path = Sources/SMBTypes/CIFSTypes.swift; sourceTree = "<group>"; };
+		F9B7A158438B7750C7195F212ACE2F29 /* FPSStreamTask.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FPSStreamTask.swift; path = Sources/FPSStreamTask.swift; sourceTree = "<group>"; };
+		FAB2C95FFE714213981EA41A1129E0A5 /* DropboxHelper.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DropboxHelper.swift; path = Sources/DropboxHelper.swift; sourceTree = "<group>"; };
+		FFA1DFFEA9D1748ED395B083A7FA7990 /* SMB2Types.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SMB2Types.swift; path = Sources/SMBTypes/SMB2Types.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		1C197C27608705C5FBB6DB30803A0289 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AA614CD9873CFFA4744464D9A546F1B8 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		28A6A3C90F580C1BBD75CD74220547B9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				83E0280F2FBAE32D877BEA201FC4917E /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		5E0D919E635D23B70123790B8308F8EF /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+				5A16F4CFC63FAC439D7A04994F579A03 /* Foundation.framework */,
+			);
+			name = iOS;
+			sourceTree = "<group>";
+		};
+		6063E8AEF48E4704E04AEF97E8B738B5 /* FilesProvider */ = {
+			isa = PBXGroup;
+			children = (
+				F620EFC6C54E7ED172AE69C54EB96C04 /* CIFSTypes.swift */,
+				3E52D720E3203F0EDC6FD956AC2D9BDD /* CloudFileProvider.swift */,
+				7CFAE8D60EE876A3F7521DACAD8D70EE /* Document.swift */,
+				E5E6719B8D99185DF8AE7AD3CFE53FF6 /* DropboxFileProvider.swift */,
+				FAB2C95FFE714213981EA41A1129E0A5 /* DropboxHelper.swift */,
+				AF3F2ABBD98D73B42E99B3790731DD3E /* Element.swift */,
+				E257593A2918A85216B07A6E6EC93E06 /* Error.swift */,
+				E910DAC712EB4AFB3C75BF48A0EA5BA0 /* ExtendedLocalFileProvider.swift */,
+				23E41DA478C28DD64651C39E47134F30 /* FileObject.swift */,
+				A3A3F2E4CC9EB0FCB5FB3138ED3C69A1 /* FileProvider.swift */,
+				1605249676FD3C23A9E4A79259B7A47A /* FoundationExtensions.swift */,
+				F9B7A158438B7750C7195F212ACE2F29 /* FPSStreamTask.swift */,
+				C0590E0B13B23B74C1999E598BBD8FD0 /* FTPFileProvider.swift */,
+				682EB75BC447D6698EB7F102CF7A1841 /* FTPHelper.swift */,
+				DE82B73D27467636876C4DE7CE45E41D /* HashMAC.swift */,
+				22830352A49CDC4E1B67985E30508703 /* HTTPFileProvider.swift */,
+				A64AC38CA8FBB87FF67AC0C0F1CE0557 /* LocalFileProvider.swift */,
+				5D8C8C4DCD3BC0F53D390D4DB3F1E46B /* LocalHelper.swift */,
+				39EBEA45A9BD1CDB1678B72C154B994D /* OneDriveFileProvider.swift */,
+				27FAEFFE6D29526FE3D8A47175801F6C /* OneDriveHelper.swift */,
+				F60F3240E1AB36A747845F977A6D9118 /* Options.swift */,
+				4B158D70F425EFC665F5440FA521E049 /* Parser.swift */,
+				AB4F224D37AFDD241E0E1C6DC5ABC859 /* RemoteSession.swift */,
+				E847279754B93C892008D59CA0D6032E /* SMB2DataTypes.swift */,
+				5DA8F58D7C244CACFEB791154DE7DABD /* SMB2FileHandle.swift */,
+				956D352434EBFD6D13C63BB24DD84D1E /* SMB2FileOperation.swift */,
+				176BBFDBFEB32B05ABBC65665B94B599 /* SMB2IOCtl.swift */,
+				A939DCD82AE47744BC7347A0DF2CD977 /* SMB2Notification.swift */,
+				CEF22631B78651679D0F9EB41339474F /* SMB2Query.swift */,
+				2B3658A69B03AED0A1EC90A01F449DF5 /* SMB2QueryTypes.swift */,
+				38E895B615B11CCEA92A21B6EED48194 /* SMB2Session.swift */,
+				CD65767F40DF05BE75E3E96343F588D8 /* SMB2SetInfo.swift */,
+				B392B8A0CDD0966651DD1F3A735C3688 /* SMB2Tree.swift */,
+				FFA1DFFEA9D1748ED395B083A7FA7990 /* SMB2Types.swift */,
+				D35656342588D514F8E98D7A9A5E9D60 /* SMBClient.swift */,
+				8CCF266DC05B6544B293E40288A6A9E6 /* SMBErrorType.swift */,
+				DA712E11BB995C3FD4CED69B23DC2800 /* SMBFileProvider.swift */,
+				25FE4E25431F554099B8957755867A87 /* WebDAVFileProvider.swift */,
+				CB9038EB377BF0AE2BD83B739AEFC32F /* Support Files */,
+			);
+			name = FilesProvider;
+			path = FilesProvider;
+			sourceTree = "<group>";
+		};
+		694C99D6561EDA592958EF15BEFA8768 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				149D6E343427C66FC8F9D1D941E620E1 /* FilesProvider.framework */,
+				7CD21969664195EDD316000D4B0691BD /* Pods_SandiskConnectPOC.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		7D2E6D5FFB4FE5C0C73B9F9B393E3E71 /* Targets Support Files */ = {
+			isa = PBXGroup;
+			children = (
+				BD623FE0BF76B71967D5AA2C0B3C7DF8 /* Pods-SandiskConnectPOC */,
+			);
+			name = "Targets Support Files";
+			sourceTree = "<group>";
+		};
+		7DB346D0F39D3F0E887471402A8071AB = {
+			isa = PBXGroup;
+			children = (
+				93A4A3777CF96A4AAC1D13BA6DCCEA73 /* Podfile */,
+				BC3CA7F9E30CC8F7E2DD044DD34432FC /* Frameworks */,
+				E2D4A1B0BA89C1728EBA6B2AD3411E25 /* Pods */,
+				694C99D6561EDA592958EF15BEFA8768 /* Products */,
+				7D2E6D5FFB4FE5C0C73B9F9B393E3E71 /* Targets Support Files */,
+			);
+			sourceTree = "<group>";
+		};
+		BC3CA7F9E30CC8F7E2DD044DD34432FC /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				5E0D919E635D23B70123790B8308F8EF /* iOS */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		BD623FE0BF76B71967D5AA2C0B3C7DF8 /* Pods-SandiskConnectPOC */ = {
+			isa = PBXGroup;
+			children = (
+				B9308450575A399525DF817F2D6DE7A7 /* Info.plist */,
+				C0E5A25CF4824D50F16C5E0F255E79F7 /* Pods-SandiskConnectPOC.modulemap */,
+				5B2B67063C16F3B0813424863CFEFD02 /* Pods-SandiskConnectPOC-acknowledgements.markdown */,
+				954C932679B4702C5C469E02976EAA79 /* Pods-SandiskConnectPOC-acknowledgements.plist */,
+				497041F17CD6FAC32CFD2D18DBC5EB89 /* Pods-SandiskConnectPOC-dummy.m */,
+				0A2CD9B1373715D6C7805EC3DC05AE43 /* Pods-SandiskConnectPOC-frameworks.sh */,
+				D4D86E753E7CFA4EF4A058BFA4ACC1A3 /* Pods-SandiskConnectPOC-resources.sh */,
+				441F1B8B6B9D9A172AB31516164083B1 /* Pods-SandiskConnectPOC-umbrella.h */,
+				6D07AD4FF87E862681B40312B2D55A12 /* Pods-SandiskConnectPOC.debug.xcconfig */,
+				723C8F80B70132BCAECD9CDA4B45DADB /* Pods-SandiskConnectPOC.release.xcconfig */,
+			);
+			name = "Pods-SandiskConnectPOC";
+			path = "Target Support Files/Pods-SandiskConnectPOC";
+			sourceTree = "<group>";
+		};
+		CB9038EB377BF0AE2BD83B739AEFC32F /* Support Files */ = {
+			isa = PBXGroup;
+			children = (
+				BCA09CD80B0ED0935789775F59B029EA /* FilesProvider.modulemap */,
+				3ED8D79E6F01E7B97D0D8BCCDFAEFC6D /* FilesProvider.xcconfig */,
+				D5059CFB9EDDD2D5F8971F21EE2EB5AE /* FilesProvider-dummy.m */,
+				9B543E138AF2B5ABC624F7C85628F8DB /* FilesProvider-prefix.pch */,
+				EF7D55B8643076BAE6BDBA4B7BE88196 /* FilesProvider-umbrella.h */,
+				9AC48A02206F96785F347C7EA2541893 /* Info.plist */,
+			);
+			name = "Support Files";
+			path = "../Target Support Files/FilesProvider";
+			sourceTree = "<group>";
+		};
+		E2D4A1B0BA89C1728EBA6B2AD3411E25 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				6063E8AEF48E4704E04AEF97E8B738B5 /* FilesProvider */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		007404A0CA1F447D2337EAD45E1B5F86 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				15AE24B081A57535CE4E1FC2DED5ADEB /* FilesProvider-umbrella.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F72DBEEB38541DD2BBBBD6FD8BAE9948 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				02C87FA8A7EF659C1FDE4F5EDF08D717 /* Pods-SandiskConnectPOC-umbrella.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		30CADEF6242D974417D55C3CC082DC15 /* FilesProvider */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1E9C2E713CC77DBF624EDC7CEF12CB5A /* Build configuration list for PBXNativeTarget "FilesProvider" */;
+			buildPhases = (
+				007404A0CA1F447D2337EAD45E1B5F86 /* Headers */,
+				41D8947FE9D45C5AD64DE221CFB62534 /* Sources */,
+				28A6A3C90F580C1BBD75CD74220547B9 /* Frameworks */,
+				62AEAC4CA4C28836EC5C9AFF42C06E3B /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = FilesProvider;
+			productName = FilesProvider;
+			productReference = 149D6E343427C66FC8F9D1D941E620E1 /* FilesProvider.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		CDB71E2CC1F97B09DDAE802B94988BB8 /* Pods-SandiskConnectPOC */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D16C4CC073E0E1A6D188704BEACD5299 /* Build configuration list for PBXNativeTarget "Pods-SandiskConnectPOC" */;
+			buildPhases = (
+				F72DBEEB38541DD2BBBBD6FD8BAE9948 /* Headers */,
+				2C2BA399FCEC1C35F580C9C9BA3EEADE /* Sources */,
+				1C197C27608705C5FBB6DB30803A0289 /* Frameworks */,
+				F4C0676F79663283D185A4611A538FFD /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				36F2CBE9B00AB38FA2EF4FE1AB7C632A /* PBXTargetDependency */,
+			);
+			name = "Pods-SandiskConnectPOC";
+			productName = "Pods-SandiskConnectPOC";
+			productReference = 7CD21969664195EDD316000D4B0691BD /* Pods_SandiskConnectPOC.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		D41D8CD98F00B204E9800998ECF8427E /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 0930;
+				LastUpgradeCheck = 0930;
+			};
+			buildConfigurationList = 2D8E8EC45A3A1A1D94AE762CB5028504 /* Build configuration list for PBXProject "Pods" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 7DB346D0F39D3F0E887471402A8071AB;
+			productRefGroup = 694C99D6561EDA592958EF15BEFA8768 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				30CADEF6242D974417D55C3CC082DC15 /* FilesProvider */,
+				CDB71E2CC1F97B09DDAE802B94988BB8 /* Pods-SandiskConnectPOC */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		62AEAC4CA4C28836EC5C9AFF42C06E3B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F4C0676F79663283D185A4611A538FFD /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		2C2BA399FCEC1C35F580C9C9BA3EEADE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				75AB401A347444E0F37233C048D4F9EC /* Pods-SandiskConnectPOC-dummy.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		41D8947FE9D45C5AD64DE221CFB62534 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0403D2786A45FFE003827807FB06E7C1 /* CIFSTypes.swift in Sources */,
+				371EF3BF80FB1D3AEF600E496BF889C7 /* CloudFileProvider.swift in Sources */,
+				D52C3DCD863A85181823C6F8D25AA42E /* Document.swift in Sources */,
+				687A605AE65A607242229FE9583325C4 /* DropboxFileProvider.swift in Sources */,
+				73DF7F64273D5749584F3C7D1474C0F4 /* DropboxHelper.swift in Sources */,
+				78FFABD04B14ED3568965DF6C312FF32 /* Element.swift in Sources */,
+				C9CDE5D3492ACCDC2F9F5EBCC36127FD /* Error.swift in Sources */,
+				369AD9DCB0C08518B0EA04D692E44AD5 /* ExtendedLocalFileProvider.swift in Sources */,
+				CFAB1264B1F9A639B7807147E95CBED8 /* FileObject.swift in Sources */,
+				0C9D2589DFBD9F6C32E661ECC2D2F773 /* FileProvider.swift in Sources */,
+				EFA8867E1F1309E0727FB172BA5005B0 /* FilesProvider-dummy.m in Sources */,
+				0181BA2C800A0709B3086389800640DF /* FoundationExtensions.swift in Sources */,
+				82F0437E41971CCB327B98946D475E9A /* FPSStreamTask.swift in Sources */,
+				430E3BA642B0C6DB028FDD9C07295BF5 /* FTPFileProvider.swift in Sources */,
+				7841B80CE77AC069D3C23A1FD228ECC8 /* FTPHelper.swift in Sources */,
+				EC794E2E7D44E3DC59658B80684E78D1 /* HashMAC.swift in Sources */,
+				2DD670EBF0C5C6CA23ABA812BC4FC5B7 /* HTTPFileProvider.swift in Sources */,
+				27F0D2F87F01C3D071C04A8A4240B5C7 /* LocalFileProvider.swift in Sources */,
+				0BD29CD2B4E6161D969C07BBD83CFFAE /* LocalHelper.swift in Sources */,
+				E6005A6134E4A9E00110C4D384AC90FF /* OneDriveFileProvider.swift in Sources */,
+				E3B0ED57F573DAA26D7161ABAD4F940E /* OneDriveHelper.swift in Sources */,
+				0B52067B7EA9256736616F207B5FA7C9 /* Options.swift in Sources */,
+				EFFD4BFE09AF89162B1D661968827D4E /* Parser.swift in Sources */,
+				E4EAD383E7522A8D41B55BC2D89D94D4 /* RemoteSession.swift in Sources */,
+				ACDEB43E249E195711318389381B3127 /* SMB2DataTypes.swift in Sources */,
+				DB26299101591E9C8AB9AA10D3211F3F /* SMB2FileHandle.swift in Sources */,
+				1FBE6C647261DF33EE74A64EA8E467C4 /* SMB2FileOperation.swift in Sources */,
+				6A1E81F7DF9577EF49D3576DA8BFE783 /* SMB2IOCtl.swift in Sources */,
+				F7A6CB47568EF18C55EA7735687E6D7D /* SMB2Notification.swift in Sources */,
+				EEFDC9E85D24E1CABC3BD4227CF6197C /* SMB2Query.swift in Sources */,
+				11F3E9B31D4EDE773645E8C05D53BF7E /* SMB2QueryTypes.swift in Sources */,
+				A7B269F2EC71BC1EEDFE5BF4413A8C48 /* SMB2Session.swift in Sources */,
+				7900D16EEC1CFE12F7C14A53C51FAEDB /* SMB2SetInfo.swift in Sources */,
+				C760A0631F05DB2022B4C5979D8385B3 /* SMB2Tree.swift in Sources */,
+				7679E2179C1422D6114AD916C74E0022 /* SMB2Types.swift in Sources */,
+				BE96E5339DDDFFE91022FB52DB5E09AE /* SMBClient.swift in Sources */,
+				DAD2E59B57F1A3F67CD94055781E4B9B /* SMBErrorType.swift in Sources */,
+				686B398E4BD85B12BC7ED5A249788BCF /* SMBFileProvider.swift in Sources */,
+				E660DF516D0860B528A79FE440C0E770 /* WebDAVFileProvider.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		36F2CBE9B00AB38FA2EF4FE1AB7C632A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = FilesProvider;
+			target = 30CADEF6242D974417D55C3CC082DC15 /* FilesProvider */;
+			targetProxy = 71F3D2FC17B550CCB239D977A3EB7CD5 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		60DAF49CA7A9F362148D49C3C3123B2A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGNING_ALLOWED = NO;
+				CODE_SIGNING_REQUIRED = NO;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"POD_CONFIGURATION_DEBUG=1",
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRIP_INSTALLED_PRODUCT = NO;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SYMROOT = "${SRCROOT}/../build";
+			};
+			name = Debug;
+		};
+		8C81FF02DB1ED29A8053248D98EE2CC6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3ED8D79E6F01E7B97D0D8BCCDFAEFC6D /* FilesProvider.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_PREFIX_HEADER = "Target Support Files/FilesProvider/FilesProvider-prefix.pch";
+				INFOPLIST_FILE = "Target Support Files/FilesProvider/Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MODULEMAP_FILE = "Target Support Files/FilesProvider/FilesProvider.modulemap";
+				PRODUCT_MODULE_NAME = FilesProvider;
+				PRODUCT_NAME = FilesProvider;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		A2E4CBB7D597F1AA24024C0EDEFA4F7C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 6D07AD4FF87E862681B40312B2D55A12 /* Pods-SandiskConnectPOC.debug.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = "Target Support Files/Pods-SandiskConnectPOC/Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACH_O_TYPE = staticlib;
+				MODULEMAP_FILE = "Target Support Files/Pods-SandiskConnectPOC/Pods-SandiskConnectPOC.modulemap";
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PODS_ROOT = "$(SRCROOT)";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		ADAEFA1771B89B6F37EE00470873B3DF /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 723C8F80B70132BCAECD9CDA4B45DADB /* Pods-SandiskConnectPOC.release.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = "Target Support Files/Pods-SandiskConnectPOC/Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACH_O_TYPE = staticlib;
+				MODULEMAP_FILE = "Target Support Files/Pods-SandiskConnectPOC/Pods-SandiskConnectPOC.modulemap";
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PODS_ROOT = "$(SRCROOT)";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		C4EAA84F44D044E108500A81C635F21E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGNING_ALLOWED = NO;
+				CODE_SIGNING_REQUIRED = NO;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"POD_CONFIGURATION_RELEASE=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRIP_INSTALLED_PRODUCT = NO;
+				SYMROOT = "${SRCROOT}/../build";
+			};
+			name = Release;
+		};
+		CCEC13487423ECE410906BB3ED428D77 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3ED8D79E6F01E7B97D0D8BCCDFAEFC6D /* FilesProvider.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_PREFIX_HEADER = "Target Support Files/FilesProvider/FilesProvider-prefix.pch";
+				INFOPLIST_FILE = "Target Support Files/FilesProvider/Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MODULEMAP_FILE = "Target Support Files/FilesProvider/FilesProvider.modulemap";
+				PRODUCT_MODULE_NAME = FilesProvider;
+				PRODUCT_NAME = FilesProvider;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1E9C2E713CC77DBF624EDC7CEF12CB5A /* Build configuration list for PBXNativeTarget "FilesProvider" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CCEC13487423ECE410906BB3ED428D77 /* Debug */,
+				8C81FF02DB1ED29A8053248D98EE2CC6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		2D8E8EC45A3A1A1D94AE762CB5028504 /* Build configuration list for PBXProject "Pods" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				60DAF49CA7A9F362148D49C3C3123B2A /* Debug */,
+				C4EAA84F44D044E108500A81C635F21E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D16C4CC073E0E1A6D188704BEACD5299 /* Build configuration list for PBXNativeTarget "Pods-SandiskConnectPOC" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A2E4CBB7D597F1AA24024C0EDEFA4F7C /* Debug */,
+				ADAEFA1771B89B6F37EE00470873B3DF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = D41D8CD98F00B204E9800998ECF8427E /* Project object */;
+}

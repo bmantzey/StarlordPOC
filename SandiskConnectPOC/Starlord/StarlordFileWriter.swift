@@ -9,60 +9,98 @@
 import Foundation
 import FilesProvider
 
-class WriteStarlordFile {
-    let server: URL = URL(string: "http://172.25.63.1/myconnect/Files")!
+class StarlordFileWriter {
+    let filesFolderName = "Files"
+    
+    let server: URL = URL(string: "http://172.25.63.1/myconnect/")!
     
     var webdav: WebDAVFileProvider?
+    
+    var connectivityStatus: ((_ connected: Bool, _ error: Error?) -> Void)? = nil
 
-    init() {
-        self.connect()
-    }
-
-    public func connect() {
+    public func connect(connectivityStatus: @escaping (_ connected: Bool, _ error: Error?) -> Void) {
         webdav = WebDAVFileProvider(baseURL: server, credential: nil)!
         webdav?.delegate = self as FileProviderDelegate
+        self.connectivityStatus = connectivityStatus
         
         // Files need to be written to the correct directory.
-        // TODO: On init, check to see if the folder is already there.  If not, create it.
-        // NOTE: If the server is not available at the time that this class is initialized, there will be no way to retry and it will never succeed after the server becomes available.
-//        let _ = webdav?.create(folder: "new folder", at: "/", completionHandler: nil)
+        checkForFilesFolder()
     }
     
     // TODO:
     /*
-     Maybe use an enum to decide which file format to generate.
-     Maybe have a separate function per file.
      Pass the binary data to be written into the respective function along with a meaningful file name - one that can be used to identify which panel is being written to.
      */
-    private func uploadConfig(data: Data) {
-        let fileName = "config.dat"
-        let remotePath = "/" + fileName
+    public func uploadConfig(data: Data, toPath: String) {
+        let fileName = "/config.dat"
+        let remotePath = "/Files/" + toPath + fileName
 
-        // TODO:
-        /*
-         Accept the binary file and write it.
-         */
-        webdav?.writeContents(path: remotePath, contents: data, atomically: true, completionHandler: nil)
-        
-        // NOTE: This is what was used in the POC.  Text was taken from a text field in the UI and written as plain text.
-//        if let text = testTextField.text {
-//            let data = text.data(using: .utf8)
-//            webdav?.writeContents(path: remotePath, contents: data, atomically: true, completionHandler: nil)
-//        }
+        self.upload(data: data, toLocation: remotePath)
     }
     
     // TODO: Upload this to the correct folder location.
-    private func uploadData(data: Data) {
-        let fileName = "data.dat"
-        let remotePath = "/" + fileName
+    public func uploadData(data: Data, toPath: String) {
+        let fileName = "/data.dat"
+        let remotePath = "/Files/" + toPath + fileName
         
-        webdav?.writeContents(path: remotePath, contents: data, atomically: true, completionHandler: nil)
+        self.upload(data: data, toLocation: remotePath)
+    }
+    private func upload(data: Data, toLocation: String) {
+        webdav?.writeContents(path: toLocation, contents: data, atomically: true, completionHandler: { [weak self] error in
+            if let error = error {
+                if let callback = self?.connectivityStatus {
+                    callback(false, error)
+                }
+                print("error: \(error)")
+            } else {
+                if let callback = self?.connectivityStatus {
+                    callback(true, nil)
+                }
+                print("Success uploading Config. data.")
+            }
+        })
+    }
+    
+    private func checkForFilesFolder() {
+        func createFilesFolder() {
+            let _ = webdav?.create(folder: "Files", at: "", completionHandler: { [weak self] error in
+                if let error = error {
+                    print("\(error)")
+                    if let callback = self?.connectivityStatus {
+                        callback(false, error)
+                    }
+                } else {
+                    if let callback = self?.connectivityStatus {
+                        print("created files folder")
+                        callback(true, nil)
+                    }
+                }
+            })
+        }
+
+        webdav?.contentsOfDirectory(path: "", completionHandler: { [weak self] files, error in
+            if let error = error {
+                // TODO: Respond to error
+                print("Error: \(error)")
+            } else {
+                for aFile in files {
+                    if aFile.name == self?.filesFolderName {
+                        // If we have a Files folder, do nothing.
+                        print("Found Files Folder!")
+                        return
+                    }
+                }
+
+                createFilesFolder()
+                // At this point, the Files folder is not found.  Create it!
+            }
+        })
     }
     
     // TODO: Data validation?
 }
 
-extension WriteStarlordFile: FileProviderDelegate {
+extension StarlordFileWriter: FileProviderDelegate {
     func fileproviderSucceed(_ fileProvider: FileProviderOperations, operation: FileOperationType) {
         switch operation {
         case .copy(source: let source, destination: let dest):

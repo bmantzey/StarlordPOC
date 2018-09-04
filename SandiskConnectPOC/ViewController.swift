@@ -12,7 +12,7 @@ import FilesProvider
 
 class ViewController: UIViewController {
     
-    let server: URL = URL(string: "http://172.25.63.1/myconnect/Files")!
+    let server: URL = URL(string: "http://172.25.63.1/myconnect/")!
     let username = ""
     let password = ""
     
@@ -71,12 +71,34 @@ class ViewController: UIViewController {
     
     @IBAction func upload(_ sender: Any) {
         let fileName = "testText.txt"
-        let remotePath = "/" + fileName
-        
-        if let text = testTextField.text {
+        let remotePath = "/Files/" + fileName
+        let text = testTextField.text ?? ""
+
+        func writeTestFile() {
             let data = text.data(using: .utf8)
             webdav?.writeContents(path: remotePath, contents: data, atomically: true, completionHandler: nil)
         }
+        func createFilesFolder() {
+            let _ = webdav?.create(folder: "Files", at: "", completionHandler: { error in
+                if let error = error {
+                    print("\(error)")
+                } else {
+                    print("created files folder")
+                    writeTestFile()
+                }
+            })
+        }
+        
+        webdav?.contentsOfDirectory(path: "", completionHandler: { files, error in
+            for aFile in files {
+                if aFile.name.lowercased() == "files" {
+                    print("Found Files Folder!")
+                    writeTestFile()
+                    return
+                }
+            }
+            createFilesFolder()
+        })
     }
 }
 

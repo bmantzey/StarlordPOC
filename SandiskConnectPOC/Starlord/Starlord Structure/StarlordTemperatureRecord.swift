@@ -9,6 +9,7 @@
 import Foundation
 
 struct StarlordTemperatureRecord {
+    /// Value: 9
     let lengthOfRecordData: UInt16
     let crcOfRecordData: UInt16
     /// (C )

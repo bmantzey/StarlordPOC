@@ -27,6 +27,7 @@
 		C4F5A186213F2F3A003B6DFC /* StarlordTemperatureRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4F5A185213F2F3A003B6DFC /* StarlordTemperatureRecord.swift */; };
 		C4F5A188213F2F87003B6DFC /* StarlordVoltageRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4F5A187213F2F87003B6DFC /* StarlordVoltageRecord.swift */; };
 		C4F5A18A213F2FD6003B6DFC /* StarlordCustomInputRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4F5A189213F2FD6003B6DFC /* StarlordCustomInputRecord.swift */; };
+		C4F5A18C21402D91003B6DFC /* CONFIG.DAT in Resources */ = {isa = PBXBuildFile; fileRef = C4F5A18B21402D91003B6DFC /* CONFIG.DAT */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -54,6 +55,7 @@
 		C4F5A185213F2F3A003B6DFC /* StarlordTemperatureRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StarlordTemperatureRecord.swift; sourceTree = "<group>"; };
 		C4F5A187213F2F87003B6DFC /* StarlordVoltageRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StarlordVoltageRecord.swift; sourceTree = "<group>"; };
 		C4F5A189213F2FD6003B6DFC /* StarlordCustomInputRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StarlordCustomInputRecord.swift; sourceTree = "<group>"; };
+		C4F5A18B21402D91003B6DFC /* CONFIG.DAT */ = {isa = PBXFileReference; lastKnownFileType = file; path = CONFIG.DAT; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -97,6 +99,7 @@
 		C4E331292137351E0076FE72 /* SandiskConnectPOC */ = {
 			isa = PBXGroup;
 			children = (
+				C4F5A18B21402D91003B6DFC /* CONFIG.DAT */,
 				C4E3312A2137351E0076FE72 /* AppDelegate.swift */,
 				C4E3312C2137351F0076FE72 /* ViewController.swift */,
 				C4E3312E2137351F0076FE72 /* Main.storyboard */,
@@ -209,6 +212,7 @@
 				C4E33135213735210076FE72 /* LaunchScreen.storyboard in Resources */,
 				C4E33132213735210076FE72 /* Assets.xcassets in Resources */,
 				C4E331302137351F0076FE72 /* Main.storyboard in Resources */,
+				C4F5A18C21402D91003B6DFC /* CONFIG.DAT in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

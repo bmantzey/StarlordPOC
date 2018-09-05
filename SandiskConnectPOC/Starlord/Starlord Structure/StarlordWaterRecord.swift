@@ -9,6 +9,7 @@
 import Foundation
 
 struct StarlordWaterRecord {
+    /// Value: 41
     let lengthOfRecordData: UInt16
     let crcOfRecordData: UInt16
     /// (ms)

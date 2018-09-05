@@ -9,6 +9,7 @@
 import Foundation
 
 struct StarlordRainRecord {
+    /// Value: 1
     let lengthOfRecord: UInt16
     let crcOfRecordData: UInt16
     let rainInput: UInt8

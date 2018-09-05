@@ -14,7 +14,7 @@ struct StarlordCustomInputRecord {
         let inputReadingOffset: UInt32
         let inputReadingFactor: Float
         let input: UInt8
-        let label: [CChar]
+        let label: ContiguousArray<CChar>
     }
     struct CustomInputDigital {
         /// (units)
@@ -23,11 +23,12 @@ struct StarlordCustomInputRecord {
         let input: UInt8
         let activeState: Bool
         let readingTriggerType: UInt8
-        let label: [CChar]
+        let label: ContiguousArray<CChar>
     }
     
+    /// Value: 295
     let lengthOfRecordData: UInt16
     let crcOfRecordData: UInt16
-    let customAnalogInputs: [CustomInputAnalog]
-    let customDigitalInputs: [CustomInputDigital]
+    let customAnalogInputs: ContiguousArray<CustomInputAnalog>
+    let customDigitalInputs: ContiguousArray<CustomInputDigital>
 }

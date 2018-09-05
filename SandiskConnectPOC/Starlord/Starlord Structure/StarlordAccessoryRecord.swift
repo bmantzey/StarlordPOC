@@ -17,8 +17,9 @@ struct StarlordAccessoryRecord {
         let shutoffTime: UInt32
     }
     
+    /// Value: 45
     let lengthOfRecordData: UInt16
     let crcOfRecordData: UInt16
     /// 5 of them
-    let accessoryConfigurations: [AccessoryConfiguration]
+    let accessoryConfigurations: ContiguousArray<AccessoryConfiguration>
 }

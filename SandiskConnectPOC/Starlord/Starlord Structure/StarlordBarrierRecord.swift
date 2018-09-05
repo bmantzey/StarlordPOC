@@ -17,8 +17,9 @@ struct StarlordBarrierRecord {
         let isEnabled: Bool
     }
     
+    /// Value: 55
     let lengthOfRecordData: UInt16
     let crcOfRecordData: UInt16
     /// 5 of them
-    let barrierConfigurations: [Barrier]
+    let barrierConfigurations: ContiguousArray<Barrier>
 }

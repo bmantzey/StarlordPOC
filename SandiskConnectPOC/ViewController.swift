@@ -26,6 +26,9 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         
+        let fileMakerTest = StarlordFileMaker()
+        fileMakerTest.tempRead()
+        
         super.viewDidLoad()
         
 //        let credential = URLCredential(user: username, password: password, persistence: .permanent)
@@ -69,6 +72,15 @@ class ViewController: UIViewController {
         downloadProgressView.observedProgress = progress
     }
     
+    func showAlert(text: String, error: Bool) {
+        let alert = UIAlertController(title: error ? "Error" : "Message", message: text, preferredStyle: .alert)
+        let ok = UIAlertAction(title: "OK", style: .default, handler: { _ in
+            self.uploadProgressView.progress = 0
+        })
+        alert.addAction(ok)
+        self.show(alert, sender: nil)
+    }
+    
     @IBAction func upload(_ sender: Any) {
         let fileName = "testText.txt"
         let remotePath = "/Files/" + fileName
@@ -76,7 +88,14 @@ class ViewController: UIViewController {
 
         func writeTestFile() {
             let data = text.data(using: .utf8)
-            webdav?.writeContents(path: remotePath, contents: data, atomically: true, completionHandler: nil)
+            
+            uploadProgressView.observedProgress = webdav?.writeContents(path: remotePath, contents: data, atomically: true, overwrite: true, completionHandler: { error in
+                if let error = error {
+                    self.showAlert(text: error.localizedDescription, error: true)
+                } else {
+                    self.showAlert(text: "Successfully wrote contents: \"" + text + "\"", error: false)
+                }
+            })
         }
         func createFilesFolder() {
             let _ = webdav?.create(folder: "Files", at: "", completionHandler: { error in
@@ -88,16 +107,30 @@ class ViewController: UIViewController {
                 }
             })
         }
+        func deleteExistingFile() {
+            let _ = webdav?.removeItem(path: remotePath, completionHandler: { error in
+                if let error = error {
+                    self.showAlert(text: error.localizedDescription, error: true)
+                } else {
+                    writeTestFile()
+                }
+            })
+        }
         
         webdav?.contentsOfDirectory(path: "", completionHandler: { files, error in
-            for aFile in files {
-                if aFile.name.lowercased() == "files" {
-                    print("Found Files Folder!")
-                    writeTestFile()
-                    return
+            if let error = error {
+                self.showAlert(text: error.localizedDescription, error: true)
+            } else {
+                for aFile in files {
+                    if aFile.name.lowercased() == "files" {
+                        print("Found Files Folder!")
+    //                    deleteExistingFile()
+                        writeTestFile()
+                        return
+                    }
                 }
+                createFilesFolder()
             }
-            createFilesFolder()
         })
     }
 }

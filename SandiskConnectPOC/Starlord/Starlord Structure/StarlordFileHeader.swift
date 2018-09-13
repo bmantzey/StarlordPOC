@@ -9,7 +9,7 @@
 import Foundation
 
 struct StarlordFileHeader {
-    /// 0
+    /// Value: 0, Length: 4
     let index: Int32
     /// 2876
     let corvairProductID: UInt16

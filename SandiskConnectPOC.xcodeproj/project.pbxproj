@@ -13,6 +13,8 @@
 		C4E331302137351F0076FE72 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C4E3312E2137351F0076FE72 /* Main.storyboard */; };
 		C4E33132213735210076FE72 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C4E33131213735210076FE72 /* Assets.xcassets */; };
 		C4E33135213735210076FE72 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C4E33133213735210076FE72 /* LaunchScreen.storyboard */; };
+		C4E52FFF214AE50D00A41B96 /* StarlordBinaryStruct.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4E52FFE214AE50D00A41B96 /* StarlordBinaryStruct.swift */; };
+		C4E53001214AE55900A41B96 /* TypeLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4E53000214AE55900A41B96 /* TypeLoader.swift */; };
 		C4F5A16C213EE6C2003B6DFC /* StarlordFileWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4F5A16B213EE6C2003B6DFC /* StarlordFileWriter.swift */; };
 		C4F5A16F213F26C1003B6DFC /* StarlordFileMaker.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4F5A16E213F26C1003B6DFC /* StarlordFileMaker.swift */; };
 		C4F5A173213F2704003B6DFC /* StarlordLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4F5A172213F2704003B6DFC /* StarlordLayout.swift */; };
@@ -41,6 +43,8 @@
 		C4E33131213735210076FE72 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C4E33134213735210076FE72 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		C4E33136213735210076FE72 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C4E52FFE214AE50D00A41B96 /* StarlordBinaryStruct.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StarlordBinaryStruct.swift; sourceTree = "<group>"; };
+		C4E53000214AE55900A41B96 /* TypeLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TypeLoader.swift; sourceTree = "<group>"; };
 		C4F5A16B213EE6C2003B6DFC /* StarlordFileWriter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StarlordFileWriter.swift; sourceTree = "<group>"; };
 		C4F5A16E213F26C1003B6DFC /* StarlordFileMaker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StarlordFileMaker.swift; sourceTree = "<group>"; };
 		C4F5A172213F2704003B6DFC /* StarlordLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StarlordLayout.swift; sourceTree = "<group>"; };
@@ -114,6 +118,7 @@
 		C4F5A16D213F26AE003B6DFC /* Starlord */ = {
 			isa = PBXGroup;
 			children = (
+				C4E53000214AE55900A41B96 /* TypeLoader.swift */,
 				C4F5A16B213EE6C2003B6DFC /* StarlordFileWriter.swift */,
 				C4F5A16E213F26C1003B6DFC /* StarlordFileMaker.swift */,
 				C4F5A176213F2775003B6DFC /* Starlord Structure */,
@@ -136,6 +141,7 @@
 				C4F5A185213F2F3A003B6DFC /* StarlordTemperatureRecord.swift */,
 				C4F5A187213F2F87003B6DFC /* StarlordVoltageRecord.swift */,
 				C4F5A189213F2FD6003B6DFC /* StarlordCustomInputRecord.swift */,
+				C4E52FFE214AE50D00A41B96 /* StarlordBinaryStruct.swift */,
 			);
 			path = "Starlord Structure";
 			sourceTree = "<group>";
@@ -268,9 +274,11 @@
 				C4F5A17A213F2827003B6DFC /* StarlordProductMiscRecord.swift in Sources */,
 				C4F5A173213F2704003B6DFC /* StarlordLayout.swift in Sources */,
 				C4F5A16F213F26C1003B6DFC /* StarlordFileMaker.swift in Sources */,
+				C4E52FFF214AE50D00A41B96 /* StarlordBinaryStruct.swift in Sources */,
 				C4F5A16C213EE6C2003B6DFC /* StarlordFileWriter.swift in Sources */,
 				C4F5A182213F2BE1003B6DFC /* StarlordFaultRecord.swift in Sources */,
 				C4F5A186213F2F3A003B6DFC /* StarlordTemperatureRecord.swift in Sources */,
+				C4E53001214AE55900A41B96 /* TypeLoader.swift in Sources */,
 				C4F5A17E213F2A37003B6DFC /* StarlordBarrierRecord.swift in Sources */,
 				C4E3312B2137351E0076FE72 /* AppDelegate.swift in Sources */,
 				C4F5A175213F276B003B6DFC /* StarlordFileHeader.swift in Sources */,

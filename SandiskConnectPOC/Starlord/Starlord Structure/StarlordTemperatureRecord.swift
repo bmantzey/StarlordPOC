@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct StarlordTemperatureRecord {
+struct StarlordTemperatureRecord: StarlordBinaryStruct {
     /// Value: 9
     let lengthOfRecordData: UInt16
     let crcOfRecordData: UInt16
@@ -16,4 +16,28 @@ struct StarlordTemperatureRecord {
     let temperatureReadingOffset: Float
     let temperatureReadingFactor: Float
     let temperatureInput: UInt8
+    
+    init(withData: Data) {
+        let unneccessaryDataCopy = withData.advanced(by: 0)
+
+        var offset = 0
+        var length = MemoryLayout<UInt16>.size + offset
+        lengthOfRecordData = uint16Value(data: unneccessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
+        
+        offset = length
+        length = MemoryLayout<UInt16>.size + offset
+        crcOfRecordData = uint16Value(data: unneccessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
+        
+        offset = length
+        length = MemoryLayout<Float>.size + offset
+        temperatureReadingOffset = floatValue(data: unneccessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
+        
+        offset = length
+        length = MemoryLayout<Float>.size + offset
+        temperatureReadingFactor = floatValue(data: unneccessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
+        
+        offset = length
+        length = MemoryLayout<UInt8>.size + offset
+        temperatureInput = uint8Value(data: unneccessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
+    }
 }

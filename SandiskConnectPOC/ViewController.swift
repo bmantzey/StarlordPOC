@@ -93,7 +93,13 @@ class ViewController: UIViewController {
                 if let error = error {
                     self.showAlert(text: error.localizedDescription, error: true)
                 } else {
-                    self.showAlert(text: "Successfully wrote contents: \"" + text + "\"", error: false)
+                    self.uploadProgressView.observedProgress = self.webdav?.writeContents(path: remotePath, contents: data, atomically: true, overwrite: true, completionHandler: { error in
+                        if let error = error {
+                            self.showAlert(text: error.localizedDescription, error: true)
+                        } else {
+                            self.showAlert(text: "Successfully wrote contents: \"" + text + "\"", error: false)
+                        }
+                    })
                 }
             })
         }

@@ -17,31 +17,31 @@ struct StarlordTelemetryRecord: StarlordBinaryStruct {
     let fillerData6: UInt16
     
     init(withData: Data) {
-        let unneccessaryDataCopy = withData.advanced(by: 0)
+        let unnecessaryDataCopy = withData.advanced(by: 0)
 
         var offset = 0
         var length = MemoryLayout<UInt64>.size + offset
-        fillerData = uint64Value(data: unneccessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
+        fillerData = uint64Value(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
         
         offset = length
         length = MemoryLayout<UInt64>.size + offset
-        fillerData2 = uint64Value(data: unneccessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
+        fillerData2 = uint64Value(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
         
         offset = length
         length = MemoryLayout<UInt64>.size + offset
-        fillerData3 = uint64Value(data: unneccessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
+        fillerData3 = uint64Value(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
         
         offset = length
         length = MemoryLayout<UInt64>.size + offset
-        fillerData4 = uint64Value(data: unneccessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
+        fillerData4 = uint64Value(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
         
         offset = length
         length = MemoryLayout<UInt64>.size + offset
-        fillerData5 = uint64Value(data: unneccessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
+        fillerData5 = uint64Value(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
         
         offset = length
         length = MemoryLayout<UInt16>.size + offset
-        fillerData6 = uint16Value(data: unneccessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
+        fillerData6 = uint16Value(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
         
     }
 }

@@ -17,19 +17,19 @@ struct StarlordAccessoryRecord: StarlordBinaryStruct {
         let shutoffTime: UInt32
         
         init(withData: Data) {
-            let unneccessaryDataCopy = withData.advanced(by: 0)
+            let unnecessaryDataCopy = withData.advanced(by: 0)
 
             var offset = 0
             var length = MemoryLayout<UInt8>.size + offset
-            type = uint8Value(data: unneccessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
+            type = uint8Value(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
             
             offset = length
             length = MemoryLayout<UInt32>.size + offset
-            startupTime = uint32Value(data: unneccessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
+            startupTime = uint32Value(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
             
             offset = length
             length = MemoryLayout<UInt32>.size + offset
-            shutoffTime = uint32Value(data: unneccessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
+            shutoffTime = uint32Value(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
         }
     }
     
@@ -40,21 +40,21 @@ struct StarlordAccessoryRecord: StarlordBinaryStruct {
     let accessoryConfigurations: ContiguousArray<AccessoryConfiguration>
     
     init(withData: Data) {
-        let unneccessaryDataCopy = withData.advanced(by: 0)
+        let unnecessaryDataCopy = withData.advanced(by: 0)
 
         var offset = 0
         var length = MemoryLayout<UInt16>.size + offset
-        lengthOfRecordData = uint16Value(data: unneccessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
+        lengthOfRecordData = uint16Value(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
         
         offset = length
         length = MemoryLayout<UInt16>.size + offset
-        crcOfRecordData = uint16Value(data: unneccessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
+        crcOfRecordData = uint16Value(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
         
         var aConfigs = ContiguousArray<AccessoryConfiguration>()
         for _ in 0..<5 {
             offset = length
             length = MemoryLayout<AccessoryConfiguration>.size + offset
-            aConfigs.append(AccessoryConfiguration(withData: unneccessaryDataCopy[offset..<length]))
+            aConfigs.append(AccessoryConfiguration(withData: unnecessaryDataCopy[offset..<length]))
         }
         accessoryConfigurations = aConfigs
     }

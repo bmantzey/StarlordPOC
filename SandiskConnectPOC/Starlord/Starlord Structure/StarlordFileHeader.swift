@@ -17,18 +17,18 @@ struct StarlordFileHeader: StarlordBinaryStruct {
     let headerCRC: UInt16
     
     init(withData: Data) {
-        let unneccessaryDataCopy = withData.advanced(by: 0)
+        let unnecessaryDataCopy = withData.advanced(by: 0)
 
         var offset = 0
         var length = MemoryLayout<Int32>.size + offset
-        index = int32Value(data: unneccessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
+        index = int32Value(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
         
         offset = length
         length = MemoryLayout<UInt16>.size + offset
-        corvairProductID = uint16Value(data: unneccessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
+        corvairProductID = uint16Value(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
         
         offset = length
         length = MemoryLayout<UInt16>.size + offset
-        headerCRC = uint16Value(data: unneccessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
+        headerCRC = uint16Value(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
     }
 }

@@ -33,62 +33,62 @@ struct ConfigLayout: StarlordBinaryStruct {
     let customInputRecord: StarlordCustomInputRecord
     
     init(withData: Data) {
-        let unneccessaryDataCopy = withData.advanced(by: 0)
+        let unnecessaryDataCopy = withData.advanced(by: 0)
         
         // fileHeader
         var offset = 0
         var length = MemoryLayout<StarlordFileHeader>.size + offset
-        fileHeader = StarlordFileHeader(withData: unneccessaryDataCopy[offset..<length])
+        fileHeader = StarlordFileHeader(withData: unnecessaryDataCopy[offset..<length])
         
         // telemetryRecord
         offset = length
         length = MemoryLayout<StarlordTelemetryRecord>.size + offset
-        telemetryRecord = StarlordTelemetryRecord(withData: unneccessaryDataCopy[offset..<length])
+        telemetryRecord = StarlordTelemetryRecord(withData: unnecessaryDataCopy[offset..<length])
         
         // productMiscRecord
         offset = length
         length = 50 + offset //MemoryLayout<StarlordProductMiscRecord>.size + offset
-        productMiscRecord = StarlordProductMiscRecord(withData: unneccessaryDataCopy[offset..<length])
+        productMiscRecord = StarlordProductMiscRecord(withData: unnecessaryDataCopy[offset..<length])
         
         // waterRecord
         offset = length
         length = 50 + offset //MemoryLayout<StarlordWaterRecord>.size + offset
-        waterRecord = StarlordWaterRecord(withData: unneccessaryDataCopy[offset..<length])
+        waterRecord = StarlordWaterRecord(withData: unnecessaryDataCopy[offset..<length])
         
         // barrierRecord
         offset = length
         length = 100 + offset //MemoryLayout<StarlordBarrierRecord>.size + offset
-        barrierRecord = StarlordBarrierRecord(withData: unneccessaryDataCopy[offset..<length])
+        barrierRecord = StarlordBarrierRecord(withData: unnecessaryDataCopy[offset..<length])
         
         // accessoryRecord
         offset = length
         length = 100 + offset //MemoryLayout<StarlordAccessoryRecord>.size + offset
-        accessoryRecord = StarlordAccessoryRecord(withData: unneccessaryDataCopy[offset..<length])
+        accessoryRecord = StarlordAccessoryRecord(withData: unnecessaryDataCopy[offset..<length])
         
         // faultRecord
         offset = length
         length = 300 + offset //MemoryLayout<StarlordFaultRecord>.size + offset
-        faultRecord = StarlordFaultRecord(withData: unneccessaryDataCopy[offset..<length])
+        faultRecord = StarlordFaultRecord(withData: unnecessaryDataCopy[offset..<length])
         
         // rainRecord
         offset = length
         length = 10 + offset //MemoryLayout<StarlordRainRecord>.size + offset
-        rainRecord = StarlordRainRecord(withData: unneccessaryDataCopy[offset..<length])
+        rainRecord = StarlordRainRecord(withData: unnecessaryDataCopy[offset..<length])
         
         // temperatureRecord
         offset = length
         length = 16 + offset //MemoryLayout<StarlordTemperatureRecord>.size + offset
-        temperatureRecord = StarlordTemperatureRecord(withData: unneccessaryDataCopy[offset..<length])
+        temperatureRecord = StarlordTemperatureRecord(withData: unnecessaryDataCopy[offset..<length])
         
         // voltageRecord
         offset = length
         length = 16 + offset //MemoryLayout<StarlordVoltageRecord>.size + offset
-        voltageRecord = StarlordVoltageRecord(withData: unneccessaryDataCopy[offset..<length])
+        voltageRecord = StarlordVoltageRecord(withData: unnecessaryDataCopy[offset..<length])
         
         // customInputRecord
         offset = length
         length = 500 + offset //MemoryLayout<StarlordCustomInputRecord>.size + offset
-        customInputRecord = StarlordCustomInputRecord(withData: unneccessaryDataCopy[offset..<min(unneccessaryDataCopy.count, length)])
+        customInputRecord = StarlordCustomInputRecord(withData: unnecessaryDataCopy[offset..<min(unnecessaryDataCopy.count, length)])
     }
 }
 

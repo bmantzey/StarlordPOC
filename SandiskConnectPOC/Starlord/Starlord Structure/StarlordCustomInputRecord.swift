@@ -17,25 +17,25 @@ struct StarlordCustomInputRecord: StarlordBinaryStruct {
         let label: ContiguousArray<CChar>
         
         init(withData: Data) {
-            let unneccessaryDataCopy = withData.advanced(by: 0)
+            let unnecessaryDataCopy = withData.advanced(by: 0)
 
             var offset = 0
             var length = MemoryLayout<UInt32>.size + offset
-            inputReadingOffset = uint32Value(data: unneccessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
+            inputReadingOffset = uint32Value(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
             
             offset = length
             length = MemoryLayout<Float>.size + offset
-            inputReadingFactor = floatValue(data: unneccessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
+            inputReadingFactor = floatValue(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
             
             offset = length
             length = MemoryLayout<UInt8>.size + offset
-            input = uint8Value(data: unneccessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
+            input = uint8Value(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
 
             var labelArray = ContiguousArray<CChar>()
             for _ in 0..<21 {
                 offset = length
                 length = MemoryLayout<CChar>.size + offset
-                let aChar = charValue(data: unneccessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
+                let aChar = charValue(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
                 labelArray.append(aChar)
             }
             label = labelArray
@@ -51,31 +51,31 @@ struct StarlordCustomInputRecord: StarlordBinaryStruct {
         let label: String
         
         init(withData: Data) {
-            let unneccessaryDataCopy = withData.advanced(by: 0)
+            let unnecessaryDataCopy = withData.advanced(by: 0)
 
             var offset = 0
             var length = MemoryLayout<Float>.size + offset
-            unitsPerPulse = floatValue(data: unneccessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
+            unitsPerPulse = floatValue(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
             
             offset = length
             length = MemoryLayout<Bool>.size + offset
-            isAccumulator = boolValue(data: unneccessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
+            isAccumulator = boolValue(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
             
             offset = length
             length = MemoryLayout<UInt8>.size + offset
-            input = uint8Value(data: unneccessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
+            input = uint8Value(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
             
             offset = length
             length = MemoryLayout<Bool>.size + offset
-            activeState = boolValue(data: unneccessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
+            activeState = boolValue(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
             
             offset = length
             length = MemoryLayout<UInt8>.size + offset
-            readingTriggerType = uint8Value(data: unneccessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
+            readingTriggerType = uint8Value(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
             
             offset = length
             length = 21 + offset
-            label = String(data: unneccessaryDataCopy[offset..<length], encoding: .utf8) ?? "                     "
+            label = String(data: unnecessaryDataCopy[offset..<length], encoding: .utf8) ?? "                     "
         }
     }
     
@@ -86,22 +86,24 @@ struct StarlordCustomInputRecord: StarlordBinaryStruct {
     let customDigitalInputs: ContiguousArray<CustomInputDigital>
     
     init(withData: Data) {
-        let unneccessaryDataCopy = withData.advanced(by: 0)
+        let unnecessaryDataCopy = withData.advanced(by: 0)
 
         var offset = 0
         var length = MemoryLayout<UInt16>.size + offset
-        lengthOfRecordData = uint16Value(data: unneccessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
+        lengthOfRecordData = uint16Value(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
         
         offset = length
         length = MemoryLayout<UInt16>.size + offset
-        crcOfRecordData = uint16Value(data: unneccessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
+        crcOfRecordData = uint16Value(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
         
         var caInputs = ContiguousArray<CustomInputAnalog>()
         for _ in 0..<5 {
             offset = length
             length = 30 + offset //MemoryLayout<CustomInputAnalog>.size + offset
-            let aCA = CustomInputAnalog(withData: unneccessaryDataCopy[offset..<length])
+            let aCA = CustomInputAnalog(withData: unnecessaryDataCopy[offset..<length])
             caInputs.append(aCA)
+            
+            // LEFTOFF: File size is not as big as the spreadsheet describes it to be.
         }
         customAnalogInputs = caInputs
         
@@ -109,7 +111,7 @@ struct StarlordCustomInputRecord: StarlordBinaryStruct {
         for _ in 0..<5 {
             offset = length
             length = MemoryLayout<CustomInputDigital>.size + offset
-            let aCD = CustomInputDigital(withData: unneccessaryDataCopy[offset..<length])
+            let aCD = CustomInputDigital(withData: unnecessaryDataCopy[offset..<length])
             cdInputs.append(aCD)
         }
         customDigitalInputs = cdInputs

@@ -34,71 +34,71 @@ struct StarlordWaterRecord: StarlordBinaryStruct {
     let isFlowReadingAnalog: Bool
     
     init(withData: Data) {
-        let unneccessaryDataCopy = withData.advanced(by: 0)
+        let unnecessaryDataCopy = withData.advanced(by: 0)
 
         var offset = 0
         var length = MemoryLayout<UInt16>.size + offset
-        lengthOfRecordData = uint16Value(data: unneccessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
+        lengthOfRecordData = uint16Value(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
         
         offset = length
         length = MemoryLayout<UInt16>.size + offset
-        crcOfRecordData = uint16Value(data: unneccessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
+        crcOfRecordData = uint16Value(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
         
         offset = length
         length = MemoryLayout<UInt32>.size + offset
-        restartDelayTime = uint32Value(data: unneccessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
+        restartDelayTime = uint32Value(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
         
         offset = length
         length = MemoryLayout<UInt32>.size + offset
-        pressureTarget = uint32Value(data: unneccessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
+        pressureTarget = uint32Value(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
         
         offset = length
         length = MemoryLayout<UInt32>.size + offset
-        pressureReadingOffset = uint32Value(data: unneccessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
+        pressureReadingOffset = uint32Value(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
         
         offset = length
         length = MemoryLayout<Float>.size + offset
-        pressureReadingFactor = floatValue(data: unneccessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
+        pressureReadingFactor = floatValue(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
         
         offset = length
         length = MemoryLayout<UInt32>.size + offset
-        auxPressureReadingOffset = uint32Value(data: unneccessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
+        auxPressureReadingOffset = uint32Value(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
         
         offset = length
         length = MemoryLayout<Float>.size + offset
-        auxPressureReadingFactor = floatValue(data: unneccessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
+        auxPressureReadingFactor = floatValue(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
         
         offset = length
         length = MemoryLayout<UInt32>.size + offset
-        flowAnalogReadingOffset = uint32Value(data: unneccessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
+        flowAnalogReadingOffset = uint32Value(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
         
         offset = length
         length = MemoryLayout<Float>.size + offset
-        flowAnalogReadingFactor = floatValue(data: unneccessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
+        flowAnalogReadingFactor = floatValue(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
         
         offset = length
         length = MemoryLayout<Float>.size + offset
-        flowDigitalReadingUnitsPerPulse = floatValue(data: unneccessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
+        flowDigitalReadingUnitsPerPulse = floatValue(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
         
         offset = length
         length = MemoryLayout<UInt8>.size + offset
-        pressureReadingInput = uint8Value(data: unneccessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
+        pressureReadingInput = uint8Value(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
         
         offset = length
         length = MemoryLayout<UInt8>.size + offset
-        auxPressureReadingInput = uint8Value(data: unneccessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
+        auxPressureReadingInput = uint8Value(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
         
         offset = length
         length = MemoryLayout<UInt8>.size + offset
-        flowReadingInput = uint8Value(data: unneccessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
+        flowReadingInput = uint8Value(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
         
         offset = length
         length = MemoryLayout<UInt8>.size + offset
-        flowDigitalReadingTriggerType = uint8Value(data: unneccessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
+        flowDigitalReadingTriggerType = uint8Value(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
         
         offset = length
         length = MemoryLayout<Bool>.size + offset
-        isFlowReadingAnalog = boolValue(data: unneccessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
+        isFlowReadingAnalog = boolValue(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
     }
     
 }

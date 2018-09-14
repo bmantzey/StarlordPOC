@@ -17,27 +17,27 @@ struct StarlordBarrierRecord: StarlordBinaryStruct {
         let isEnabled: Bool
         
         init(withData: Data) {
-            let unneccessaryDataCopy = withData.advanced(by: 0)
+            let unnecessaryDataCopy = withData.advanced(by: 0)
 
             var offset = 0
             var length = MemoryLayout<UInt32>.size + offset
-            holdTime = uint32Value(data: unneccessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
+            holdTime = uint32Value(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
             
             offset = length
             length = MemoryLayout<Float>.size + offset
-            angle = floatValue(data: unneccessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
+            angle = floatValue(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
             
             offset = length
             length = MemoryLayout<UInt8>.size + offset
-            type = uint8Value(data: unneccessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
+            type = uint8Value(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
             
             offset = length
             length = MemoryLayout<UInt8>.size + offset
-            action = uint8Value(data: unneccessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
+            action = uint8Value(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
             
             offset = length
             length = MemoryLayout<Bool>.size + offset
-            isEnabled = boolValue(data: unneccessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
+            isEnabled = boolValue(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
         }
     }
     
@@ -48,21 +48,21 @@ struct StarlordBarrierRecord: StarlordBinaryStruct {
     let barrierConfigurations: ContiguousArray<Barrier>
     
     init(withData: Data) {
-        let unneccessaryDataCopy = withData.advanced(by: 0)
+        let unnecessaryDataCopy = withData.advanced(by: 0)
 
         var offset = 0
         var length = MemoryLayout<UInt16>.size + offset
-        lengthOfRecordData = uint16Value(data: unneccessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
+        lengthOfRecordData = uint16Value(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
         
         offset = length
         length = MemoryLayout<UInt16>.size + offset
-        crcOfRecordData = uint16Value(data: unneccessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
+        crcOfRecordData = uint16Value(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
         
         var bConfigs = ContiguousArray<Barrier>()
         for _ in 0..<5 {
             offset = length
             length = MemoryLayout<Barrier>.size + offset
-            let aBarrier = Barrier(withData: unneccessaryDataCopy[offset..<length])
+            let aBarrier = Barrier(withData: unnecessaryDataCopy[offset..<length])
             bConfigs.append(aBarrier)
         }
         barrierConfigurations = bConfigs

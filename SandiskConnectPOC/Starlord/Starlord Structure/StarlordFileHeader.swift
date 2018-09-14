@@ -10,25 +10,24 @@ import Foundation
 
 struct StarlordFileHeader: StarlordBinaryStruct {
     /// Value: 0, Length: 4
-    let index: Int32
+    var index: Int32
     /// 2876
-    let corvairProductID: UInt16
+    var corvairProductID: UInt16
     /// 0x0000-0xFFFF
-    let headerCRC: UInt16
+    var headerCRC: UInt16
     
-    init(withData: Data) {
-        let unnecessaryDataCopy = withData.advanced(by: 0)
+    mutating func generateData() -> Data {
+        var data = Data()
 
-        var offset = 0
-        var length = MemoryLayout<Int32>.size + offset
-        index = int32Value(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
+        let indexData = Data(buffer: UnsafeBufferPointer(start: &self.index, count: 1))
+        data.append(indexData)
+
+        let corvairProductIDData = Data(buffer: UnsafeBufferPointer(start: &self.corvairProductID, count: 1))
+        data.append(corvairProductIDData)
         
-        offset = length
-        length = MemoryLayout<UInt16>.size + offset
-        corvairProductID = uint16Value(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
-        
-        offset = length
-        length = MemoryLayout<UInt16>.size + offset
-        headerCRC = uint16Value(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
+        let headerCRCData = Data(buffer: UnsafeBufferPointer(start: &self.headerCRC, count: 1))
+        data.append(headerCRCData)
+
+        return data
     }
 }

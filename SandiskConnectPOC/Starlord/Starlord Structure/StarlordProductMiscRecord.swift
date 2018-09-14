@@ -9,36 +9,34 @@
 import Foundation
 
 struct StarlordProductMiscRecord: StarlordBinaryStruct {
-    /// Value: 6
-    let lengthOfRecordData: UInt16
-    let crcOfRecordData: UInt16
-    /// Value: 0
-    let resetCause: UInt8
-    /// Value: 0
-    let disableFaults: Bool
-    let transformerRatio: Float
     
-    init(withData: Data) {
-        let unnecessaryDataCopy = withData.advanced(by: 0)
+    /// Value: 6
+    var lengthOfRecordData: UInt16
+    var crcOfRecordData: UInt16
+    /// Value: 0
+    var resetCause: UInt8
+    /// Value: 0
+    var disableFaults: Bool
+    var transformerRatio: Float
+    
+    mutating func generateData() -> Data {
+        var data = Data()
         
-        var offset = 0
-        var length = MemoryLayout<UInt16>.size + offset
-        lengthOfRecordData = uint16Value(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
+        let lengthOfRecordDataData = Data(buffer: UnsafeBufferPointer(start: &self.lengthOfRecordData, count: 1))
+        data.append(lengthOfRecordDataData)
         
-        offset = length
-        length = MemoryLayout<UInt16>.size + offset
-        crcOfRecordData = uint16Value(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
+        let crcOfRecordDataData = Data(buffer: UnsafeBufferPointer(start: &self.crcOfRecordData, count: 1))
+        data.append(crcOfRecordDataData)
         
-        offset = length
-        length = MemoryLayout<UInt8>.size + offset
-        resetCause = uint8Value(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
+        let resetCauseData = Data(buffer: UnsafeBufferPointer(start: &self.resetCause, count: 1))
+        data.append(resetCauseData)
         
-        offset = length
-        length = MemoryLayout<Bool>.size + offset
-        disableFaults = boolValue(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
+        let disableFaultsData = Data(buffer: UnsafeBufferPointer(start: &self.disableFaults, count: 1))
+        data.append(disableFaultsData)
         
-        offset = length
-        length = MemoryLayout<Float>.size + offset
-        transformerRatio = floatValue(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
+        let transformerRatioData = Data(buffer: UnsafeBufferPointer(start: &self.transformerRatio, count: 1))
+        data.append(transformerRatioData)
+                
+        return data
     }
 }

@@ -11,5 +11,5 @@ import Foundation
 let isBigEndian = false
 
 protocol StarlordBinaryStruct {
-    init(withData: Data)
+    mutating func generateData() -> Data
 }

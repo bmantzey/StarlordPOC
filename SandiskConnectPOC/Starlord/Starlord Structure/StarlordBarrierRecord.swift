@@ -10,61 +10,52 @@ import Foundation
 
 struct StarlordBarrierRecord: StarlordBinaryStruct {
     struct Barrier: StarlordBinaryStruct {
-        let holdTime: UInt32
-        let angle: Float
-        let type: UInt8
-        let action: UInt8
-        let isEnabled: Bool
+        var holdTime: UInt32
+        var angle: Float
+        var type: UInt8
+        var action: UInt8
+        var isEnabled: Bool
         
-        init(withData: Data) {
-            let unnecessaryDataCopy = withData.advanced(by: 0)
-
-            var offset = 0
-            var length = MemoryLayout<UInt32>.size + offset
-            holdTime = uint32Value(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
+        mutating func generateData() -> Data {
+            var data = Data()
             
-            offset = length
-            length = MemoryLayout<Float>.size + offset
-            angle = floatValue(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
+            let holdTimeData = Data(buffer: UnsafeBufferPointer(start: &self.holdTime, count: 1))
+            data.append(holdTimeData)
             
-            offset = length
-            length = MemoryLayout<UInt8>.size + offset
-            type = uint8Value(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
+            let angleData = Data(buffer: UnsafeBufferPointer(start: &self.angle, count: 1))
+            data.append(angleData)
             
-            offset = length
-            length = MemoryLayout<UInt8>.size + offset
-            action = uint8Value(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
+            let typeData = Data(buffer: UnsafeBufferPointer(start: &self.type, count: 1))
+            data.append(typeData)
             
-            offset = length
-            length = MemoryLayout<Bool>.size + offset
-            isEnabled = boolValue(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
+            let actionData = Data(buffer: UnsafeBufferPointer(start: &self.action, count: 1))
+            data.append(actionData)
+            
+            let isEnabledData = Data(buffer: UnsafeBufferPointer(start: &self.isEnabled, count: 1))
+            data.append(isEnabledData)
+            
+            return data
         }
     }
     
     /// Value: 55
-    let lengthOfRecordData: UInt16
-    let crcOfRecordData: UInt16
+    var lengthOfRecordData: UInt16
+    var crcOfRecordData: UInt16
     /// 5 of them
-    let barrierConfigurations: ContiguousArray<Barrier>
+    var barrierConfigurations: ContiguousArray<Barrier>
     
-    init(withData: Data) {
-        let unnecessaryDataCopy = withData.advanced(by: 0)
-
-        var offset = 0
-        var length = MemoryLayout<UInt16>.size + offset
-        lengthOfRecordData = uint16Value(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
+    mutating func generateData() -> Data {
+        var data = Data()
         
-        offset = length
-        length = MemoryLayout<UInt16>.size + offset
-        crcOfRecordData = uint16Value(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
+        let lengthOfRecordDataData = Data(buffer: UnsafeBufferPointer(start: &self.lengthOfRecordData, count: 1))
+        data.append(lengthOfRecordDataData)
         
-        var bConfigs = ContiguousArray<Barrier>()
-        for _ in 0..<5 {
-            offset = length
-            length = MemoryLayout<Barrier>.size + offset
-            let aBarrier = Barrier(withData: unnecessaryDataCopy[offset..<length])
-            bConfigs.append(aBarrier)
-        }
-        barrierConfigurations = bConfigs
+        let crcOfRecordDataData = Data(buffer: UnsafeBufferPointer(start: &self.crcOfRecordData, count: 1))
+        data.append(crcOfRecordDataData)
+        
+        let barrierConfigurationsData = Data(buffer: UnsafeBufferPointer(start: &self.barrierConfigurations, count: 5))
+        data.append(barrierConfigurationsData)
+        
+        return data
     }
 }

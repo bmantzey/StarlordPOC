@@ -10,52 +10,46 @@ import Foundation
 
 struct StarlordAccessoryRecord: StarlordBinaryStruct {
     struct AccessoryConfiguration: StarlordBinaryStruct {
-        let type: UInt8
+        var type: UInt8
         /// (ms)
-        let startupTime: UInt32
+        var startupTime: UInt32
         /// (ms)
-        let shutoffTime: UInt32
+        var shutoffTime: UInt32
         
-        init(withData: Data) {
-            let unnecessaryDataCopy = withData.advanced(by: 0)
-
-            var offset = 0
-            var length = MemoryLayout<UInt8>.size + offset
-            type = uint8Value(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
+        mutating func generateData() -> Data {
+            var data = Data()
             
-            offset = length
-            length = MemoryLayout<UInt32>.size + offset
-            startupTime = uint32Value(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
+            let typeData = Data(buffer: UnsafeBufferPointer(start: &self.type, count: 1))
+            data.append(typeData)
             
-            offset = length
-            length = MemoryLayout<UInt32>.size + offset
-            shutoffTime = uint32Value(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
-        }
-    }
+            let startupTimeData = Data(buffer: UnsafeBufferPointer(start: &self.startupTime, count: 1))
+            data.append(startupTimeData)
+            
+            let shutoffTimeData = Data(buffer: UnsafeBufferPointer(start: &self.shutoffTime, count: 1))
+            data.append(shutoffTimeData)
+            
+            return data
+        }    }
     
     /// Value: 45
-    let lengthOfRecordData: UInt16
-    let crcOfRecordData: UInt16
+    var lengthOfRecordData: UInt16
+    var crcOfRecordData: UInt16
     /// 5 of them
-    let accessoryConfigurations: ContiguousArray<AccessoryConfiguration>
+    var accessoryConfigurations: ContiguousArray<AccessoryConfiguration>
     
-    init(withData: Data) {
-        let unnecessaryDataCopy = withData.advanced(by: 0)
-
-        var offset = 0
-        var length = MemoryLayout<UInt16>.size + offset
-        lengthOfRecordData = uint16Value(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
+    mutating func generateData() -> Data {
+        var data = Data()
         
-        offset = length
-        length = MemoryLayout<UInt16>.size + offset
-        crcOfRecordData = uint16Value(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
+        let lengthOfRecordDataData = Data(buffer: UnsafeBufferPointer(start: &self.lengthOfRecordData, count: 1))
+        data.append(lengthOfRecordDataData)
         
-        var aConfigs = ContiguousArray<AccessoryConfiguration>()
-        for _ in 0..<5 {
-            offset = length
-            length = MemoryLayout<AccessoryConfiguration>.size + offset
-            aConfigs.append(AccessoryConfiguration(withData: unnecessaryDataCopy[offset..<length]))
-        }
-        accessoryConfigurations = aConfigs
+        let crcOfRecordDataData = Data(buffer: UnsafeBufferPointer(start: &self.crcOfRecordData, count: 1))
+        data.append(crcOfRecordDataData)
+        
+        let accessoryConfigurationsData = Data(buffer: UnsafeBufferPointer(start: &self.accessoryConfigurations, count: 5))
+        data.append(accessoryConfigurationsData)
+        
+        return data
     }
+
 }

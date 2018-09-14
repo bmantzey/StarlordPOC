@@ -8,6 +8,8 @@
 
 import Foundation
 
+// LEFTOFF: Follow the rest of the patterns seen in FileHeader -> AccessoryRecord.
+
 struct StarlordFaultRecord: StarlordBinaryStruct {
     /// Value: 150
     let lengthOfRecordData: UInt16

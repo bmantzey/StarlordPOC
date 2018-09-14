@@ -16,32 +16,15 @@ struct StarlordTelemetryRecord: StarlordBinaryStruct {
     let fillerData5: UInt64
     let fillerData6: UInt16
     
-    init(withData: Data) {
-        let unnecessaryDataCopy = withData.advanced(by: 0)
 
-        var offset = 0
-        var length = MemoryLayout<UInt64>.size + offset
-        fillerData = uint64Value(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
+    func generateData() -> Data {
+        var data = Data()
+
+        let pointer = UnsafeMutableBufferPointer<UInt8>.allocate(capacity: 42)
         
-        offset = length
-        length = MemoryLayout<UInt64>.size + offset
-        fillerData2 = uint64Value(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
+        let bufferData = Data(buffer: pointer)
+        data.append(bufferData)
         
-        offset = length
-        length = MemoryLayout<UInt64>.size + offset
-        fillerData3 = uint64Value(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
-        
-        offset = length
-        length = MemoryLayout<UInt64>.size + offset
-        fillerData4 = uint64Value(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
-        
-        offset = length
-        length = MemoryLayout<UInt64>.size + offset
-        fillerData5 = uint64Value(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
-        
-        offset = length
-        length = MemoryLayout<UInt16>.size + offset
-        fillerData6 = uint16Value(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
-        
+        return data
     }
 }

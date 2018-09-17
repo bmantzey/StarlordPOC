@@ -22,21 +22,12 @@ struct StarlordProductMiscRecord: StarlordBinaryStruct {
     mutating func generateData() -> Data {
         var data = Data()
         
-        let lengthOfRecordDataData = Data(buffer: UnsafeBufferPointer(start: &self.lengthOfRecordData, count: 1))
-        data.append(lengthOfRecordDataData)
-        
-        let crcOfRecordDataData = Data(buffer: UnsafeBufferPointer(start: &self.crcOfRecordData, count: 1))
-        data.append(crcOfRecordDataData)
-        
-        let resetCauseData = Data(buffer: UnsafeBufferPointer(start: &self.resetCause, count: 1))
-        data.append(resetCauseData)
-        
-        let disableFaultsData = Data(buffer: UnsafeBufferPointer(start: &self.disableFaults, count: 1))
-        data.append(disableFaultsData)
-        
-        let transformerRatioData = Data(buffer: UnsafeBufferPointer(start: &self.transformerRatio, count: 1))
-        data.append(transformerRatioData)
-                
+        data.append(UnsafeBufferPointer(start: &self.lengthOfRecordData, count: 1))
+        data.append(UnsafeBufferPointer(start: &self.crcOfRecordData, count: 1))
+        data.append(UnsafeBufferPointer(start: &self.resetCause, count: 1))
+        data.append(UnsafeBufferPointer(start: &self.disableFaults, count: 1))
+        data.append(UnsafeBufferPointer(start: &self.transformerRatio, count: 1))
+
         return data
     }
 }

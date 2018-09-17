@@ -19,17 +19,13 @@ struct StarlordAccessoryRecord: StarlordBinaryStruct {
         mutating func generateData() -> Data {
             var data = Data()
             
-            let typeData = Data(buffer: UnsafeBufferPointer(start: &self.type, count: 1))
-            data.append(typeData)
-            
-            let startupTimeData = Data(buffer: UnsafeBufferPointer(start: &self.startupTime, count: 1))
-            data.append(startupTimeData)
-            
-            let shutoffTimeData = Data(buffer: UnsafeBufferPointer(start: &self.shutoffTime, count: 1))
-            data.append(shutoffTimeData)
-            
+            data.append(UnsafeBufferPointer(start: &self.type, count: 1))
+            data.append(UnsafeBufferPointer(start: &self.startupTime, count: 1))
+            data.append(UnsafeBufferPointer(start: &self.shutoffTime, count: 1))
+
             return data
-        }    }
+        }        
+    }
     
     /// Value: 45
     var lengthOfRecordData: UInt16
@@ -40,14 +36,9 @@ struct StarlordAccessoryRecord: StarlordBinaryStruct {
     mutating func generateData() -> Data {
         var data = Data()
         
-        let lengthOfRecordDataData = Data(buffer: UnsafeBufferPointer(start: &self.lengthOfRecordData, count: 1))
-        data.append(lengthOfRecordDataData)
-        
-        let crcOfRecordDataData = Data(buffer: UnsafeBufferPointer(start: &self.crcOfRecordData, count: 1))
-        data.append(crcOfRecordDataData)
-        
-        let accessoryConfigurationsData = Data(buffer: UnsafeBufferPointer(start: &self.accessoryConfigurations, count: 5))
-        data.append(accessoryConfigurationsData)
+        data.append(UnsafeBufferPointer(start: &self.lengthOfRecordData, count: 1))
+        data.append(UnsafeBufferPointer(start: &self.crcOfRecordData, count: 1))
+        data.append(UnsafeBufferPointer(start: &self.accessoryConfigurations, count: 5))
         
         return data
     }

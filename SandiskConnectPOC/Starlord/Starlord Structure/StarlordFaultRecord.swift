@@ -8,8 +8,6 @@
 
 import Foundation
 
-// LEFTOFF: Follow the rest of the patterns seen in FileHeader -> AccessoryRecord.
-
 struct StarlordFaultRecord: StarlordBinaryStruct {
     /// Value: 150
     let lengthOfRecordData: UInt16
@@ -91,168 +89,50 @@ struct StarlordFaultRecord: StarlordBinaryStruct {
     /// (ms)
     let stallTime: UInt32
     
-    init(withData: Data) {
-        let unnecessaryDataCopy = withData.advanced(by: 0)
+    mutating func generateData() -> Data {
+        var data = Data()
 
-        var offset = 0
-        var length = MemoryLayout<UInt16>.size + offset
-        lengthOfRecordData = uint16Value(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
+        data.append(UnsafeBufferPointer(start: &self.lengthOfRecordData, count: 1))
+        data.append(UnsafeBufferPointer(start: &self.crcOfRecordData, count: 1))
+        data.append(UnsafeBufferPointer(start: &self.rainfallThreshold, count: 1))
+        data.append(UnsafeBufferPointer(start: &self.rainfallTimer, count: 1))
+        data.append(UnsafeBufferPointer(start: &self.flow2HighThreshold, count: 1))
+        data.append(UnsafeBufferPointer(start: &self.flow2HighTime, count: 1))
+        data.append(UnsafeBufferPointer(start: &self.flow2HighWarningThreshold, count: 1))
+        data.append(UnsafeBufferPointer(start: &self.flow2HighWarningTime, count: 1))
+        data.append(UnsafeBufferPointer(start: &self.flow2LowThreshold, count: 1))
+        data.append(UnsafeBufferPointer(start: &self.flow2LowTime, count: 1))
+        data.append(UnsafeBufferPointer(start: &self.flow2LowWarningThreshold, count: 1))
+        data.append(UnsafeBufferPointer(start: &self.flow2LowWarningTime, count: 1))
+        data.append(UnsafeBufferPointer(start: &self.flow1HighThreshold, count: 1))
+        data.append(UnsafeBufferPointer(start: &self.flow1HighTime, count: 1))
+        data.append(UnsafeBufferPointer(start: &self.flow1HighWarningThreshold, count: 1))
+        data.append(UnsafeBufferPointer(start: &self.flow1HighWarningTime, count: 1))
+        data.append(UnsafeBufferPointer(start: &self.flow1LowThreshold, count: 1))
+        data.append(UnsafeBufferPointer(start: &self.flow1LowTime, count: 1))
+        data.append(UnsafeBufferPointer(start: &self.flow1LowWarningThreshold, count: 1))
+        data.append(UnsafeBufferPointer(start: &self.flow1LowWarningTime, count: 1))
+        data.append(UnsafeBufferPointer(start: &self.temperatureLowThreshold, count: 1))
+        data.append(UnsafeBufferPointer(start: &self.temperatureLowTime, count: 1))
+        data.append(UnsafeBufferPointer(start: &self.auxPressureHighThreshold, count: 1))
+        data.append(UnsafeBufferPointer(start: &self.auxPressureHighTime, count: 1))
+        data.append(UnsafeBufferPointer(start: &self.auxPressureLowThreshold, count: 1))
+        data.append(UnsafeBufferPointer(start: &self.auxPressureLowTime, count: 1))
+        data.append(UnsafeBufferPointer(start: &self.auxPressureLowWarningThreshold, count: 1))
+        data.append(UnsafeBufferPointer(start: &self.auxPressureLowWarningTime, count: 1))
+        data.append(UnsafeBufferPointer(start: &self.pressurizationTime, count: 1))
+        data.append(UnsafeBufferPointer(start: &self.systemPressureHighThreshold, count: 1))
+        data.append(UnsafeBufferPointer(start: &self.systemPressureHighTime, count: 1))
+        data.append(UnsafeBufferPointer(start: &self.systemPressureLowThreshold, count: 1))
+        data.append(UnsafeBufferPointer(start: &self.systemPressureLowTime, count: 1))
+        data.append(UnsafeBufferPointer(start: &self.systemPressureLowWarningThreshold, count: 1))
+        data.append(UnsafeBufferPointer(start: &self.systemPressureLowWarningTime, count: 1))
+        data.append(UnsafeBufferPointer(start: &self.systemVoltageHighThreshold, count: 1))
+        data.append(UnsafeBufferPointer(start: &self.systemVoltageHighTime, count: 1))
+        data.append(UnsafeBufferPointer(start: &self.systemVoltageLowThreshold, count: 1))
+        data.append(UnsafeBufferPointer(start: &self.systemVoltageLowTime, count: 1))
+        data.append(UnsafeBufferPointer(start: &self.stallTime, count: 1))
         
-        offset = length
-        length = MemoryLayout<UInt16>.size + offset
-        crcOfRecordData = uint16Value(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
-        
-        offset = length
-        length = MemoryLayout<UInt16>.size + offset
-        rainfallThreshold = uint16Value(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
-        
-        offset = length
-        length = MemoryLayout<UInt32>.size + offset
-        rainfallTimer = uint32Value(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
-        
-        offset = length
-        length = MemoryLayout<Float>.size + offset
-        flow2HighThreshold = floatValue(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
-        
-        offset = length
-        length = MemoryLayout<UInt32>.size + offset
-        flow2HighTime = uint32Value(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
-        
-        offset = length
-        length = MemoryLayout<Float>.size + offset
-        flow2HighWarningThreshold = floatValue(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
-        
-        offset = length
-        length = MemoryLayout<UInt32>.size + offset
-        flow2HighWarningTime = uint32Value(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
-        
-        offset = length
-        length = MemoryLayout<Float>.size + offset
-        flow2LowThreshold = floatValue(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
-        
-        offset = length
-        length = MemoryLayout<UInt32>.size + offset
-        flow2LowTime = uint32Value(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
-        
-        offset = length
-        length = MemoryLayout<Float>.size + offset
-        flow2LowWarningThreshold = floatValue(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
-        
-        offset = length
-        length = MemoryLayout<UInt32>.size + offset
-        flow2LowWarningTime = uint32Value(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
-        
-        offset = length
-        length = MemoryLayout<Float>.size + offset
-        flow1HighThreshold = floatValue(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
-        
-        offset = length
-        length = MemoryLayout<UInt32>.size + offset
-        flow1HighTime = uint32Value(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
-        
-        offset = length
-        length = MemoryLayout<Float>.size + offset
-        flow1HighWarningThreshold = floatValue(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
-        
-        offset = length
-        length = MemoryLayout<UInt32>.size + offset
-        flow1HighWarningTime = uint32Value(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
-        
-        offset = length
-        length = MemoryLayout<Float>.size + offset
-        flow1LowThreshold = floatValue(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
-        
-        offset = length
-        length = MemoryLayout<UInt32>.size + offset
-        flow1LowTime = uint32Value(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
-        
-        offset = length
-        length = MemoryLayout<Float>.size + offset
-        flow1LowWarningThreshold = floatValue(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
-        
-        offset = length
-        length = MemoryLayout<UInt32>.size + offset
-        flow1LowWarningTime = uint32Value(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
-        
-        offset = length
-        length = MemoryLayout<Float>.size + offset
-        temperatureLowThreshold = floatValue(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
-        
-        offset = length
-        length = MemoryLayout<UInt32>.size + offset
-        temperatureLowTime = uint32Value(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
-        
-        offset = length
-        length = MemoryLayout<Float>.size + offset
-        auxPressureHighThreshold = floatValue(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
-        
-        offset = length
-        length = MemoryLayout<UInt32>.size + offset
-        auxPressureHighTime = uint32Value(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
-        
-        offset = length
-        length = MemoryLayout<Float>.size + offset
-        auxPressureLowThreshold = floatValue(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
-        
-        offset = length
-        length = MemoryLayout<UInt32>.size + offset
-        auxPressureLowTime = uint32Value(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
-        
-        offset = length
-        length = MemoryLayout<UInt32>.size + offset
-        auxPressureLowWarningThreshold = floatValue(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
-        
-        offset = length
-        length = MemoryLayout<UInt32>.size + offset
-        auxPressureLowWarningTime = uint32Value(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
-        
-        offset = length
-        length = MemoryLayout<UInt32>.size + offset
-        pressurizationTime = uint32Value(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
-        
-        offset = length
-        length = MemoryLayout<Float>.size + offset
-        systemPressureHighThreshold = floatValue(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
-        
-        offset = length
-        length = MemoryLayout<UInt32>.size + offset
-        systemPressureHighTime = uint32Value(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
-        
-        offset = length
-        length = MemoryLayout<Float>.size + offset
-        systemPressureLowThreshold = floatValue(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
-        
-        offset = length
-        length = MemoryLayout<UInt32>.size + offset
-        systemPressureLowTime = uint32Value(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
-        
-        offset = length
-        length = MemoryLayout<Float>.size + offset
-        systemPressureLowWarningThreshold = floatValue(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
-        
-        offset = length
-        length = MemoryLayout<UInt32>.size + offset
-        systemPressureLowWarningTime = uint32Value(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
-        
-        offset = length
-        length = MemoryLayout<UInt32>.size + offset
-        systemVoltageHighThreshold = uint32Value(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
-        
-        offset = length
-        length = MemoryLayout<UInt32>.size + offset
-        systemVoltageHighTime = uint32Value(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
-        
-        offset = length
-        length = MemoryLayout<UInt32>.size + offset
-        systemVoltageLowThreshold = uint32Value(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
-        
-        offset = length
-        length = MemoryLayout<UInt32>.size + offset
-        systemVoltageLowTime = uint32Value(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
-        
-        offset = length
-        length = MemoryLayout<UInt32>.size + offset
-        stallTime = uint32Value(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
-        
+        return data
     }
 }

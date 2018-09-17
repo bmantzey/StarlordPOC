@@ -19,20 +19,11 @@ struct StarlordBarrierRecord: StarlordBinaryStruct {
         mutating func generateData() -> Data {
             var data = Data()
             
-            let holdTimeData = Data(buffer: UnsafeBufferPointer(start: &self.holdTime, count: 1))
-            data.append(holdTimeData)
-            
-            let angleData = Data(buffer: UnsafeBufferPointer(start: &self.angle, count: 1))
-            data.append(angleData)
-            
-            let typeData = Data(buffer: UnsafeBufferPointer(start: &self.type, count: 1))
-            data.append(typeData)
-            
-            let actionData = Data(buffer: UnsafeBufferPointer(start: &self.action, count: 1))
-            data.append(actionData)
-            
-            let isEnabledData = Data(buffer: UnsafeBufferPointer(start: &self.isEnabled, count: 1))
-            data.append(isEnabledData)
+            data.append(UnsafeBufferPointer(start: &self.holdTime, count: 1))
+            data.append(UnsafeBufferPointer(start: &self.angle, count: 1))
+            data.append(UnsafeBufferPointer(start: &self.type, count: 1))
+            data.append(UnsafeBufferPointer(start: &self.action, count: 1))
+            data.append(UnsafeBufferPointer(start: &self.isEnabled, count: 1))
             
             return data
         }
@@ -47,15 +38,10 @@ struct StarlordBarrierRecord: StarlordBinaryStruct {
     mutating func generateData() -> Data {
         var data = Data()
         
-        let lengthOfRecordDataData = Data(buffer: UnsafeBufferPointer(start: &self.lengthOfRecordData, count: 1))
-        data.append(lengthOfRecordDataData)
-        
-        let crcOfRecordDataData = Data(buffer: UnsafeBufferPointer(start: &self.crcOfRecordData, count: 1))
-        data.append(crcOfRecordDataData)
-        
-        let barrierConfigurationsData = Data(buffer: UnsafeBufferPointer(start: &self.barrierConfigurations, count: 5))
-        data.append(barrierConfigurationsData)
-        
+        data.append(UnsafeBufferPointer(start: &self.lengthOfRecordData, count: 1))
+        data.append(UnsafeBufferPointer(start: &self.crcOfRecordData, count: 1))
+        data.append(UnsafeBufferPointer(start: &self.barrierConfigurations, count: 5))
+
         return data
     }
 }

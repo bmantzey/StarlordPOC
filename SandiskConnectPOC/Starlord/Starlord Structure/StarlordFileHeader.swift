@@ -19,14 +19,9 @@ struct StarlordFileHeader: StarlordBinaryStruct {
     mutating func generateData() -> Data {
         var data = Data()
 
-        let indexData = Data(buffer: UnsafeBufferPointer(start: &self.index, count: 1))
-        data.append(indexData)
-
-        let corvairProductIDData = Data(buffer: UnsafeBufferPointer(start: &self.corvairProductID, count: 1))
-        data.append(corvairProductIDData)
-        
-        let headerCRCData = Data(buffer: UnsafeBufferPointer(start: &self.headerCRC, count: 1))
-        data.append(headerCRCData)
+        data.append(UnsafeBufferPointer(start: &self.index, count: 1))
+        data.append(UnsafeBufferPointer(start: &self.corvairProductID, count: 1))
+        data.append(UnsafeBufferPointer(start: &self.headerCRC, count: 1))
 
         return data
     }

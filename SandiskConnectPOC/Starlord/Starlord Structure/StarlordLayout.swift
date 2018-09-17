@@ -32,63 +32,52 @@ struct ConfigLayout: StarlordBinaryStruct {
     /// Offset: 692, Length: 500
     let customInputRecord: StarlordCustomInputRecord
     
-    init(withData: Data) {
-        let unnecessaryDataCopy = withData.advanced(by: 0)
+    mutating func generateData() -> Data {
+        var data = Data()
         
         // fileHeader
-        var offset = 0
-        var length = MemoryLayout<StarlordFileHeader>.size + offset
-        fileHeader = StarlordFileHeader(withData: unnecessaryDataCopy[offset..<length])
+        let fileHeaderData = fileHeader.generateData()
+        data.append(UnsafeBufferPointer(start: &fileHeaderData, count: 1))
         
         // telemetryRecord
-        offset = length
-        length = MemoryLayout<StarlordTelemetryRecord>.size + offset
-        telemetryRecord = StarlordTelemetryRecord(withData: unnecessaryDataCopy[offset..<length])
-        
+        let telemetryRecordData = fileHeader.generateData()
+        data.append(UnsafeBufferPointer(start: &telemetryRecordData, count: 1))
+
         // productMiscRecord
-        offset = length
-        length = 50 + offset //MemoryLayout<StarlordProductMiscRecord>.size + offset
-        productMiscRecord = StarlordProductMiscRecord(withData: unnecessaryDataCopy[offset..<length])
+        let productMiscRecordData = fileHeader.generateData()
+        data.append(UnsafeBufferPointer(start: &productMiscRecordData, count: 1))
         
         // waterRecord
-        offset = length
-        length = 50 + offset //MemoryLayout<StarlordWaterRecord>.size + offset
-        waterRecord = StarlordWaterRecord(withData: unnecessaryDataCopy[offset..<length])
+        let waterRecordData = fileHeader.generateData()
+        data.append(UnsafeBufferPointer(start: &waterRecordData, count: 1))
         
         // barrierRecord
-        offset = length
-        length = 100 + offset //MemoryLayout<StarlordBarrierRecord>.size + offset
-        barrierRecord = StarlordBarrierRecord(withData: unnecessaryDataCopy[offset..<length])
+        let barrierRecordData = fileHeader.generateData()
+        data.append(UnsafeBufferPointer(start: &barrierRecordData, count: 1))
         
         // accessoryRecord
-        offset = length
-        length = 100 + offset //MemoryLayout<StarlordAccessoryRecord>.size + offset
-        accessoryRecord = StarlordAccessoryRecord(withData: unnecessaryDataCopy[offset..<length])
+        let accessoryRecordData = fileHeader.generateData()
+        data.append(UnsafeBufferPointer(start: &accessoryRecordData, count: 1))
         
         // faultRecord
-        offset = length
-        length = 300 + offset //MemoryLayout<StarlordFaultRecord>.size + offset
-        faultRecord = StarlordFaultRecord(withData: unnecessaryDataCopy[offset..<length])
+        let faultRecordData = fileHeader.generateData()
+        data.append(UnsafeBufferPointer(start: &faultRecordData, count: 1))
         
         // rainRecord
-        offset = length
-        length = 10 + offset //MemoryLayout<StarlordRainRecord>.size + offset
-        rainRecord = StarlordRainRecord(withData: unnecessaryDataCopy[offset..<length])
+        let rainRecordData = fileHeader.generateData()
+        data.append(UnsafeBufferPointer(start: &rainRecordData, count: 1))
         
         // temperatureRecord
-        offset = length
-        length = 16 + offset //MemoryLayout<StarlordTemperatureRecord>.size + offset
-        temperatureRecord = StarlordTemperatureRecord(withData: unnecessaryDataCopy[offset..<length])
+        let temperatureRecordData = fileHeader.generateData()
+        data.append(UnsafeBufferPointer(start: &temperatureRecordData, count: 1))
         
         // voltageRecord
-        offset = length
-        length = 16 + offset //MemoryLayout<StarlordVoltageRecord>.size + offset
-        voltageRecord = StarlordVoltageRecord(withData: unnecessaryDataCopy[offset..<length])
+        let voltageRecordData = fileHeader.generateData()
+        data.append(UnsafeBufferPointer(start: &voltageRecordData, count: 1))
         
         // customInputRecord
-        offset = length
-        length = 500 + offset //MemoryLayout<StarlordCustomInputRecord>.size + offset
-        customInputRecord = StarlordCustomInputRecord(withData: unnecessaryDataCopy[offset..<min(unnecessaryDataCopy.count, length)])
+        let customInputRecordData = fileHeader.generateData()
+        data.append(UnsafeBufferPointer(start: &customInputRecordData, count: 1))
     }
 }
 

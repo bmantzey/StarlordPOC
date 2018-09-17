@@ -17,26 +17,15 @@ struct StarlordVoltageRecord: StarlordBinaryStruct {
     let auxVoltageReadingFactor: Float
     let auxVoltageInput: UInt8
     
-    init(withData: Data) {
-        let unnecessaryDataCopy = withData.advanced(by: 0)
+    mutating func generateData() -> Data {
+        var data = Data()
+        
+        data.append(UnsafeBufferPointer(start: &self.lengthOfRecordData, count: 1))
+        data.append(UnsafeBufferPointer(start: &self.crcOfRecordData, count: 1))
+        data.append(UnsafeBufferPointer(start: &self.auxVoltageReadingOffset, count: 1))
+        data.append(UnsafeBufferPointer(start: &self.auxVoltageReadingFactor, count: 1))
+        data.append(UnsafeBufferPointer(start: &self.auxVoltageInput, count: 1))
 
-        var offset = 0
-        var length = MemoryLayout<UInt16>.size + offset
-        lengthOfRecordData = uint16Value(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
-        
-        offset = length
-        length = MemoryLayout<UInt16>.size + offset
-        crcOfRecordData = uint16Value(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
-        
-        offset = length
-        length = MemoryLayout<Float>.size + offset
-        auxVoltageReadingOffset = floatValue(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
-        
-        offset = length
-        length = MemoryLayout<Float>.size + offset
-        auxVoltageReadingFactor = floatValue(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)
-        
-        offset = length
-        length = MemoryLayout<UInt8>.size + offset
-        auxVoltageInput = uint8Value(data: unnecessaryDataCopy[offset..<length], isBigEndian: isBigEndian)    }
+        return data
+    }
 }

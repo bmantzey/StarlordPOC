@@ -36,53 +36,22 @@ struct StarlordWaterRecord: StarlordBinaryStruct {
     mutating func generateData() -> Data {
         var data = Data()
         
-        let lengthOfRecordDataData = Data(buffer: UnsafeBufferPointer(start: &self.lengthOfRecordData, count: 1))
-        data.append(lengthOfRecordDataData)
-        
-        let crcOfRecordDataData = Data(buffer: UnsafeBufferPointer(start: &self.crcOfRecordData, count: 1))
-        data.append(crcOfRecordDataData)
-        
-        let restartDelayTimeData = Data(buffer: UnsafeBufferPointer(start: &self.restartDelayTime, count: 1))
-        data.append(restartDelayTimeData)
-
-        let pressureTargetData = Data(buffer: UnsafeBufferPointer(start: &self.pressureTarget, count: 1))
-        data.append(pressureTargetData)
-
-        let pressureReadingOffsetData = Data(buffer: UnsafeBufferPointer(start: &self.pressureReadingOffset, count: 1))
-        data.append(pressureReadingOffsetData)
-
-        let pressureReadingFactorData = Data(buffer: UnsafeBufferPointer(start: &self.pressureReadingFactor, count: 1))
-        data.append(pressureReadingFactorData)
-
-        let auxPressureReadingOffsetData = Data(buffer: UnsafeBufferPointer(start: &self.auxPressureReadingOffset, count: 1))
-        data.append(auxPressureReadingOffsetData)
-
-        let auxPressureReadingFactorData = Data(buffer: UnsafeBufferPointer(start: &self.auxPressureReadingFactor, count: 1))
-        data.append(auxPressureReadingFactorData)
-
-        let flowAnalogReadingOffsetData = Data(buffer: UnsafeBufferPointer(start: &self.flowAnalogReadingOffset, count: 1))
-        data.append(flowAnalogReadingOffsetData)
-
-        let flowAnalogReadingFactorData = Data(buffer: UnsafeBufferPointer(start: &self.flowAnalogReadingFactor, count: 1))
-        data.append(flowAnalogReadingFactorData)
-
-        let flowDigitalReadingUnitsPerPulseData = Data(buffer: UnsafeBufferPointer(start: &self.flowDigitalReadingUnitsPerPulse, count: 1))
-        data.append(flowDigitalReadingUnitsPerPulseData)
-
-        let pressureReadingInputData = Data(buffer: UnsafeBufferPointer(start: &self.pressureReadingInput, count: 1))
-        data.append(pressureReadingInputData)
-
-        let auxPressureReadingInputData = Data(buffer: UnsafeBufferPointer(start: &self.auxPressureReadingInput, count: 1))
-        data.append(auxPressureReadingInputData)
-
-        let flowReadingInputData = Data(buffer: UnsafeBufferPointer(start: &self.flowReadingInput, count: 1))
-        data.append(flowReadingInputData)
-
-        let flowDigitalReadingTriggerTypeData = Data(buffer: UnsafeBufferPointer(start: &self.flowDigitalReadingTriggerType, count: 1))
-        data.append(flowDigitalReadingTriggerTypeData)
-
-        let isFlowReadingAnalogData = Data(buffer: UnsafeBufferPointer(start: &self.isFlowReadingAnalog, count: 1))
-        data.append(isFlowReadingAnalogData)
+        data.append(UnsafeBufferPointer(start: &self.lengthOfRecordData, count: 1))
+        data.append(UnsafeBufferPointer(start: &self.crcOfRecordData, count: 1))
+        data.append(UnsafeBufferPointer(start: &self.restartDelayTime, count: 1))
+        data.append(UnsafeBufferPointer(start: &self.pressureTarget, count: 1))
+        data.append(UnsafeBufferPointer(start: &self.pressureReadingOffset, count: 1))
+        data.append(UnsafeBufferPointer(start: &self.pressureReadingFactor, count: 1))
+        data.append(UnsafeBufferPointer(start: &self.auxPressureReadingOffset, count: 1))
+        data.append(UnsafeBufferPointer(start: &self.auxPressureReadingFactor, count: 1))
+        data.append(UnsafeBufferPointer(start: &self.flowAnalogReadingOffset, count: 1))
+        data.append(UnsafeBufferPointer(start: &self.flowAnalogReadingFactor, count: 1))
+        data.append(UnsafeBufferPointer(start: &self.flowDigitalReadingUnitsPerPulse, count: 1))
+        data.append(UnsafeBufferPointer(start: &self.pressureReadingInput, count: 1))
+        data.append(UnsafeBufferPointer(start: &self.auxPressureReadingInput, count: 1))
+        data.append(UnsafeBufferPointer(start: &self.flowReadingInput, count: 1))
+        data.append(UnsafeBufferPointer(start: &self.flowDigitalReadingTriggerType, count: 1))
+        data.append(UnsafeBufferPointer(start: &self.isFlowReadingAnalog, count: 1))
 
         return data
 

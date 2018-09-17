@@ -7,8 +7,7 @@
 //
 
 import UIKit
-import FilesProvider
-
+import FileProvider
 
 class ViewController: UIViewController {
     
@@ -19,15 +18,14 @@ class ViewController: UIViewController {
     var webdav: WebDAVFileProvider?
     
     @IBOutlet weak var testTextField: UITextField!
-
-    
     @IBOutlet weak var uploadProgressView: UIProgressView!
     @IBOutlet weak var downloadProgressView: UIProgressView!
     
     override func viewDidLoad() {
         
         let fileMakerTest = StarlordFileMaker()
-        fileMakerTest.tempRead()
+//        fileMakerTest.tempRead()
+        fileMakerTest.tempWrite()
         
         super.viewDidLoad()
         

@@ -10,16 +10,27 @@ import Foundation
 
 struct StarlordRainRecord: StarlordBinaryStruct {
     /// Value: 1
-    let lengthOfRecord: UInt16
-    let crcOfRecordData: UInt16
-    let rainInput: UInt8
+    var lengthOfRecord: UInt16
+    var crcOfRecordData: UInt16
+    /// Value: 11
+    var rainInput: UInt8
+    
+    //// Filler
+    let fillerData: UInt32 = 0
+    let fillerData2: UInt8 = 0
+    ////
     
     mutating func generateData() -> Data {
         var data = Data()
 
-        data.append(UnsafeBufferPointer(start: &self.lengthOfRecordData, count: 1))
+        data.append(UnsafeBufferPointer(start: &self.lengthOfRecord, count: 1))
         data.append(UnsafeBufferPointer(start: &self.crcOfRecordData, count: 1))
         data.append(UnsafeBufferPointer(start: &self.rainInput, count: 1))
+        
+        let pointer = UnsafeMutableBufferPointer<UInt8>.allocate(capacity: 5)
+        
+        let bufferData = Data(buffer: pointer)
+        data.append(bufferData)
         
         return data
     }

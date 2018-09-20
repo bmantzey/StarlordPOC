@@ -10,84 +10,148 @@ import Foundation
 
 struct StarlordFaultRecord: StarlordBinaryStruct {
     /// Value: 150
-    let lengthOfRecordData: UInt16
-    let crcOfRecordData: UInt16
+    var lengthOfRecordData: UInt16
+    var crcOfRecordData: UInt16
     /// (points)
-    let rainfallThreshold: UInt16
+    /// Value: 200
+    var rainfallThreshold: UInt16
     /// (ms)
-    let rainfallTimer: UInt32
+    /// Value: 60000
+    var rainfallTimer: UInt32
     /// (ccs)
-    let flow2HighThreshold: Float
+    /// Value: 94635.29
+    var flow2HighThreshold: Float
     /// (ms)
-    let flow2HighTime: UInt32
+    /// Value: 60000
+    var flow2HighTime: UInt32
     /// (ccs)
-    let flow2HighWarningThreshold: Float
+    /// Value: 63090.2
+    var flow2HighWarningThreshold: Float
     /// (ms)
-    let flow2HighWarningTime: UInt32
+    /// Value: 60000
+    var flow2HighWarningTime: UInt32
     /// (ccs)
-    let flow2LowThreshold: Float
+    /// Value: 6309.02
+    var flow2LowThreshold: Float
     /// (ms)
-    let flow2LowTime: UInt32
+    /// Value: 60000
+    var flow2LowTime: UInt32
     /// (ccs)
-    let flow2LowWarningThreshold: Float
+    /// Value: 12618.03933
+    var flow2LowWarningThreshold: Float
     /// (ms)
-    let flow2LowWarningTime: UInt32
+    /// Value: 60000
+    var flow2LowWarningTime: UInt32
     /// (ccs)
-    let flow1HighThreshold: Float
+    /// Value: 94635.295
+    var flow1HighThreshold: Float
     /// (ms)
-    let flow1HighTime: UInt32
+    /// Value: 60000
+    var flow1HighTime: UInt32
     /// (ccs)
-    let flow1HighWarningThreshold: Float
+    /// Value: 63090.19667
+    var flow1HighWarningThreshold: Float
     /// (ms)
-    let flow1HighWarningTime: UInt32
+    /// Value: 60000
+    var flow1HighWarningTime: UInt32
     /// (ccs)
-    let flow1LowThreshold: Float
+    /// Value: 6309.019667
+    var flow1LowThreshold: Float
     /// (ms)
-    let flow1LowTime: UInt32
+    /// Value: 60000
+    var flow1LowTime: UInt32
     /// (ccs)
-    let flow1LowWarningThreshold: Float
+    /// Value: 12618.03933
+    var flow1LowWarningThreshold: Float
     /// (ms)
-    let flow1LowWarningTime: UInt32
+    /// Value: 60000
+    var flow1LowWarningTime: UInt32
     /// (C )
-    let temperatureLowThreshold: Float
+    /// Value: 0
+    var temperatureLowThreshold: Float
     /// (ms)
-    let temperatureLowTime: UInt32
+    /// Value: 60000
+    var temperatureLowTime: UInt32
     /// (pa)
-    let auxPressureHighThreshold: Float
+    /// Value: 1034214
+    var auxPressureHighThreshold: Float
     /// (ms)
-    let auxPressureHighTime: UInt32
+    /// Value: 60000
+    var auxPressureHighTime: UInt32
     /// (pa)
-    let auxPressureLowThreshold: Float
+    /// Value: 68947.6
+    var auxPressureLowThreshold: Float
     /// (ms)
-    let auxPressureLowTime: UInt32
+    /// Value: 60000
+    var auxPressureLowTime: UInt32
     /// (pa)
-    let auxPressureLowWarningThreshold: Float
+    /// Value: 103421.4
+    var auxPressureLowWarningThreshold: Float
     /// (ms)
-    let auxPressureLowWarningTime: UInt32
+    /// Value: 60000
+    var auxPressureLowWarningTime: UInt32
     /// (ms)
-    let pressurizationTime: UInt32
+    /// Value: 60000
+    var pressurizationTime: UInt32
     /// (pa)
-    let systemPressureHighThreshold: Float
+    /// Value: 1034214
+    var systemPressureHighThreshold: Float
     /// (ms)
-    let systemPressureHighTime: UInt32
+    /// Value: 60000
+    var systemPressureHighTime: UInt32
     /// (pa)
-    let systemPressureLowThreshold: Float
+    /// Value: 68947.6
+    var systemPressureLowThreshold: Float
     /// (ms)
-    let systemPressureLowTime: UInt32
+    /// Value: 60000
+    var systemPressureLowTime: UInt32
     /// (pa)
-    let systemPressureLowWarningThreshold: Float
+    /// Value: 103421.4
+    var systemPressureLowWarningThreshold: Float
     /// (ms)
-    let systemPressureLowWarningTime: UInt32
+    /// Value: 60000
+    var systemPressureLowWarningTime: UInt32
     /// (V)
-    let systemVoltageHighThreshold: UInt32
+    /// Value: 140
+    var systemVoltageHighThreshold: UInt32
     /// (ms)
-    let systemVoltageHighTime: UInt32
+    /// Value: 60000
+    var systemVoltageHighTime: UInt32
     /// (V)
-    let systemVoltageLowThreshold: UInt32
+    /// Value: 90
+    var systemVoltageLowThreshold: UInt32
     /// (ms)
-    let systemVoltageLowTime: UInt32
+    /// Value: 60000
+    var systemVoltageLowTime: UInt32
     /// (ms)
-    let stallTime: UInt32
+    /// Value: 60000
+    var stallTime: UInt32
+    
+    //// Filler
+    
+    let fillerData: UInt64 = 0 // 162
+    let fillerData1: UInt64 = 0 // 170
+    let fillerData2: UInt64 = 0 // 178
+    let fillerData3: UInt64 = 0 // 186
+    let fillerData4: UInt64 = 0 // 194
+    let fillerData5: UInt64 = 0 // 202
+    let fillerData6: UInt64 = 0 // 210
+    let fillerData7: UInt64 = 0 // 218
+    let fillerData8: UInt64 = 0 // 226
+    let fillerData9: UInt64 = 0 // 234
+    let fillerData10: UInt64 = 0 // 242
+    let fillerData11: UInt64 = 0 // 250
+    let fillerData12: UInt64 = 0 // 258
+    let fillerData13: UInt64 = 0 // 266
+    let fillerData14: UInt64 = 0 // 274
+    let fillerData15: UInt64 = 0 // 282
+    let fillerData16: UInt64 = 0 // 290
+    let fillerData17: UInt64 = 0 // 298
+    let fillerData18: UInt16 = 0 // 300
+
+
+    
+    /////
     
     mutating func generateData() -> Data {
         var data = Data()
@@ -132,6 +196,13 @@ struct StarlordFaultRecord: StarlordBinaryStruct {
         data.append(UnsafeBufferPointer(start: &self.systemVoltageLowThreshold, count: 1))
         data.append(UnsafeBufferPointer(start: &self.systemVoltageLowTime, count: 1))
         data.append(UnsafeBufferPointer(start: &self.stallTime, count: 1))
+        
+        /// 154 bytes here
+        let pointer = UnsafeMutableBufferPointer<UInt8>.allocate(capacity: 146)
+        
+        let bufferData = Data(buffer: pointer)
+        data.append(bufferData)
+
         
         return data
     }

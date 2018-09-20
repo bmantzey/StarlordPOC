@@ -20,7 +20,7 @@ class StarlordFileMaker {
             do {
                 data = try Data.init(contentsOf: url)
                 
-                let layout = ConfigLayout(withData: data)
+//                let layout = ConfigLayout(withData: data)
 
                 
                 
@@ -38,17 +38,25 @@ class StarlordFileMaker {
         let fileHeader = StarlordFileHeader(index: 1,
                                             corvairProductID: 2,
                                             headerCRC: 3)
-        let telemetryRecord = StarlordTelemetryRecord(fillerData: 4,
-                                                      fillerData2: 5,
-                                                      fillerData3: 6,
-                                                      fillerData4: 7,
-                                                      fillerData5: 8,
-                                                      fillerData6: 9)
+        let telemetryRecord = StarlordTelemetryRecord(fillerData: 0,
+                                                      fillerData2: 0,
+                                                      fillerData3: 0,
+                                                      fillerData4: 0,
+                                                      fillerData5: 0,
+                                                      fillerData6: 0)
         let productMiscRecord = StarlordProductMiscRecord(lengthOfRecordData: 10,
                                                           crcOfRecordData: 11,
                                                           resetCause: 12,
                                                           disableFaults: false,
-                                                          transformerRatio: 1.3)
+                                                          transformerRatio: 1.3,
+                                                          periodOfSpeedCycling: 4,
+                                                          autoRestartEnabled: true,
+                                                          fillerData: 0,
+                                                          fillerData2: 0,
+                                                          fillerData3: 0,
+                                                          fillerData4: 0,
+                                                          fillerData5: 0,
+                                                          fillerData6: 0)
         let waterRecord = StarlordWaterRecord(lengthOfRecordData: 14,
                                               crcOfRecordData: 15,
                                               restartDelayTime: 16,
@@ -64,32 +72,50 @@ class StarlordFileMaker {
                                               auxPressureReadingInput: 26,
                                               flowReadingInput: 27,
                                               flowDigitalReadingTriggerType: 28,
-                                              isFlowReadingAnalog: true)
+                                              isFlowReadingAnalog: true,
+                                              fillerData: 0,
+                                              fillerData2: 0)
         var barrierConfigurations = ContiguousArray<StarlordBarrierRecord.Barrier>()
-        for i in 0..<5 {
-            let valueBase = 88
-            let barrier = StarlordBarrierRecord.Barrier(holdTime: valueBase + i + 1,
+        for i: Int in 0..<5 {
+            let valueBase: Int = 88
+            let barrier = StarlordBarrierRecord.Barrier(holdTime: 1 + 2 + 3, //(valueBase + i + 1),
                                                         angle: (Float(valueBase) + Float(i) + 2.0) / 10.0,
-                                                        type: valueBase + i + 3,
-                                                        action: valueBase + i + 4,
+                                                        type: UInt8(valueBase + i + 3),
+                                                        action: UInt8(valueBase + i + 4),
                                                         isEnabled: true)
             barrierConfigurations.append(barrier)
         }
         let barrierRecord = StarlordBarrierRecord(lengthOfRecordData: 29,
                                                   crcOfRecordData: 30,
-                                                  barrierConfigurations: barrierConfigurations)
+                                                  barrierConfigurations: barrierConfigurations,
+                                                  fillerData: 0,
+                                                  fillerData2: 0,
+                                                  fillerData3: 0,
+                                                  fillerData4: 0,
+                                                  fillerData5: 0,
+                                                  fillerData6: 0)
+
         var accessoryConfigurations = ContiguousArray<StarlordAccessoryRecord.AccessoryConfiguration>()
         for i in 0..<5 {
             let valueBase = 93
-            let accessory = StarlordAccessoryRecord.AccessoryConfiguration(type: valueBase + i + 1,
-                                                                           startupTime: valueBase + i + 2,
-                                                                           shutoffTime: valueBase + i + 3)
+            let accessory = StarlordAccessoryRecord.AccessoryConfiguration(type: UInt8(valueBase + i + 1),
+                                                                           startupTime: UInt32(valueBase + i + 2),
+                                                                           shutoffTime: UInt32(valueBase + i + 3))
             
             accessoryConfigurations.append(accessory)
         }
         let accessoryRecord = StarlordAccessoryRecord(lengthOfRecordData: 31,
                                                       crcOfRecordData: 32,
-                                                      accessoryConfigurations: accessoryConfigurations)
+                                                      accessoryConfigurations: accessoryConfigurations,
+                                                      fillerData: 0,
+                                                      fillerData2: 0,
+                                                      fillerData3: 0,
+                                                      fillerData4: 0,
+                                                      fillerData5: 0,
+                                                      fillerData6: 0,
+                                                      fillerData7: 0,
+                                                      fillerData8: 0)
+
         let faultRecord = StarlordFaultRecord(lengthOfRecordData: 33,
                                               crcOfRecordData: 34,
                                               rainfallThreshold: 35,
@@ -146,24 +172,33 @@ class StarlordFileMaker {
         var customAnalogInputs = ContiguousArray<StarlordCustomInputRecord.CustomInputAnalog>()
         for i in 0..<5 {
             let valueBase = 98
-            let testString = "Test String"
-            let testStringData = testString.data(using: .utf8)!
-            
-            // LEFTOFF: Figure out how to convert a Swift string to something that is convertible to binary data to pass into the structs.
-            let label: UnsafePointer<CChar> = testStringData.withUnsafeBytes(<#T##body: (UnsafePointer<ContentType>) throws -> ResultType##(UnsafePointer<ContentType>) throws -> ResultType#>)
-            let anAnalogInput = StarlordCustomInputRecord.CustomInputAnalog(inputReadingOffset: valueBase + i + 1,
+            let testString = "Test String Some More"
+            let anAnalogInput = StarlordCustomInputRecord.CustomInputAnalog(inputReadingOffset: UInt32(valueBase + i + 10),
                                                                             inputReadingFactor: (Float(valueBase) + Float(i) + 2.0) / 10.0,
-                                                                            input: valueBase + i + 3,
-                                                                            label: <#T##UnsafePointer<CChar>#>)
+                                                                            input: UInt8(valueBase + i + 3),
+                                                                            label: testString.utf8CString)
+            customAnalogInputs.append(anAnalogInput)
         }
         var customDigitalInputs = ContiguousArray<StarlordCustomInputRecord.CustomInputDigital>()
+        for i in 0..<5 {
+            let valueBase = 103
+            let testString = "Test String Some More"
+            let aDigitalInput = StarlordCustomInputRecord.CustomInputDigital(unitsPerPulse: (Float(valueBase) + Float(i) + 1.0) / 10.0,
+                                                                             isAccumulator: false,
+                                                                             input: UInt8(valueBase + i + 2),
+                                                                             activeState: true,
+                                                                             readingTriggerType: UInt8(valueBase + i + 3),
+                                                                             label: testString.utf8CString)
+            customDigitalInputs.append(aDigitalInput)
+
+        }
         let customInputRecord = StarlordCustomInputRecord(lengthOfRecordData: 86,
                                                           crcOfRecordData: 87,
-                                                          customAnalogInputs: <#T##ContiguousArray<StarlordCustomInputRecord.CustomInputAnalog>#>,
-                                                          customDigitalInputs: <#T##ContiguousArray<StarlordCustomInputRecord.CustomInputDigital>#>)
+                                                          customAnalogInputs: customAnalogInputs,
+                                                          customDigitalInputs: customDigitalInputs)
         
         
-        let cLayout = ConfigLayout(fileHeader: fileHeader,
+        var cLayout = ConfigLayout(fileHeader: fileHeader,
                                    telemetryRecord: telemetryRecord,
                                    productMiscRecord: productMiscRecord,
                                    waterRecord: waterRecord,

@@ -10,87 +10,89 @@ import Foundation
 
 struct ConfigLayout: StarlordBinaryStruct {
     /// Offset: 0, Length: 8
-    let fileHeader: StarlordFileHeader
+    var fileHeader: StarlordFileHeader
     /// Offset: 8, Length: 42
-    let telemetryRecord: StarlordTelemetryRecord
+    var telemetryRecord: StarlordTelemetryRecord
     /// Offset: 50, Length: 52
-    let productMiscRecord: StarlordProductMiscRecord
+    var productMiscRecord: StarlordProductMiscRecord
     /// Offset: 100, Length: 50
-    let waterRecord: StarlordWaterRecord
+    var waterRecord: StarlordWaterRecord
     /// Offset: 150, Length: 100
-    let barrierRecord: StarlordBarrierRecord
+    var barrierRecord: StarlordBarrierRecord
     /// Offset: 250, Length: 100
-    let accessoryRecord: StarlordAccessoryRecord
+    var accessoryRecord: StarlordAccessoryRecord
     /// Offset: 350, Length: 300
-    let faultRecord: StarlordFaultRecord
+    var faultRecord: StarlordFaultRecord
     /// Offset: 650, Length: 10
-    let rainRecord: StarlordRainRecord
+    var rainRecord: StarlordRainRecord
     /// Offset: 660, Length: 16
-    let temperatureRecord: StarlordTemperatureRecord
+    var temperatureRecord: StarlordTemperatureRecord
     /// Offset: 676, Length: 16
-    let voltageRecord: StarlordVoltageRecord
+    var voltageRecord: StarlordVoltageRecord
     /// Offset: 692, Length: 500
-    let customInputRecord: StarlordCustomInputRecord
+    var customInputRecord: StarlordCustomInputRecord
     
     mutating func generateData() -> Data {
         var data = Data()
         
         // fileHeader
         let fileHeaderData = fileHeader.generateData()
-        data.append(UnsafeBufferPointer(start: &fileHeaderData, count: 1))
-        
+        data.append(fileHeaderData)
+
         // telemetryRecord
-        let telemetryRecordData = fileHeader.generateData()
-        data.append(UnsafeBufferPointer(start: &telemetryRecordData, count: 1))
+        let telemetryRecordData = telemetryRecord.generateData()
+        data.append(telemetryRecordData)
 
         // productMiscRecord
-        let productMiscRecordData = fileHeader.generateData()
-        data.append(UnsafeBufferPointer(start: &productMiscRecordData, count: 1))
+        let productMiscRecordData = productMiscRecord.generateData()
+        data.append(productMiscRecordData)
         
         // waterRecord
-        let waterRecordData = fileHeader.generateData()
-        data.append(UnsafeBufferPointer(start: &waterRecordData, count: 1))
+        let waterRecordData = waterRecord.generateData()
+        data.append(waterRecordData)
         
         // barrierRecord
-        let barrierRecordData = fileHeader.generateData()
-        data.append(UnsafeBufferPointer(start: &barrierRecordData, count: 1))
+        let barrierRecordData = barrierRecord.generateData()
+        data.append(barrierRecordData)
         
         // accessoryRecord
-        let accessoryRecordData = fileHeader.generateData()
-        data.append(UnsafeBufferPointer(start: &accessoryRecordData, count: 1))
+        let accessoryRecordData = accessoryRecord.generateData()
+        data.append(accessoryRecordData)
         
         // faultRecord
-        let faultRecordData = fileHeader.generateData()
-        data.append(UnsafeBufferPointer(start: &faultRecordData, count: 1))
+        let faultRecordData = faultRecord.generateData()
+        data.append(faultRecordData)
         
         // rainRecord
-        let rainRecordData = fileHeader.generateData()
-        data.append(UnsafeBufferPointer(start: &rainRecordData, count: 1))
+        let rainRecordData = rainRecord.generateData()
+        data.append(rainRecordData)
         
         // temperatureRecord
-        let temperatureRecordData = fileHeader.generateData()
-        data.append(UnsafeBufferPointer(start: &temperatureRecordData, count: 1))
+        let temperatureRecordData = temperatureRecord.generateData()
+        data.append(temperatureRecordData)
         
         // voltageRecord
-        let voltageRecordData = fileHeader.generateData()
-        data.append(UnsafeBufferPointer(start: &voltageRecordData, count: 1))
+        let voltageRecordData = voltageRecord.generateData()
+        data.append(voltageRecordData)
         
         // customInputRecord
-        let customInputRecordData = fileHeader.generateData()
-        data.append(UnsafeBufferPointer(start: &customInputRecordData, count: 1))
+        let customInputRecordData = customInputRecord.generateData()
+        data.append(customInputRecordData)
+        
+        return data
     }
 }
 
 
 struct DataLayout {
     /// Offset: 0, Length: 8
-    let fileHeader: UInt8
+    var fileHeader: UInt8
     /// Offset: 8, Length: 400
-//    let rainData: StarlordRainData
+//    var rainData: StarlordRainData
     /// Offset: 408, Length: 50
-//    let manualModeData: StarlordManualModeData
+//    var manualModeData: StarlordManualModeData
     /// Offset: 458, Length: 10
-//    let debugData: StarlordDebugData
+//    var debugData: StarlordDebugData
     /// Offset: 468, Length: 120
-//    let hourMeterData: StarlordHourMeterData
+//    var hourMeterData: StarlordHourMeterData
 }

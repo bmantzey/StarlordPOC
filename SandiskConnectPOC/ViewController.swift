@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import FileProvider
+import FilesProvider
 
 class ViewController: UIViewController {
     

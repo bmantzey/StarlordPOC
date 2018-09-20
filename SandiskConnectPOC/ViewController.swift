@@ -17,15 +17,17 @@ class ViewController: UIViewController {
     
     var webdav: WebDAVFileProvider?
     
-    @IBOutlet weak var testTextField: UITextField!
-    @IBOutlet weak var uploadProgressView: UIProgressView!
-    @IBOutlet weak var downloadProgressView: UIProgressView!
+//    @IBOutlet weak var testTextField: UITextField!
+//    @IBOutlet weak var uploadProgressView: UIProgressView!
+//    @IBOutlet weak var downloadProgressView: UIProgressView!
+    
+    var writeData: Data?
     
     override func viewDidLoad() {
         
         let fileMakerTest = StarlordFileMaker()
 //        fileMakerTest.tempRead()
-        fileMakerTest.tempWrite()
+        writeData = fileMakerTest.tempWrite()
         
         super.viewDidLoad()
         
@@ -66,36 +68,36 @@ class ViewController: UIViewController {
         let localURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.appendingPathComponent("fileprovider.png")
         let remotePath = "fileprovider.png"
         
-        let progress = webdav?.copyItem(path: remotePath, toLocalURL: localURL, completionHandler: nil)
-        downloadProgressView.observedProgress = progress
+//        let progress = webdav?.copyItem(path: remotePath, toLocalURL: localURL, completionHandler: nil)
+//        downloadProgressView.observedProgress = progress
     }
     
     func showAlert(text: String, error: Bool) {
         let alert = UIAlertController(title: error ? "Error" : "Message", message: text, preferredStyle: .alert)
         let ok = UIAlertAction(title: "OK", style: .default, handler: { _ in
-            self.uploadProgressView.progress = 0
+//            self.uploadProgressView.progress = 0
         })
         alert.addAction(ok)
         self.show(alert, sender: nil)
     }
     
     @IBAction func upload(_ sender: Any) {
-        let fileName = "testText.txt"
+        let fileName = "DATA.DAT"
         let remotePath = "/Files/" + fileName
-        let text = testTextField.text ?? ""
+//        let text = testTextField.text ?? ""
 
         func writeTestFile() {
-            let data = text.data(using: .utf8)
+//            let data = text.data(using: .utf8)
             
-            uploadProgressView.observedProgress = webdav?.writeContents(path: remotePath, contents: data, atomically: true, overwrite: true, completionHandler: { error in
+            _ = webdav?.writeContents(path: remotePath, contents: self.writeData, atomically: true, overwrite: true, completionHandler: { error in
                 if let error = error {
                     self.showAlert(text: error.localizedDescription, error: true)
                 } else {
-                    self.uploadProgressView.observedProgress = self.webdav?.writeContents(path: remotePath, contents: data, atomically: true, overwrite: true, completionHandler: { error in
+                    _ = self.webdav?.writeContents(path: remotePath, contents: self.writeData, atomically: true, overwrite: true, completionHandler: { error in
                         if let error = error {
                             self.showAlert(text: error.localizedDescription, error: true)
                         } else {
-                            self.showAlert(text: "Successfully wrote contents: \"" + text + "\"", error: false)
+                            self.showAlert(text: "Successfully wrote Starlord binary file contents.", error: false)//: \"" + text + "\"", error: false)
                         }
                     })
                 }
@@ -193,7 +195,7 @@ extension ViewController: FileProviderDelegate {
 //            print("fileObjects: \(fileObjects)")
 //        })
         
-        testTextField.resignFirstResponder()
+//        testTextField.resignFirstResponder()
     }
 }
 

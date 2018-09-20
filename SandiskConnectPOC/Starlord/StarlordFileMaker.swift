@@ -34,7 +34,7 @@ class StarlordFileMaker {
         }
     }
     
-    func tempWrite() {
+    func tempWrite() -> Data {
         let fileHeader = StarlordFileHeader(index: 1,
                                             corvairProductID: 2,
                                             headerCRC: 3)
@@ -172,6 +172,7 @@ class StarlordFileMaker {
         var customAnalogInputs = ContiguousArray<StarlordCustomInputRecord.CustomInputAnalog>()
         for i in 0..<5 {
             let valueBase = 98
+            // NOTE: This may need null termination (0)
             let testString = "Test String Some More"
             let anAnalogInput = StarlordCustomInputRecord.CustomInputAnalog(inputReadingOffset: UInt32(valueBase + i + 10),
                                                                             inputReadingFactor: (Float(valueBase) + Float(i) + 2.0) / 10.0,
@@ -211,6 +212,18 @@ class StarlordFileMaker {
                                    customInputRecord: customInputRecord)
         
         let data = cLayout.generateData()
+        
+        if let filePath = Bundle.main.path(forResource: "CONFIG", ofType: "DAT") {
+            let url = URL(fileURLWithPath: filePath)
+            do {
+                try data.write(to: url)
+                print("CONFIG.DAT written at \(filePath)")
+            } catch {
+                print("FAIL")
+            }
+        }
+        
+        return data
         
 //        let outputStream = OutputStream(toBuffer: <#T##UnsafeMutablePointer<UInt8>#>, capacity: <#T##Int#>
         /*

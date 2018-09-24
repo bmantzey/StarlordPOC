@@ -17,6 +17,9 @@ struct StarlordFileHeader: StarlordBinaryStruct {
     var headerCRC: UInt16
     
     mutating func generateData() -> Data {
+        var crc: ushort = 0
+        self.headerCRC = crc16(bytes: &crc, offset: 0, length: 8)
+        
         var data = Data()
 
         data.append(UnsafeBufferPointer(start: &self.index, count: 1))

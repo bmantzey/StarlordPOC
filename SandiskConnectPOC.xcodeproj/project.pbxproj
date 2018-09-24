@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		44A7A9AAA2275B9D5B8AEF01 /* Pods_SandiskConnectPOC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B497F8CD6FF9B80E33B8D8D9 /* Pods_SandiskConnectPOC.framework */; };
+		C4AEA00921595BD300C25609 /* StarlordCRC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4AEA00821595BD300C25609 /* StarlordCRC.swift */; };
 		C4E3312B2137351E0076FE72 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4E3312A2137351E0076FE72 /* AppDelegate.swift */; };
 		C4E3312D2137351F0076FE72 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4E3312C2137351F0076FE72 /* ViewController.swift */; };
 		C4E331302137351F0076FE72 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C4E3312E2137351F0076FE72 /* Main.storyboard */; };
@@ -36,6 +37,7 @@
 		314EE7B2809FE5C419419F86 /* Pods-SandiskConnectPOC.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SandiskConnectPOC.release.xcconfig"; path = "Pods/Target Support Files/Pods-SandiskConnectPOC/Pods-SandiskConnectPOC.release.xcconfig"; sourceTree = "<group>"; };
 		677E186D3414121B14FF7CB5 /* Pods-SandiskConnectPOC.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SandiskConnectPOC.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SandiskConnectPOC/Pods-SandiskConnectPOC.debug.xcconfig"; sourceTree = "<group>"; };
 		B497F8CD6FF9B80E33B8D8D9 /* Pods_SandiskConnectPOC.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SandiskConnectPOC.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C4AEA00821595BD300C25609 /* StarlordCRC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StarlordCRC.swift; sourceTree = "<group>"; };
 		C4E331272137351E0076FE72 /* SandiskConnectPOC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SandiskConnectPOC.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C4E3312A2137351E0076FE72 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C4E3312C2137351F0076FE72 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -122,6 +124,7 @@
 				C4F5A16B213EE6C2003B6DFC /* StarlordFileWriter.swift */,
 				C4F5A16E213F26C1003B6DFC /* StarlordFileMaker.swift */,
 				C4F5A176213F2775003B6DFC /* Starlord Structure */,
+				C4AEA00821595BD300C25609 /* StarlordCRC.swift */,
 			);
 			path = Starlord;
 			sourceTree = "<group>";
@@ -285,6 +288,7 @@
 				C4F5A17C213F2909003B6DFC /* StarlordWaterRecord.swift in Sources */,
 				C4F5A188213F2F87003B6DFC /* StarlordVoltageRecord.swift in Sources */,
 				C4F5A178213F280A003B6DFC /* StarlordTelemetryRecord.swift in Sources */,
+				C4AEA00921595BD300C25609 /* StarlordCRC.swift in Sources */,
 				C4F5A18A213F2FD6003B6DFC /* StarlordCustomInputRecord.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -26,12 +26,12 @@ struct StarlordProductMiscRecord: StarlordBinaryStruct {
     
     //// Filler
     // Spreadsheet expects 50 bytes, but thsi is only 12 bytes.  Filling in 38 until otherwise instructed.
-    let fillerData: UInt64 // 20
-    let fillerData2: UInt64 // 28
-    let fillerData3: UInt64 // 36
-    let fillerData4: UInt64 // 44
-    let fillerData5: UInt32 // 48
-    let fillerData6: UInt8 // 50
+    let fillerData: UInt64 = 0 // 20
+    let fillerData2: UInt64 = 0 // 28
+    let fillerData3: UInt64 = 0 // 36
+    let fillerData4: UInt64 = 0 // 44
+    let fillerData5: UInt32 = 0 // 48
+    let fillerData6: UInt8 = 0 // 50
     //////
 
     mutating func generateData() -> Data {

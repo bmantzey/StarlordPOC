@@ -48,8 +48,8 @@ struct StarlordWaterRecord: StarlordBinaryStruct {
     var isFlowReadingAnalog: Bool
     
     //// Filler
-    let fillerData: UInt32
-    let fillerData2: UInt8
+    let fillerData: UInt32 = 0
+    let fillerData2: UInt8 = 0
     /////
 
     mutating func generateData() -> Data {

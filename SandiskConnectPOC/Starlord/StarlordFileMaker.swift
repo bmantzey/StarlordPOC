@@ -38,25 +38,14 @@ class StarlordFileMaker {
         let fileHeader = StarlordFileHeader(index: 1,
                                             corvairProductID: 2,
                                             headerCRC: 3)
-        let telemetryRecord = StarlordTelemetryRecord(fillerData: 0,
-                                                      fillerData2: 0,
-                                                      fillerData3: 0,
-                                                      fillerData4: 0,
-                                                      fillerData5: 0,
-                                                      fillerData6: 0)
+        let telemetryRecord = StarlordTelemetryRecord()
         let productMiscRecord = StarlordProductMiscRecord(lengthOfRecordData: 10,
                                                           crcOfRecordData: 11,
                                                           resetCause: 12,
                                                           disableFaults: false,
                                                           transformerRatio: 1.3,
                                                           periodOfSpeedCycling: 4,
-                                                          autoRestartEnabled: true,
-                                                          fillerData: 0,
-                                                          fillerData2: 0,
-                                                          fillerData3: 0,
-                                                          fillerData4: 0,
-                                                          fillerData5: 0,
-                                                          fillerData6: 0)
+                                                          autoRestartEnabled: true)
         let waterRecord = StarlordWaterRecord(lengthOfRecordData: 14,
                                               crcOfRecordData: 15,
                                               restartDelayTime: 16,
@@ -72,9 +61,7 @@ class StarlordFileMaker {
                                               auxPressureReadingInput: 26,
                                               flowReadingInput: 27,
                                               flowDigitalReadingTriggerType: 28,
-                                              isFlowReadingAnalog: true,
-                                              fillerData: 0,
-                                              fillerData2: 0)
+                                              isFlowReadingAnalog: true)
         var barrierConfigurations = ContiguousArray<StarlordBarrierRecord.Barrier>()
         for i: Int in 0..<5 {
             let valueBase: Int = 88
@@ -87,13 +74,7 @@ class StarlordFileMaker {
         }
         let barrierRecord = StarlordBarrierRecord(lengthOfRecordData: 29,
                                                   crcOfRecordData: 30,
-                                                  barrierConfigurations: barrierConfigurations,
-                                                  fillerData: 0,
-                                                  fillerData2: 0,
-                                                  fillerData3: 0,
-                                                  fillerData4: 0,
-                                                  fillerData5: 0,
-                                                  fillerData6: 0)
+                                                  barrierConfigurations: barrierConfigurations)
 
         var accessoryConfigurations = ContiguousArray<StarlordAccessoryRecord.AccessoryConfiguration>()
         for i in 0..<5 {
@@ -106,15 +87,7 @@ class StarlordFileMaker {
         }
         let accessoryRecord = StarlordAccessoryRecord(lengthOfRecordData: 31,
                                                       crcOfRecordData: 32,
-                                                      accessoryConfigurations: accessoryConfigurations,
-                                                      fillerData: 0,
-                                                      fillerData2: 0,
-                                                      fillerData3: 0,
-                                                      fillerData4: 0,
-                                                      fillerData5: 0,
-                                                      fillerData6: 0,
-                                                      fillerData7: 0,
-                                                      fillerData8: 0)
+                                                      accessoryConfigurations: accessoryConfigurations)
 
         let faultRecord = StarlordFaultRecord(lengthOfRecordData: 33,
                                               crcOfRecordData: 34,
@@ -224,12 +197,5 @@ class StarlordFileMaker {
         }
         
         return data
-        
-//        let outputStream = OutputStream(toBuffer: <#T##UnsafeMutablePointer<UInt8>#>, capacity: <#T##Int#>
-        /*
-         let outputStream: NSOutputStream = ... // the stream that you want to write to
-         let bytesWritten = outputStream.write(UnsafePointer(data.bytes), maxLength: data.length)
-         */
     }
-    
 }

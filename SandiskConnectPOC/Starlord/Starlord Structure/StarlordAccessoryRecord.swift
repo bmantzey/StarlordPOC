@@ -37,14 +37,14 @@ struct StarlordAccessoryRecord: StarlordBinaryStruct {
     var accessoryConfigurations: ContiguousArray<AccessoryConfiguration>
     
     ///// Filler
-    let fillerData: UInt64 // 57
-    let fillerData2: UInt64 // 65
-    let fillerData3: UInt64 // 73
-    let fillerData4: UInt64 // 81
-    let fillerData5: UInt64 // 89
-    let fillerData6: UInt64 // 97
-    let fillerData7: UInt16 // 99
-    let fillerData8: UInt8  // 100
+    let fillerData: UInt64 = 0 // 57
+    let fillerData2: UInt64 = 0 // 65
+    let fillerData3: UInt64 = 0 // 73
+    let fillerData4: UInt64 = 0 // 81
+    let fillerData5: UInt64 = 0 // 89
+    let fillerData6: UInt64 = 0 // 97
+    let fillerData7: UInt16 = 0 // 99
+    let fillerData8: UInt8 = 0  // 100
     /////
 
     mutating func generateData() -> Data {

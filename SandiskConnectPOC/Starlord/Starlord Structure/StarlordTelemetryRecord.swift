@@ -9,12 +9,12 @@
 import Foundation
 
 struct StarlordTelemetryRecord: StarlordBinaryStruct {
-    let fillerData: UInt64
-    let fillerData2: UInt64
-    let fillerData3: UInt64
-    let fillerData4: UInt64
-    let fillerData5: UInt64
-    let fillerData6: UInt16
+    let fillerData: UInt64 = 0
+    let fillerData2: UInt64 = 0
+    let fillerData3: UInt64 = 0
+    let fillerData4: UInt64 = 0
+    let fillerData5: UInt64 = 0
+    let fillerData6: UInt16 = 0
     
 
     func generateData() -> Data {

@@ -41,12 +41,12 @@ struct StarlordBarrierRecord: StarlordBinaryStruct {
     var barrierConfigurations: ContiguousArray<Barrier>
     
     ///// Filler
-    let fillerData: UInt64 // 67
-    let fillerData2: UInt64 // 75
-    let fillerData3: UInt64 // 83
-    let fillerData4: UInt64 // 91
-    let fillerData5: UInt64 // 99
-    let fillerData6: UInt8 // 100
+    let fillerData: UInt64 = 0 // 67
+    let fillerData2: UInt64 = 0 // 75
+    let fillerData3: UInt64 = 0 // 83
+    let fillerData4: UInt64 = 0 // 91
+    let fillerData5: UInt64 = 0 // 99
+    let fillerData6: UInt8 = 0 // 100
     /////
     
     mutating func generateData() -> Data {

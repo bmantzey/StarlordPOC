@@ -193,24 +193,24 @@ struct StarlordFaultRecord: StarlordBinaryStruct {
         data.append(UnsafeBufferPointer(start: &self.systemVoltageLowTime, count: 1))
         data.append(UnsafeBufferPointer(start: &self.stallTime, count: 1))
         
+        ///// Length
+        self.lengthOfRecordData = UInt16(data.count - 4)
+        data.replaceSubrange(0..<2, with: UnsafeBufferPointer(start: &self.lengthOfRecordData, count: 1))
+        /////
+
+        ///// CRC
+        data.withUnsafeBytes { (ptr: UnsafePointer<Int8>) in
+            self.crcOfRecordData = compCRC16(bytes: ptr, offset: 4, length: data.count - 4)
+        }
+        data.replaceSubrange(2..<4, with: UnsafeBufferPointer(start: &self.crcOfRecordData, count: 1))
+        /////
+
         /// 154 bytes here
         //// Filler
         let pointer = UnsafeMutableBufferPointer<UInt8>.allocate(capacity: 146)
         
         let bufferData = Data(buffer: pointer)
         data.append(bufferData)
-        /////
-        
-        ///// CRC
-        data.withUnsafeBytes { (ptr: UnsafePointer<Int8>) in
-            self.crcOfRecordData = crc16(bytes: ptr, offset: 4, length: 296)
-        }
-        data.replaceSubrange(2..<4, with: UnsafeBufferPointer(start: &self.crcOfRecordData, count: 1))
-        /////
-        
-        ///// Length
-        self.lengthOfRecordData = UInt16(data.count)
-        data.replaceSubrange(0..<2, with: UnsafeBufferPointer(start: &self.lengthOfRecordData, count: 1))
         /////
         
         return data

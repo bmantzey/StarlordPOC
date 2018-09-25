@@ -34,6 +34,18 @@ struct StarlordTemperatureRecord: StarlordBinaryStruct {
         data.append(UnsafeBufferPointer(start: &self.temperatureReadingFactor, count: 1))
         data.append(UnsafeBufferPointer(start: &self.temperatureInput, count: 1))
 
+        ///// Length
+        self.lengthOfRecordData = UInt16(data.count - 4)
+        data.replaceSubrange(0..<2, with: UnsafeBufferPointer(start: &self.lengthOfRecordData, count: 1))
+        /////
+
+        ///// CRC
+        data.withUnsafeBytes { (ptr: UnsafePointer<Int8>) in
+            self.crcOfRecordData = compCRC16(bytes: ptr, offset: 4, length: data.count - 4)
+        }
+        data.replaceSubrange(2..<4, with: UnsafeBufferPointer(start: &self.crcOfRecordData, count: 1))
+        /////
+
         // 13 bytes here - need 16
         ///// Filler
         let pointer = UnsafeMutableBufferPointer<UInt8>.allocate(capacity: 3)
@@ -42,18 +54,6 @@ struct StarlordTemperatureRecord: StarlordBinaryStruct {
         data.append(bufferData)
         /////
         
-        ///// CRC
-        data.withUnsafeBytes { (ptr: UnsafePointer<Int8>) in
-            self.crcOfRecordData = crc16(bytes: ptr, offset: 4, length: 12)
-        }
-        data.replaceSubrange(2..<4, with: UnsafeBufferPointer(start: &self.crcOfRecordData, count: 1))
-        /////
-
-        ///// Length
-        self.lengthOfRecordData = UInt16(data.count)
-        data.replaceSubrange(0..<2, with: UnsafeBufferPointer(start: &self.lengthOfRecordData, count: 1))
-        /////
-
         return data
     }
 }

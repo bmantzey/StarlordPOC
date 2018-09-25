@@ -42,11 +42,17 @@ struct StarlordVoltageRecord: StarlordBinaryStruct {
         data.append(bufferData)
         /////
         
+        ///// CRC
         data.withUnsafeBytes { (ptr: UnsafePointer<Int8>) in
             self.crcOfRecordData = crc16(bytes: ptr, offset: 4, length: 12)
         }
-        
         data.replaceSubrange(2..<4, with: UnsafeBufferPointer(start: &self.crcOfRecordData, count: 1))
+        /////
+        
+        ///// Length
+        self.lengthOfRecordData = UInt16(data.count)
+        data.replaceSubrange(0..<2, with: UnsafeBufferPointer(start: &self.lengthOfRecordData, count: 1))
+        /////
 
         return data
     }

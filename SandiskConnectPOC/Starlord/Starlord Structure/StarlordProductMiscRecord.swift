@@ -46,18 +46,24 @@ struct StarlordProductMiscRecord: StarlordBinaryStruct {
         data.append(UnsafeBufferPointer(start: &self.periodOfSpeedCycling, count: 1))
         data.append(UnsafeBufferPointer(start: &self.autoRestartEnabled, count: 1))
 
-        //// Filler
+        ///// Filler
         let pointer = UnsafeMutableBufferPointer<UInt8>.allocate(capacity: 38)
         
         let bufferData = Data(buffer: pointer)
         data.append(bufferData)
         //////
 
+        ///// CRC
         data.withUnsafeBytes { (ptr: UnsafePointer<Int8>) in
             self.crcOfRecordData = crc16(bytes: ptr, offset: 4, length: 45)
-        }
-        
+        }        
         data.replaceSubrange(2..<4, with: UnsafeBufferPointer(start: &self.crcOfRecordData, count: 1))
+        /////
+        
+        ///// Length
+        self.lengthOfRecordData = UInt16(data.count)
+        data.replaceSubrange(0..<2, with: UnsafeBufferPointer(start: &self.lengthOfRecordData, count: 1))
+        /////
         
         return data
     }

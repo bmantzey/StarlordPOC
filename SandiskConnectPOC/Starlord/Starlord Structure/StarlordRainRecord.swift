@@ -10,7 +10,7 @@ import Foundation
 
 struct StarlordRainRecord: StarlordBinaryStruct {
     /// Value: 1
-    var lengthOfRecord: UInt16 // 2
+    var lengthOfRecordData: UInt16 // 2
     var crcOfRecordData: UInt16 // 4
     /// Value: 11
     var rainInput: UInt8 // 5
@@ -23,7 +23,7 @@ struct StarlordRainRecord: StarlordBinaryStruct {
     mutating func generateData() -> Data {
         var data = Data()
 
-        data.append(UnsafeBufferPointer(start: &self.lengthOfRecord, count: 1))
+        data.append(UnsafeBufferPointer(start: &self.lengthOfRecordData, count: 1))
         data.append(UnsafeBufferPointer(start: &self.crcOfRecordData, count: 1))
         data.append(UnsafeBufferPointer(start: &self.rainInput, count: 1))
         
@@ -35,11 +35,17 @@ struct StarlordRainRecord: StarlordBinaryStruct {
         data.append(bufferData)
         /////
         
+        ///// CRC
         data.withUnsafeBytes { (ptr: UnsafePointer<Int8>) in
             self.crcOfRecordData = crc16(bytes: ptr, offset: 4, length: 6)
         }
-        
         data.replaceSubrange(2..<4, with: UnsafeBufferPointer(start: &self.crcOfRecordData, count: 1))
+        /////
+        
+        ///// Length
+        self.lengthOfRecordData = UInt16(data.count)
+        data.replaceSubrange(0..<2, with: UnsafeBufferPointer(start: &self.lengthOfRecordData, count: 1))
+        /////
         
         return data
     }

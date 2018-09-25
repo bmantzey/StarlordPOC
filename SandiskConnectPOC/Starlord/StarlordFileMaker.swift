@@ -125,7 +125,7 @@ class StarlordFileMaker {
                                               systemVoltageLowThreshold: 90,
                                               systemVoltageLowTime: 60000,
                                               stallTime: 60000)
-        let rainRecord = StarlordRainRecord(lengthOfRecord: 1,
+        let rainRecord = StarlordRainRecord(lengthOfRecordData: 1,
                                             crcOfRecordData: 0,
                                             rainInput: 11)
         let temperatureRecord = StarlordTemperatureRecord(lengthOfRecordData: 9,

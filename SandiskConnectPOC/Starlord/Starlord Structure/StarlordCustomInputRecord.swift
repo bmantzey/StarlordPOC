@@ -117,14 +117,14 @@ struct StarlordCustomInputRecord: StarlordBinaryStruct {
 
         ///// Length
         self.lengthOfRecordData = UInt16(data.count - 4)
-        data.replaceSubrange(0..<2, with: UnsafeBufferPointer(start: &self.lengthOfRecordData, count: 1))
+        data.replaceSubrange(0..<2, with: &self.lengthOfRecordData, count: 2)
         /////
 
         ///// CRC
         data.withUnsafeBytes { (ptr: UnsafePointer<Int8>) in
             self.crcOfRecordData = compCRC16(bytes: ptr, offset: 4, length: data.count - 4)
         }
-        data.replaceSubrange(2..<4, with: UnsafeBufferPointer(start: &self.crcOfRecordData, count: 1))
+        data.replaceSubrange(2..<4, with: &self.crcOfRecordData, count: 2)
         /////
 
         ///// Filler Data

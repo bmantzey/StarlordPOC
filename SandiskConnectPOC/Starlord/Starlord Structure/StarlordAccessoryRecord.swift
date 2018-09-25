@@ -11,13 +11,13 @@ import Foundation
 struct StarlordAccessoryRecord: StarlordBinaryStruct {
     struct AccessoryConfiguration: StarlordBinaryStruct {
         /// Value: 2
-        var type: UInt8
+        var type: UInt8 // 1
         /// (ms)
         /// Value: 0
-        var startupTime: UInt32
+        var startupTime: UInt32 // 5
         /// (ms)
         /// Value: 0
-        var shutoffTime: UInt32
+        var shutoffTime: UInt32 // 9
         
         mutating func generateData() -> Data {
             var data = Data()
@@ -31,10 +31,10 @@ struct StarlordAccessoryRecord: StarlordBinaryStruct {
     }
     
     /// Value: 45
-    var lengthOfRecordData: UInt16
-    var crcOfRecordData: UInt16
+    var lengthOfRecordData: UInt16 // 2
+    var crcOfRecordData: UInt16 // 4
     /// 5 of them
-    var accessoryConfigurations: ContiguousArray<AccessoryConfiguration>
+    var accessoryConfigurations: ContiguousArray<AccessoryConfiguration> // 9 * 5 = 45 + 4 = [ 49 ]
     
     ///// Filler
     let fillerData: UInt64 = 0 // 57
@@ -66,6 +66,12 @@ struct StarlordAccessoryRecord: StarlordBinaryStruct {
         data.append(bufferData)
         /////
 
+        data.withUnsafeBytes { (ptr: UnsafePointer<Int8>) in
+            self.crcOfRecordData = crc16(bytes: ptr, offset: 4, length: 96)
+        }
+        
+        data.replaceSubrange(2..<4, with: UnsafeBufferPointer(start: &self.crcOfRecordData, count: 1))
+        
         return data
     }
 

@@ -11,15 +11,15 @@ import Foundation
 struct StarlordBarrierRecord: StarlordBinaryStruct {
     struct Barrier: StarlordBinaryStruct {
         /// Value: 0, 0, 0, 0, 0
-        var holdTime: UInt32
+        var holdTime: UInt32 // 4
         /// Value: 0, 0, 0, 0, 0
-        var angle: Float
+        var angle: Float // 8
         /// Value: 0, 1, 2, 3, 4
-        var type: UInt8
+        var type: UInt8 // 9
         /// Value: 0, 0, 0, 0, 0
-        var action: UInt8
+        var action: UInt8 // 10
         /// Value: 0, 0, 0, 0, 0
-        var isEnabled: Bool
+        var isEnabled: Bool // 11
         
         mutating func generateData() -> Data {
             var data = Data()
@@ -35,10 +35,10 @@ struct StarlordBarrierRecord: StarlordBinaryStruct {
     }
     
     /// Value: 55
-    var lengthOfRecordData: UInt16
-    var crcOfRecordData: UInt16
+    var lengthOfRecordData: UInt16 // 2
+    var crcOfRecordData: UInt16 // 4
     /// 5 of them
-    var barrierConfigurations: ContiguousArray<Barrier>
+    var barrierConfigurations: ContiguousArray<Barrier> // 11 * 5 = 55 + 4 = [ 59 ]
     
     ///// Filler
     let fillerData: UInt64 = 0 // 67
@@ -67,6 +67,12 @@ struct StarlordBarrierRecord: StarlordBinaryStruct {
         let bufferData = Data(buffer: pointer)
         data.append(bufferData)
         /////
+        
+        data.withUnsafeBytes { (ptr: UnsafePointer<Int8>) in
+            self.crcOfRecordData = crc16(bytes: ptr, offset: 4, length: 96)
+        }
+        
+        data.replaceSubrange(2..<4, with: UnsafeBufferPointer(start: &self.crcOfRecordData, count: 1))
 
         return data
     }

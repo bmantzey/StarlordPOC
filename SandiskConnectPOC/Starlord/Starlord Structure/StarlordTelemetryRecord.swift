@@ -20,6 +20,9 @@ struct StarlordTelemetryRecord: StarlordBinaryStruct {
     func generateData() -> Data {
         var data = Data()
 
+        // NOTE: Surely this will have a CRC when data is required for this structure.        
+//        self.headerCRC = crc16(bytes: &crc, offset: 0, length: 42)
+
         let pointer = UnsafeMutableBufferPointer<UInt8>.allocate(capacity: 42)
         
         let bufferData = Data(buffer: pointer)

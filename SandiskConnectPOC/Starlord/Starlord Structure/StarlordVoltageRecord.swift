@@ -10,19 +10,19 @@ import Foundation
 
 struct StarlordVoltageRecord: StarlordBinaryStruct {
     /// Value: 9
-    var lengthOfRecordData: UInt16
-    var crcOfRecordData: UInt16
+    var lengthOfRecordData: UInt16 // 2
+    var crcOfRecordData: UInt16 // 4
     /// (V)
     /// Value: 0
-    var auxVoltageReadingOffset: Float
+    var auxVoltageReadingOffset: Float // 8
     /// Value: 0
-    var auxVoltageReadingFactor: Float
+    var auxVoltageReadingFactor: Float // 12
     /// Value: 11
-    var auxVoltageInput: UInt8
+    var auxVoltageInput: UInt8 // 13
     
     ////// Filler
-    let fillerData: UInt16 = 0
-    let fillerData2: UInt8 = 0
+    let fillerData: UInt16 = 0 // 15
+    let fillerData2: UInt8 = 0 // 16
     /////
 
     mutating func generateData() -> Data {
@@ -41,6 +41,12 @@ struct StarlordVoltageRecord: StarlordBinaryStruct {
         let bufferData = Data(buffer: pointer)
         data.append(bufferData)
         /////
+        
+        data.withUnsafeBytes { (ptr: UnsafePointer<Int8>) in
+            self.crcOfRecordData = crc16(bytes: ptr, offset: 4, length: 12)
+        }
+        
+        data.replaceSubrange(2..<4, with: UnsafeBufferPointer(start: &self.crcOfRecordData, count: 1))
 
         return data
     }

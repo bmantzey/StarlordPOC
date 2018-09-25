@@ -9,23 +9,24 @@
 import Foundation
 
 struct StarlordProductMiscRecord: StarlordBinaryStruct {
+    // 0
     
     /// Value: 6
-    var lengthOfRecordData: UInt16
-    var crcOfRecordData: UInt16
+    var lengthOfRecordData: UInt16  // 2
+    var crcOfRecordData: UInt16 // 4
     /// Value: 0
-    var resetCause: UInt8
+    var resetCause: UInt8 // 5
     /// Value: 0
-    var disableFaults: Bool
+    var disableFaults: Bool // 6
     /// Value: 4
-    var transformerRatio: Float
+    var transformerRatio: Float // 10
     /// Value: 60
-    var periodOfSpeedCycling: UInt8
+    var periodOfSpeedCycling: UInt8 // 11
     /// Value: 0
-    var autoRestartEnabled: Bool
+    var autoRestartEnabled: Bool // 12
     
     //// Filler
-    // Spreadsheet expects 50 bytes, but thsi is only 12 bytes.  Filling in 38 until otherwise instructed.
+    // Spreadsheet expects 50 bytes, but this is only 12 bytes.  Filling in 38 until otherwise instructed.
     let fillerData: UInt64 = 0 // 20
     let fillerData2: UInt64 = 0 // 28
     let fillerData3: UInt64 = 0 // 36
@@ -52,6 +53,12 @@ struct StarlordProductMiscRecord: StarlordBinaryStruct {
         data.append(bufferData)
         //////
 
+        data.withUnsafeBytes { (ptr: UnsafePointer<Int8>) in
+            self.crcOfRecordData = crc16(bytes: ptr, offset: 4, length: 45)
+        }
+        
+        data.replaceSubrange(2..<4, with: UnsafeBufferPointer(start: &self.crcOfRecordData, count: 1))
+        
         return data
     }
 }

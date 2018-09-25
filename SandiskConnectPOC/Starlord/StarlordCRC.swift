@@ -43,25 +43,26 @@ public let crc16Table: [ushort] = [
     0x6E17, 0x7E36, 0x4E55, 0x5E74, 0x2E93, 0x3EB2, 0x0ED1, 0x1EF0
 ]
 
-public func crc16(bytes: UnsafePointer<ushort>, offset: Int, length: Int) -> ushort {
+public func crc16(bytes: UnsafePointer<Int8>, offset: Int, length: Int) -> ushort {
     var crc: ushort = 0
     
     for j in offset..<(length+offset) {
-        let index: ushort = (crc >> 8) ^ bytes[j]
-        crc = ((crc << 8) ^ crc16Table[Int(index)])
+        let index = UInt8(bitPattern: (Int8(bitPattern: ((UInt8(crc >> 8)) ^ UInt8(bitPattern: bytes[j])))))
+        crc = ushort(((crc << 8) ^ crc16Table[Int(index)]))
         crc &= 0xFFFF
     }
     
     return crc
 }
 
-public func compCRC16(bytes: UnsafePointer<ushort>, offset: Int, length: Int) -> ushort {
+public func compCRC16(bytes: UnsafePointer<Int8>, offset: Int, length: Int) -> ushort {
     var crc: ushort = 0xFFFF
     
     for j in offset..<(length+offset) {
-        let index: ushort = (crc >> 8) ^ bytes[j]
-        crc = ((crc << 8) ^ crc16Table[Int(index)])
+        let index = UInt8(bitPattern: (Int8(bitPattern: ((UInt8(crc >> 8)) ^ UInt8(bitPattern: bytes[j])))))
+        crc = ushort(((crc << 8) ^ crc16Table[Int(index)]))
+        crc &= 0xFFFF
     }
     
-    return ~crc
+    return ushort(~Int(crc))
 }

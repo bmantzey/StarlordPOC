@@ -179,16 +179,18 @@ class StarlordFileMaker {
         
         let data = cLayout.generateData()
         
-        if let filePath = Bundle.main.path(forResource: "CONFIG", ofType: "DAT") {
-            let url = URL(fileURLWithPath: filePath)
-            do {
-                try data.write(to: url)
-                print("CONFIG.DAT written at \(filePath)")
-            } catch {
-                print("FAIL")
-            }
+        let fileName = "CONFIG.DAT"
+        var documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+//        documentsDirectory.appendPathComponent("Files")
+        documentsDirectory.appendPathComponent(fileName)
+
+        do {
+            try data.write(to: documentsDirectory)
+            print("CONFIG.DAT written at \(documentsDirectory)")
+        } catch {
+            print("FAIL")
         }
-        
+       
         return data
     }
 }

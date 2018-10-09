@@ -15,10 +15,12 @@ class ViewController: UIViewController {
     let username = ""
     let password = ""
     
+    var folderCreator: WebDAVFileProvider?
     var webdav: WebDAVFileProvider?
     
     //    @IBOutlet weak var testTextField: UITextField!
     @IBOutlet weak var uploadProgressView: UIProgressView!
+    @IBOutlet weak var folderNameTextField: UITextField!
     //    @IBOutlet weak var downloadProgressView: UIProgressView!
     
     var writeData: Data?
@@ -35,6 +37,8 @@ class ViewController: UIViewController {
         
         webdav = WebDAVFileProvider(baseURL: server, credential: nil)!
         webdav?.delegate = self as FileProviderDelegate
+        folderCreator = WebDAVFileProvider(baseURL: server, credential: nil)!
+        folderCreator?.delegate = self as FileProviderDelegate
     }
     
     override func didReceiveMemoryWarning() {
@@ -42,7 +46,7 @@ class ViewController: UIViewController {
     }
     
     @IBAction func createFolder(_ sender: Any) {
-        let _ = webdav?.create(folder: "new folder", at: "/", completionHandler: nil)
+        let _ = folderCreator?.create(folder: "new folder", at: "/", completionHandler: nil)
     }
     
     @IBAction func createFile(_ sender: Any) {
@@ -65,8 +69,8 @@ class ViewController: UIViewController {
     }
     
     @IBAction func download(_ sender: Any) {
-//        let localURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.appendingPathComponent("fileprovider.png")
-//        let remotePath = "fileprovider.png"
+        //        let localURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.appendingPathComponent("fileprovider.png")
+        //        let remotePath = "fileprovider.png"
         
         //        let progress = webdav?.copyItem(path: remotePath, toLocalURL: localURL, completionHandler: nil)
         //        downloadProgressView.observedProgress = progress
@@ -95,9 +99,15 @@ class ViewController: UIViewController {
         })
     }
     @objc func writeTestFile() {
+        webdav = WebDAVFileProvider(baseURL: server, credential: nil)!
+        webdav?.delegate = self as FileProviderDelegate
+        self.uploadProgressView.observedProgress = nil
+
         let localURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.appendingPathComponent("CONFIG.DAT")
+        let destinationString = "/Files/" + folderNameTextField.text! +  "/CONFIG.DAT"
         
-        self.uploadProgressView.observedProgress = webdav?.copyItem(localFile: localURL, to: "Files/CONFIG.DAT", completionHandler: { error in
+        self.uploadProgressView.observedProgress = webdav?.copyItem(localFile: localURL, to: destinationString, overwrite: true, completionHandler: { error in
+            //        self.uploadProgressView.observedProgress = webdav?.copyItem(localFile: localURL, to: destinationString, completionHandler: { error in
             if let error = error {
                 print(error.localizedDescription)
             } else {
@@ -108,11 +118,32 @@ class ViewController: UIViewController {
         })
     }
     @objc func createFilesFolder() {
-        let _ = webdav?.create(folder: "Files", at: "", completionHandler: { error in
+        let _ = folderCreator?.create(folder: "Files", at: "", completionHandler: { error in
             if let error = error {
                 print("\(error)")
             } else {
                 print("Created files folder")
+            }
+        })
+    }
+    @objc func createRandomFolder() {
+        let randomString = String.randomString(length: 5)
+        
+        let _ = folderCreator?.create(folder: randomString, at: "/Files", completionHandler: { error in
+            if let error = error {
+                print("\(error)")
+            } else {
+                print("Created  folder named: \(randomString)")
+
+                let dispatchTime = 2.0
+                DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + dispatchTime, execute: {
+                    self.performSelector(onMainThread: #selector(self.writeTestFile), with: nil, waitUntilDone: true)
+                })
+                
+//                let timer = Timer(timeInterval: 2.0, target: self, selector: #selector(self.writeTestFile), userInfo: nil, repeats: false)
+//                timer.fire()
+                
+//                self.performSelector(onMainThread: #selector(self.writeTestFile), with: nil, waitUntilDone: true)
             }
         })
     }
@@ -124,7 +155,7 @@ class ViewController: UIViewController {
                 print("Error getting contents of root directory. \(error)")
             } else {
                 var hasFilesFolder = false
-                var hadExistingFile = false
+                //                var hadExistingFile = false
                 
                 for aFile in files {
                     if aFile.name.lowercased() == "files" {
@@ -132,29 +163,34 @@ class ViewController: UIViewController {
                         print("Found Files Folder!")
                     }
                 }
-
+                
                 if hasFilesFolder == false {
                     self.performSelector(onMainThread: #selector(self.createFilesFolder), with: nil, waitUntilDone: true)
                 }
                 
-                self.webdav?.contentsOfDirectory(path: "/Files", completionHandler: { files, error in
-                    if let error = error {
-                        print("Error getting contents of /Files directory. \(error)")
-                    } else {
-                        for aFile in files {
-                            if aFile.name.lowercased() == "config.dat" {
-                                print("Found existing file.")
-                                hadExistingFile = true
-                                self.performSelector(onMainThread: #selector(self.deleteExistingFile), with: nil, waitUntilDone: true)
-                                break
-                            }
-                        }
-                    }
+                self.performSelector(onMainThread: #selector(self.writeTestFile), with: nil, waitUntilDone: true)
 
-                    if hadExistingFile == false {
-                        self.performSelector(onMainThread: #selector(self.writeTestFile), with: nil, waitUntilDone: true)
-                    }
-                })
+//                self.performSelector(onMainThread: #selector(self.createRandomFolder), with: nil, waitUntilDone: true)
+                
+                
+                //                self.webdav?.contentsOfDirectory(path: "/Files", completionHandler: { files, error in
+                //                    if let error = error {
+                //                        print("Error getting contents of /Files directory. \(error)")
+                //                    } else {
+                //                        for aFile in files {
+                //                            if aFile.name.lowercased() == "config.dat" {
+                //                                print("Found existing file.")
+                //                                hadExistingFile = true
+                //                                self.performSelector(onMainThread: #selector(self.deleteExistingFile), with: nil, waitUntilDone: true)
+                //                                break
+                //                            }
+                //                        }
+                //                    }
+                //
+                //                    if hadExistingFile == false {
+                //                        self.performSelector(onMainThread: #selector(self.writeTestFile), with: nil, waitUntilDone: true)
+                //                    }
+                //                })
             }
         })
     }
@@ -339,3 +375,22 @@ extension ViewController: UITextFieldDelegate {
     }
 }
 
+
+extension String {
+    static func randomString(length: Int) -> String {
+        
+        let letters : NSString = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+        let len = UInt32(letters.length)
+        
+        var randomString = ""
+        
+        for _ in 0 ..< length {
+            let rand = arc4random_uniform(len)
+            var nextChar = letters.character(at: Int(rand))
+            randomString += NSString(characters: &nextChar, length: 1) as String
+        }
+        
+        return randomString
+        
+    }
+}

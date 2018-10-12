@@ -8,10 +8,12 @@
 
 import UIKit
 import FilesProvider
+import Alamofire
 
 class ViewController: UIViewController {
     
-    let server: URL = URL(string: "http://172.25.63.1/myconnect/")!
+    let server: URL = URL(string: "http://172.25.63.1/myconnect/Files/CONFIG_Finally.DAT")!
+//    let server: URL = URL(string: "http://172.25.63.1/myconnect/")!
     let username = ""
     let password = ""
     
@@ -104,7 +106,7 @@ class ViewController: UIViewController {
         self.uploadProgressView.observedProgress = nil
 
         let localURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.appendingPathComponent("CONFIG.DAT")
-        let destinationString = "/Files/" + folderNameTextField.text! +  "/CONFIG.DAT"
+        let destinationString = folderNameTextField.text! +  "CONFIG.DAT"
         
         self.uploadProgressView.observedProgress = webdav?.copyItem(localFile: localURL, to: destinationString, overwrite: true, completionHandler: { error in
             //        self.uploadProgressView.observedProgress = webdav?.copyItem(localFile: localURL, to: destinationString, completionHandler: { error in
@@ -148,8 +150,82 @@ class ViewController: UIViewController {
         })
     }
     
+    private func putConfigDat(folderName: String,
+                                      completion: @escaping() -> Void,
+                                      errorHandler: @escaping(_ error: Error, _ statusCode: Int?) -> Void) {
+        
+        Alamofire.request(FieldNETRouter.putConfigDat(directory: folderName, data: self.writeData!))
+            .validate()
+            .responseJSON { response in
+                switch response.result {
+                case .success:
+                    if let _ = response.result.value as? [String: Any] {
+                        completion()
+                        return
+                    }
+                case .failure(let error):
+                    errorHandler(error, response.response?.statusCode)
+                }
+        }
+    }
+
     
     @IBAction func upload(_ sender: Any) {
+        
+        
+//        self.performSelector(onMainThread: #selector(self.writeTestFile), with: nil, waitUntilDone: true)
+
+        let nowTimestamp = Date().iso8601
+
+        let httpHeaders = [
+            "Pragma": "no-cache",
+            "X-AirStash-Date": nowTimestamp,
+            "User-Agent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36",
+            "Referer": "http://172.25.63.1/myconnect/Files/"
+        ]
+        
+        Alamofire.upload(self.writeData!, to: server, method: .put, headers: httpHeaders).response(completionHandler: { (response) in
+            if let error = response.error {
+                print("error: \(error.localizedDescription)")
+
+            } else if let data = response.data {
+                if let dataText = String(data: data, encoding: .utf8) {
+                    if dataText.count == 0 {
+                        print("SUCCESS!!!")
+                    } else {
+                        print(dataText)
+                    }
+                }
+            } else {
+                print("ELSE!!")
+            }
+        })
+        /*
+        responseJSON { (response) in
+            if let json = response.result.value as? [String: Any] {
+                print(json)
+            } else {
+                let message = response.result.error != nil ? response.result.error!.localizedDescription : "Unable to communicate."
+                print(message)
+            }
+        }
+ */
+
+        
+//        Alamofire.upload(self.writeData!, to: server), method: .put, headers: nil)
+        
+        /*
+        .responseJSON { (response) in
+            if let json = response.result.value as? Dictionary {
+                print(json)
+            } else {
+                let message = response.result.error != nil ? response.result.error!.localizedDescription : "Unable to communicate."
+                
+            }
+        }
+ */
+
+            /*
         webdav?.contentsOfDirectory(path: "", completionHandler: { files, error in
             if let error = error {
                 print("Error getting contents of root directory. \(error)")
@@ -167,11 +243,16 @@ class ViewController: UIViewController {
                 if hasFilesFolder == false {
                     self.performSelector(onMainThread: #selector(self.createFilesFolder), with: nil, waitUntilDone: true)
                 }
-                
-                self.performSelector(onMainThread: #selector(self.writeTestFile), with: nil, waitUntilDone: true)
+         
+               self.performSelector(onMainThread: #selector(self.writeTestFile), with: nil, waitUntilDone: true)
+                let destinationString = "/Files/" + self.folderNameTextField.text!
+                self.putConfigDat(folderName: destinationString, completion: {
+                        print("SUCCESS!")
+                    }, errorHandler: {error, statusCode in
+                        print("ERROR: \(error).  StatusCode: \(statusCode ?? 0)")
+                })
 
 //                self.performSelector(onMainThread: #selector(self.createRandomFolder), with: nil, waitUntilDone: true)
-                
                 
                 //                self.webdav?.contentsOfDirectory(path: "/Files", completionHandler: { files, error in
                 //                    if let error = error {
@@ -193,6 +274,7 @@ class ViewController: UIViewController {
                 //                })
             }
         })
+ */
     }
 }
 
@@ -394,3 +476,20 @@ extension String {
         
     }
 }
+
+extension Formatter {
+    static let iso8601: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.calendar = Calendar(identifier: .iso8601)
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.timeZone = TimeZone(secondsFromGMT: 0)
+        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss'-0000'"
+        return formatter
+    }()
+}
+extension Date {
+    var iso8601: String {
+        return Formatter.iso8601.string(from: self)
+    }
+}
+

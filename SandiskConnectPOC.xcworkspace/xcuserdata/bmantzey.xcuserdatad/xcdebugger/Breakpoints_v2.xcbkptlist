@@ -15,7 +15,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "167"
             endingLineNumber = "167"
-            landmarkName = "fileproviderSucceed(_:operation:)"
+            landmarkName = "putConfigDat(folderName:completion:errorHandler:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -113,7 +113,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "155"
             endingLineNumber = "155"
-            landmarkName = "upload(_:)"
+            landmarkName = "putConfigDat(folderName:completion:errorHandler:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

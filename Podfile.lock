@@ -1,16 +1,20 @@
 PODS:
+  - Alamofire (4.5.1)
   - FilesProvider (0.20.1)
 
 DEPENDENCIES:
+  - Alamofire (= 4.5.1)
   - FilesProvider
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
+    - Alamofire
     - FilesProvider
 
 SPEC CHECKSUMS:
+  Alamofire: 2d95912bf4c34f164fdfc335872e8c312acaea4a
   FilesProvider: c88f6eff9bba7e551745bbbb08760351b4951448
 
-PODFILE CHECKSUM: 46a2176b7999fddd1ee1c8b6b01834ddb5c03f58
+PODFILE CHECKSUM: 997095336a1f8ea7925743c2ce2989f067a6c871
 
 COCOAPODS: 1.5.3

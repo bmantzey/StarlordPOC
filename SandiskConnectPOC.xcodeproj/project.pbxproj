@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2665B25A216D0A82003A9449 /* FieldNETRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2665B259216D0A82003A9449 /* FieldNETRouter.swift */; };
 		44A7A9AAA2275B9D5B8AEF01 /* Pods_SandiskConnectPOC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B497F8CD6FF9B80E33B8D8D9 /* Pods_SandiskConnectPOC.framework */; };
 		C4AEA00921595BD300C25609 /* StarlordCRC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4AEA00821595BD300C25609 /* StarlordCRC.swift */; };
 		C4E3312B2137351E0076FE72 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4E3312A2137351E0076FE72 /* AppDelegate.swift */; };
@@ -33,6 +34,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2665B259216D0A82003A9449 /* FieldNETRouter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FieldNETRouter.swift; sourceTree = "<group>"; };
 		314EE7B2809FE5C419419F86 /* Pods-SandiskConnectPOC.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SandiskConnectPOC.release.xcconfig"; path = "Pods/Target Support Files/Pods-SandiskConnectPOC/Pods-SandiskConnectPOC.release.xcconfig"; sourceTree = "<group>"; };
 		677E186D3414121B14FF7CB5 /* Pods-SandiskConnectPOC.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SandiskConnectPOC.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SandiskConnectPOC/Pods-SandiskConnectPOC.debug.xcconfig"; sourceTree = "<group>"; };
 		B497F8CD6FF9B80E33B8D8D9 /* Pods_SandiskConnectPOC.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SandiskConnectPOC.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -109,6 +111,7 @@
 				C4E33131213735210076FE72 /* Assets.xcassets */,
 				C4E33133213735210076FE72 /* LaunchScreen.storyboard */,
 				C4E33136213735210076FE72 /* Info.plist */,
+				2665B259216D0A82003A9449 /* FieldNETRouter.swift */,
 				C4F5A16D213F26AE003B6DFC /* Starlord */,
 			);
 			path = SandiskConnectPOC;
@@ -231,10 +234,12 @@
 			);
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-SandiskConnectPOC/Pods-SandiskConnectPOC-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
 				"${BUILT_PRODUCTS_DIR}/FilesProvider/FilesProvider.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FilesProvider.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -278,6 +283,7 @@
 				C4F5A182213F2BE1003B6DFC /* StarlordFaultRecord.swift in Sources */,
 				C4F5A186213F2F3A003B6DFC /* StarlordTemperatureRecord.swift in Sources */,
 				C4E53001214AE55900A41B96 /* TypeLoader.swift in Sources */,
+				2665B25A216D0A82003A9449 /* FieldNETRouter.swift in Sources */,
 				C4F5A17E213F2A37003B6DFC /* StarlordBarrierRecord.swift in Sources */,
 				C4E3312B2137351E0076FE72 /* AppDelegate.swift in Sources */,
 				C4F5A175213F276B003B6DFC /* StarlordFileHeader.swift in Sources */,

@@ -10,7 +10,7 @@ import Foundation
 
 /// A protocol defines properties for errors returned by HTTP/S based providers.
 /// Including Dropbox, OneDrive and WebDAV.
-public protocol FileProviderHTTPError: Error, CustomStringConvertible {
+public protocol FileProviderHTTPError: LocalizedError, CustomStringConvertible {
     /// HTTP status codes as an enum.
     typealias Code = FileProviderHTTPErrorCode
     /// HTTP status code returned for error by server.
@@ -18,33 +18,36 @@ public protocol FileProviderHTTPError: Error, CustomStringConvertible {
     /// Path of file/folder casued that error
     var path: String { get }
     /// Contents returned by server as error description
-    var errorDescription: String? { get }
+    var serverDescription: String? { get }
 }
 
 extension FileProviderHTTPError {
     public var description: String {
-        return code.description
+        return "Status \(code.rawValue): \(code.description)"
     }
     
-    public var localizedDescription: String {
-        return description
+    public var errorDescription: String? {
+        return "Status \(code.rawValue): \(code.description)"
     }
 }
 
 internal var completionHandlersForTasks = [String: [Int: SimpleCompletionHandler]]()
 internal var downloadCompletionHandlersForTasks = [String: [Int: (URL) -> Void]]()
 internal var dataCompletionHandlersForTasks = [String: [Int: (Data) -> Void]]()
+internal var responseCompletionHandlersForTasks = [String: [Int: (URLResponse) -> Void]]()
 
 internal func initEmptySessionHandler(_ uuid: String) {
     completionHandlersForTasks[uuid] = [:]
     downloadCompletionHandlersForTasks[uuid] = [:]
     dataCompletionHandlersForTasks[uuid] = [:]
+    responseCompletionHandlersForTasks[uuid] = [:]
 }
 
 internal func removeSessionHandler(for uuid: String) {
     _ = completionHandlersForTasks.removeValue(forKey: uuid)
     _ = downloadCompletionHandlersForTasks.removeValue(forKey: uuid)
     _ = dataCompletionHandlersForTasks.removeValue(forKey: uuid)
+    _ = responseCompletionHandlersForTasks.removeValue(forKey: uuid)
 }
 
 /// All objects set to `FileProviderRemote.session` must be an instance of this class
@@ -52,15 +55,6 @@ final public class SessionDelegate: NSObject, URLSessionDataDelegate, URLSession
     
     weak var fileProvider: (FileProviderBasicRemote & FileProviderOperations)?
     var credential: URLCredential?
-    
-    /// Forwardng URLSessionDownloadTaskDelegate call
-    public var finishDownloadHandler: ((_ session: URLSession, _ downloadTask: URLSessionDownloadTask, _ didFinishDownloadingToURL: URL) -> Void)?
-    /// Forwardng URLSessionTaskDelegate call
-    public var didSendDataHandler: ((_ session: URLSession, _ task: URLSessionTask, _ bytesSent: Int64, _ totalBytesSent: Int64, _ totalBytesExpectedToSend: Int64) -> Void)?
-    /// Forwardng URLSessionDownloadTaskDelegate call
-    public var didReceivedData: ((_ session: URLSession, _ downloadTask: URLSessionDownloadTask, _ bytesWritten: Int64, _ totalBytesWritten: Int64, _ totalBytesExpectedToWrite: Int64) -> Void)?
-    /// Forwardng URLSessionStreamTaskDelegate call
-    public var didBecomeStream :((_ session: URLSession, _ taskId: Int, _ didBecome: InputStream, _ outputStream: OutputStream) -> Void)?
     
     public init(fileProvider: FileProviderBasicRemote & FileProviderOperations) {
         self.fileProvider = fileProvider
@@ -83,16 +77,23 @@ final public class SessionDelegate: NSObject, URLSessionDataDelegate, URLSession
                     }
                 }
             case #keyPath(URLSessionTask.countOfBytesSent):
-                progress.completedUnitCount = newVal
                 if let startTime = progress.userInfo[ProgressUserInfoKey.startingTimeKey] as? Date, let task = object as? URLSessionTask {
                     let elapsed = Date().timeIntervalSince(startTime)
                     let throughput = Double(newVal) / elapsed
                     progress.setUserInfoObject(NSNumber(value: throughput), forKey: .throughputKey)
-                    if task.countOfBytesExpectedToSend > 0 {
-                        let remain = task.countOfBytesExpectedToSend - task.countOfBytesSent
+                    
+                    // wokaround for multipart uploading
+                    let json = task.taskDescription?.deserializeJSON()
+                    let uploadedBytes = ((json?["uploadedBytes"] as? Int64) ?? 0) + newVal
+                    let totalBytes = (json?["totalBytes"] as? Int64) ?? task.countOfBytesExpectedToSend
+                    progress.completedUnitCount = uploadedBytes
+                    if totalBytes > 0 {
+                        let remain = totalBytes - uploadedBytes
                         let estimatedTimeRemaining = Double(remain) / elapsed
                         progress.setUserInfoObject(NSNumber(value: estimatedTimeRemaining), forKey: .estimatedTimeRemainingKey)
                     }
+                } else {
+                    progress.completedUnitCount = newVal
                 }
             case #keyPath(URLSessionTask.countOfBytesExpectedToReceive), #keyPath(URLSessionTask.countOfBytesExpectedToSend):
                 progress.totalUnitCount = newVal
@@ -104,14 +105,15 @@ final public class SessionDelegate: NSObject, URLSessionDataDelegate, URLSession
     
     // codebeat:disable[ARITY]
     public func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
-        if task is URLSessionDownloadTask {
-            task.removeObserver(self, forKeyPath: #keyPath(URLSessionTask.countOfBytesReceived))
-            task.removeObserver(self, forKeyPath: #keyPath(URLSessionTask.countOfBytesExpectedToReceive))
-        }
         if task is URLSessionUploadTask {
             task.removeObserver(self, forKeyPath: #keyPath(URLSessionTask.countOfBytesSent))
             //task.removeObserver(self, forKeyPath: #keyPath(URLSessionTask.countOfBytesExpectedToSend))
+        } else if task is URLSessionDownloadTask {
+            task.removeObserver(self, forKeyPath: #keyPath(URLSessionTask.countOfBytesReceived))
+            task.removeObserver(self, forKeyPath: #keyPath(URLSessionTask.countOfBytesExpectedToReceive))
         }
+        
+        _ = dataCompletionHandlersForTasks[session.sessionDescription!]?.removeValue(forKey: task.taskIdentifier)
         if !(error == nil && task is URLSessionDownloadTask) {
             let completionHandler = completionHandlersForTasks[session.sessionDescription!]?[task.taskIdentifier] ?? nil
             completionHandler?(error)
@@ -123,6 +125,16 @@ final public class SessionDelegate: NSObject, URLSessionDataDelegate, URLSession
                 return
         }
         
+        switch op {
+        case .fetch:
+            if task is URLSessionDataTask {
+                task.removeObserver(self, forKeyPath: #keyPath(URLSessionTask.countOfBytesReceived))
+                task.removeObserver(self, forKeyPath: #keyPath(URLSessionTask.countOfBytesExpectedToReceive))
+            }
+        default:
+            break
+        }
+        
         if !(task is URLSessionDownloadTask), case FileOperationType.fetch = op {
             return
         }
@@ -132,33 +144,35 @@ final public class SessionDelegate: NSObject, URLSessionDataDelegate, URLSession
             }
         }
         
-        DispatchQueue.main.async {
-            if let error = error {
-                fileProvider.delegate?.fileproviderFailed(fileProvider, operation: op, error: error)
-            } else {
-                fileProvider.delegate?.fileproviderSucceed(fileProvider, operation: op)
-            }
-        }
-    }
-    
-    public func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
-        let completionHandler = dataCompletionHandlersForTasks[session.sessionDescription!]?[dataTask.taskIdentifier] ?? nil
-        completionHandler?(data)
-        _ = dataCompletionHandlersForTasks[session.sessionDescription!]?.removeValue(forKey: dataTask.taskIdentifier)
+        fileProvider.delegateNotify(op, error: error)
     }
     
     public func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
-        self.finishDownloadHandler?(session, downloadTask, location)
-        
         let dcompletionHandler = downloadCompletionHandlersForTasks[session.sessionDescription!]?[downloadTask.taskIdentifier]
         dcompletionHandler?(location)
         _ = downloadCompletionHandlersForTasks[session.sessionDescription!]?.removeValue(forKey: downloadTask.taskIdentifier)
         _ = completionHandlersForTasks[session.sessionDescription!]?.removeValue(forKey: downloadTask.taskIdentifier)
     }
     
-    public func urlSession(_ session: URLSession, task: URLSessionTask, didSendBodyData bytesSent: Int64, totalBytesSent: Int64, totalBytesExpectedToSend: Int64) {
-        self.didSendDataHandler?(session, task, bytesSent, totalBytesSent, totalBytesExpectedToSend)
+    public func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive response: URLResponse, completionHandler: @escaping (URLSession.ResponseDisposition) -> Void) {
+        let handler = responseCompletionHandlersForTasks[session.sessionDescription!]?[dataTask.taskIdentifier] ?? nil
+        handler?(response)
+        completionHandler(.allow)
+        _ = responseCompletionHandlersForTasks[session.sessionDescription!]?.removeValue(forKey: dataTask.taskIdentifier)
+    }
+    
+    public func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
+        if let completionHandler = dataCompletionHandlersForTasks[session.sessionDescription!]?[dataTask.taskIdentifier] {
+            /*if let json = dataTask.taskDescription?.deserializeJSON(),
+               let op = FileOperationType(json: json), let fileProvider = fileProvider {
+                fileProvider.delegateNotify(op, progress: Double(dataTask.countOfBytesReceived) / Double(dataTask.countOfBytesExpectedToReceive))
+            }*/
+            completionHandler(data)
+        }
         
+    }
+    
+    public func urlSession(_ session: URLSession, task: URLSessionTask, didSendBodyData bytesSent: Int64, totalBytesSent: Int64, totalBytesExpectedToSend: Int64) {
         guard let json = task.taskDescription?.deserializeJSON(),
               let op = FileOperationType(json: json), let fileProvider = fileProvider else {
             return
@@ -176,12 +190,14 @@ final public class SessionDelegate: NSObject, URLSessionDataDelegate, URLSession
             return
         }
         
-        fileProvider.delegateNotify(op, progress: Double(totalBytesSent) / Double(totalBytesExpectedToSend))
+        // wokaround for multipart uploading
+        let uploadedBytes = (json["uploadedBytes"] as? Int64) ?? 0
+        let totalBytes = (json["totalBytes"] as? Int64) ?? totalBytesExpectedToSend
+        
+        fileProvider.delegateNotify(op, progress: Double(uploadedBytes + totalBytesSent) / Double(totalBytes))
     }
     
     public func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
-        self.didReceivedData?(session, downloadTask, bytesWritten, totalBytesWritten, totalBytesExpectedToWrite)
-        
         if totalBytesExpectedToWrite == NSURLSessionTransferSizeUnknown { return }
         
         guard let json = downloadTask.taskDescription?.deserializeJSON(),
@@ -209,11 +225,6 @@ final public class SessionDelegate: NSObject, URLSessionDataDelegate, URLSession
         default:
             completionHandler(.performDefaultHandling, nil)
         }
-    }
-    
-    @available(iOS 9.0, macOS 10.11, *)
-    public func urlSession(_ session: URLSession, streamTask: URLSessionStreamTask, didBecome inputStream: InputStream, outputStream: OutputStream) {
-        self.didBecomeStream?(session, streamTask.taskIdentifier, inputStream, outputStream)
     }
 }
 
@@ -358,6 +369,10 @@ public enum FileProviderHTTPErrorCode: Int, CustomStringConvertible {
         case 500...511: return FileProviderHTTPErrorCode.status5xx[self.rawValue]!
         default: return typeDescription
         }
+    }
+    
+    public var localizedDescription: String {
+        return HTTPURLResponse.localizedString(forStatusCode: self.rawValue)
     }
     
     /// Description of status based on first digit which indicated fail or success.

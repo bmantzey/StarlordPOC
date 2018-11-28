@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VariablesViewState
+   version = "1.0">
+   <ContextStates>
+      <ContextState
+         contextName = "crc16(bytes:offset:length:):StarlordCRC.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "bytes[j]">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "writeTestFile #1 () in ViewController.upload(_:):ViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "documentsDirectory.path">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "closure #1 in ViewController.upload(_:):ViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "aFile.name">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+   </ContextStates>
+</VariablesViewState>

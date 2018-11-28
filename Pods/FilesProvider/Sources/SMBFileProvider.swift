@@ -56,19 +56,19 @@ class SMBFileProvider: FileProvider, FileProviderMonitor {
         return true
     }
     
-    open func contentsOfDirectory(path: String, completionHandler: @escaping ((_ contents: [FileObjectClass], _ error: Error?) -> Void)) {
+    open func contentsOfDirectory(path: String, completionHandler: @escaping (_ contents: [FileObjectClass], _ error: Error?) -> Void) {
         NotImplemented()
     }
     
-    open func attributesOfItem(path: String, completionHandler: @escaping ((_ attributes: FileObjectClass?, _ error: Error?) -> Void)) {
+    open func attributesOfItem(path: String, completionHandler: @escaping (_ attributes: FileObjectClass?, _ error: Error?) -> Void) {
         NotImplemented()
     }
     
-    open func storageProperties(completionHandler: @escaping ((_ total: Int64, _ used: Int64) -> Void)) {
+    open func storageProperties(completionHandler: @escaping (_ volume: VolumeObject?) -> Void) {
         NotImplemented()
     }
     
-    func isReachable(completionHandler: @escaping (Bool) -> Void) {
+    func isReachable(completionHandler: @escaping (_ success: Bool, _ error: Error?) -> Void) {
         NotImplemented()
     }
     

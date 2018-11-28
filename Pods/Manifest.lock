@@ -1,20 +1,24 @@
 PODS:
   - Alamofire (4.5.1)
-  - FilesProvider (0.20.1)
+  - FilesProvider (0.25.1)
+  - MessagePack.swift (3.0.0)
 
 DEPENDENCIES:
   - Alamofire (= 4.5.1)
   - FilesProvider
+  - MessagePack.swift (~> 3.0)
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
     - Alamofire
     - FilesProvider
+    - MessagePack.swift
 
 SPEC CHECKSUMS:
   Alamofire: 2d95912bf4c34f164fdfc335872e8c312acaea4a
-  FilesProvider: c88f6eff9bba7e551745bbbb08760351b4951448
+  FilesProvider: f6ab75211d2fd4814720f19b427e43668dc24585
+  MessagePack.swift: 5bbffdbb60b195b478070a550c3a25cb1e825d5c
 
-PODFILE CHECKSUM: 997095336a1f8ea7925743c2ce2989f067a6c871
+PODFILE CHECKSUM: a880533011d19e19917105d1149094b755c9ec49
 
 COCOAPODS: 1.5.3

@@ -14,10 +14,9 @@ import Foundation
  
  it uses `FileManager` foundation class with some additions like searching and reading a portion of file.
  */
-open class LocalFileProvider: FileProvider, FileProviderMonitor, FileProvideUndoable {
+open class LocalFileProvider: NSObject, FileProvider, FileProviderMonitor {
     open class var type: String { return "Local" }
     open fileprivate(set) var baseURL: URL?
-    open var currentPath: String
     open var dispatch_queue: DispatchQueue
     open var operation_queue: OperationQueue
     open weak var delegate: FileProviderDelegate?
@@ -29,8 +28,9 @@ open class LocalFileProvider: FileProvider, FileProviderMonitor, FileProvideUndo
     open private(set) var opFileManager = FileManager()
     fileprivate var fileProviderManagerDelegate: LocalFileProviderManagerDelegate? = nil
     
+    #if os(macOS) || os(iOS) || os(tvOS)
     open var undoManager: UndoManager? = nil
-    
+
     /**
      Forces file operations to use `NSFileCoordinating`, should be set `true` if:
      - Files are on ubiquity (iCloud) container.
@@ -41,6 +41,7 @@ open class LocalFileProvider: FileProvider, FileProviderMonitor, FileProvideUndo
      otherwise it's `false` to accelerate operations.
     */
     open var isCoorinating: Bool
+    #endif
     
     /**
      Initializes provider for the specified common directory in the requested domains.
@@ -54,6 +55,7 @@ open class LocalFileProvider: FileProvider, FileProviderMonitor, FileProvideUndo
         self.init(baseURL: FileManager.default.urls(for: directory, in: domainMask).first!)
     }
     
+    #if os(macOS) || os(iOS) || os(tvOS)
     /**
      Failable initializer for the specified shared container directory, allows data and files to be shared among app
      and extensions regarding sandbox requirements. Container ID is same with app group specified in project `Capabilities`
@@ -90,6 +92,7 @@ open class LocalFileProvider: FileProvider, FileProviderMonitor, FileProvideUndo
         
         try? fileManager.createDirectory(at: finalBaseURL, withIntermediateDirectories: true)
     }
+    #endif
     
     /// Initializes provider for the specified local URL.
     ///
@@ -98,8 +101,7 @@ open class LocalFileProvider: FileProvider, FileProviderMonitor, FileProvideUndo
         guard baseURL.isFileURL else {
             fatalError("Cannot initialize a Local provider from remote URL.")
         }
-        self.baseURL = (baseURL.absoluteString.hasSuffix("/") ? baseURL : baseURL.appendingPathComponent("")).absoluteURL
-        self.currentPath = ""
+        self.baseURL = URL(fileURLWithPath: baseURL.path, isDirectory: true)
         self.credential = nil
         self.isCoorinating = false
         
@@ -112,22 +114,30 @@ open class LocalFileProvider: FileProvider, FileProviderMonitor, FileProvideUndo
         operation_queue = OperationQueue()
         operation_queue.name = "\(queueLabel).Operation"
         
+        super.init()
+        
         fileProviderManagerDelegate = LocalFileProviderManagerDelegate(provider: self)
         opFileManager.delegate = fileProviderManagerDelegate
     }
     
     public required convenience init?(coder aDecoder: NSCoder) {
-        guard let baseURL = aDecoder.decodeObject(forKey: "baseURL") as? URL else {
+        guard let baseURL = aDecoder.decodeObject(of: NSURL.self, forKey: "baseURL") as URL? else {
             return nil
         }
         self.init(baseURL: baseURL)
-        self.currentPath   = aDecoder.decodeObject(forKey: "currentPath") as? String ?? ""
         self.isCoorinating = aDecoder.decodeBool(forKey: "isCoorinating")
     }
     
+    deinit {
+        let monitors = self.monitors
+        self.monitors = []
+        for monitor in monitors {
+            monitor.stop()
+        }
+    }
+    
     open func encode(with aCoder: NSCoder) {
-        aCoder.encode(self.baseURL, forKey: "currentPath")
-        aCoder.encode(self.currentPath, forKey: "currentPath")
+        aCoder.encode(self.baseURL, forKey: "baseURL")
         aCoder.encode(self.isCoorinating, forKey: "isCoorinating")
     }
     
@@ -137,44 +147,50 @@ open class LocalFileProvider: FileProvider, FileProviderMonitor, FileProvideUndo
     
     public func copy(with zone: NSZone? = nil) -> Any {
         let copy = LocalFileProvider(baseURL: self.baseURL!)
-        copy.currentPath = self.currentPath
         copy.undoManager = self.undoManager
+        #if os(macOS) || os(iOS) || os(tvOS)
         copy.isCoorinating = self.isCoorinating
+        #endif
         copy.delegate = self.delegate
         copy.fileOperationDelegate = self.fileOperationDelegate
         return copy
     }
     
-    open func contentsOfDirectory(path: String, completionHandler: @escaping ((_ contents: [FileObject], _ error: Error?) -> Void)) {
+    open func contentsOfDirectory(path: String, completionHandler: @escaping (_ contents: [FileObject], _ error: Error?) -> Void) {
         dispatch_queue.async {
             do {
                 let contents = try self.fileManager.contentsOfDirectory(at: self.url(of: path), includingPropertiesForKeys: nil, options: .skipsSubdirectoryDescendants)
-                let filesAttributes = contents.flatMap({ (fileURL) -> LocalFileObject? in
+                let filesAttributes = contents.compactMap({ (fileURL) -> LocalFileObject? in
                     let path = self.relativePathOf(url: fileURL)
                     return LocalFileObject(fileWithPath: path, relativeTo: self.baseURL)
                 })
                 completionHandler(filesAttributes, nil)
-            } catch let e {
-                completionHandler([], e)
+            } catch {
+                completionHandler([], error)
             }
         }
     }
     
-    open func attributesOfItem(path: String, completionHandler: @escaping ((_ attributes: FileObject?, _ error: Error?) -> Void)) {
+    open func attributesOfItem(path: String, completionHandler: @escaping (_ attributes: FileObject?, _ error: Error?) -> Void) {
         dispatch_queue.async {
             completionHandler(LocalFileObject(fileWithPath: path, relativeTo: self.baseURL), nil)
         }
     }
     
-    open func storageProperties(completionHandler: (@escaping (_ total: Int64, _ used: Int64) -> Void)) {
-        let values = try? baseURL?.resourceValues(forKeys: [.volumeTotalCapacityKey, .volumeAvailableCapacityKey])
-        let totalSize = Int64(values??.volumeTotalCapacity ?? -1)
-        let freeSize = Int64(values??.volumeAvailableCapacity ?? 0)
-        completionHandler(totalSize, totalSize - freeSize)
+    public func storageProperties(completionHandler: @escaping (_ volumeInfo: VolumeObject?) -> Void) {
+        dispatch_queue.async {
+            var keys: Set<URLResourceKey> = [.volumeTotalCapacityKey, .volumeAvailableCapacityKey, .volumeURLKey, .volumeNameKey, .volumeIsReadOnlyKey, .volumeCreationDateKey]
+            if #available(iOS 10.0, macOS 10.12, tvOS 10.0, *) {
+                keys.insert(.isEncryptedKey)
+            }
+            let values: URLResourceValues? = self.baseURL.flatMap { try? $0.resourceValues(forKeys: keys) }
+            completionHandler(values.flatMap({ VolumeObject(allValues: $0.allValues) }))
+        }
     }
     
-    open func searchFiles(path: String, recursive: Bool, query: NSPredicate, foundItemHandler: ((FileObject) -> Void)?, completionHandler: @escaping ((_ files: [FileObject], _ error: Error?) -> Void)) -> Progress? {
-        let progress = Progress(parent: nil, userInfo: nil)
+    @discardableResult
+    open func searchFiles(path: String, recursive: Bool, query: NSPredicate, foundItemHandler: ((FileObject) -> Void)?, completionHandler: @escaping (_ files: [FileObject], _ error: Error?) -> Void) -> Progress? {
+        let progress = Progress(totalUnitCount: -1)
         progress.setUserInfoObject(self.url(of: path), forKey: .fileURLKey)
         
         dispatch_queue.async {
@@ -201,10 +217,29 @@ open class LocalFileProvider: FileProvider, FileProviderMonitor, FileProvideUndo
         return progress
     }
     
-    open func isReachable(completionHandler: @escaping (Bool) -> Void) {
+    open func isReachable(completionHandler: @escaping (_ success: Bool, _ error: Error?) -> Void) {
         dispatch_queue.async {
-            completionHandler(self.fileManager.isReadableFile(atPath: self.baseURL!.path))
+            do {
+                let isReachable = try self.baseURL!.checkResourceIsReachable()
+                completionHandler(isReachable, nil)
+            } catch {
+                completionHandler(false, error)
+            }
         }
+    }
+    
+    open func relativePathOf(url: URL) -> String {
+        // check if url derieved from current base url
+        let relativePath = url.relativePath
+        if !relativePath.isEmpty, url.baseURL == self.baseURL {
+            return (relativePath.removingPercentEncoding ?? relativePath).replacingOccurrences(of: "/", with: "", options: .anchored)
+        }
+        
+        guard let baseURL = self.baseURL?.standardizedFileURL else { return url.absoluteString }
+        let standardPath = url.absoluteString.replacingOccurrences(of: "file:///private/var/", with: "file:///var/", options: .anchored)
+        let standardBase = baseURL.absoluteString.replacingOccurrences(of: "file:///private/var/", with: "file:///var/", options: .anchored)
+        let standardRelativePath = standardPath.replacingOccurrences(of: standardBase, with: "/").replacingOccurrences(of: "/", with: "", options: .anchored)
+        return standardRelativePath.removingPercentEncoding ?? standardRelativePath
     }
     
     open weak var fileOperationDelegate : FileOperationDelegate?
@@ -218,37 +253,13 @@ open class LocalFileProvider: FileProvider, FileProviderMonitor, FileProvideUndo
     @discardableResult
     open func moveItem(path: String, to toPath: String, overwrite: Bool = false, completionHandler: SimpleCompletionHandler) -> Progress? {
         let operation = FileOperationType.move(source: path, destination: toPath)
-        
-        let fileExists = ((try? self.url(of: toPath).checkResourceIsReachable()) ?? false) ||
-            ((try? self.url(of: toPath).checkPromisedItemIsReachable()) ?? false)
-        if !overwrite && fileExists {
-            let e = self.throwError(toPath, code: CocoaError.fileWriteFileExists)
-            dispatch_queue.async {
-                completionHandler?(e)
-            }
-            self.delegateNotify(operation, error: e)
-            return nil
-        }
-        
-        return self.doOperation(operation, completionHandler: completionHandler)
+        return self.doOperation(operation, overwrite: overwrite, completionHandler: completionHandler)
     }
     
     @discardableResult
     open func copyItem(path: String, to toPath: String, overwrite: Bool = false, completionHandler: SimpleCompletionHandler) -> Progress? {
         let operation = FileOperationType.copy(source: path, destination: toPath)
-        
-        let fileExists = ((try? self.url(of: toPath).checkResourceIsReachable()) ?? false) ||
-            ((try? self.url(of: toPath).checkPromisedItemIsReachable()) ?? false)
-        if !overwrite && fileExists {
-            let e = self.throwError(toPath, code: CocoaError.fileWriteFileExists)
-            dispatch_queue.async {
-                completionHandler?(e)
-            }
-            self.delegateNotify(operation, error: e)
-            return nil
-        }
-        
-        return self.doOperation(operation, completionHandler: completionHandler)
+        return self.doOperation(operation, overwrite: overwrite, completionHandler: completionHandler)
     }
     
     @discardableResult
@@ -260,18 +271,7 @@ open class LocalFileProvider: FileProvider, FileProviderMonitor, FileProvideUndo
     @discardableResult
     open func copyItem(localFile: URL, to toPath: String, overwrite: Bool, completionHandler: SimpleCompletionHandler) -> Progress? {
         let operation = FileOperationType.copy(source: localFile.absoluteString, destination: toPath)
-        
-        let fileExists = ((try? self.url(of: toPath).checkResourceIsReachable()) ?? false) ||
-            ((try? self.url(of: toPath).checkPromisedItemIsReachable()) ?? false)
-        if !overwrite && fileExists {
-            let e = self.throwError(toPath, code: CocoaError.fileWriteFileExists)
-            dispatch_queue.async {
-                completionHandler?(e)
-            }
-            self.delegateNotify(operation, error: e)
-            return nil
-        }
-        return self.doOperation(operation, forUploading: true, completionHandler: completionHandler)
+        return self.doOperation(operation, overwrite: overwrite, forUploading: true, completionHandler: completionHandler)
     }
     
     @discardableResult
@@ -280,20 +280,23 @@ open class LocalFileProvider: FileProvider, FileProviderMonitor, FileProvideUndo
         return self.doOperation(operation, completionHandler: completionHandler)
     }
     
+    #if os(macOS) || os(iOS) || os(tvOS)
     @objc dynamic func doSimpleOperation(_ box: UndoBox) {
         guard let _ = self.undoManager else { return }
         _ = self.doOperation(box.undoOperation) { (_) in
             return
         }
     }
+    #endif
     
     @discardableResult
-    fileprivate func doOperation(_ operation: FileOperationType, data: Data? = nil, atomically: Bool = false, forUploading: Bool = false, completionHandler: SimpleCompletionHandler) -> Progress? {
-        let progress = Progress(parent: nil, userInfo: nil)
+    fileprivate func doOperation(_ operation: FileOperationType, data: Data? = nil, overwrite: Bool = true, atomically: Bool = false, forUploading: Bool = false, completionHandler: SimpleCompletionHandler) -> Progress? {
+        let progress = Progress(totalUnitCount: -1)
         progress.setUserInfoObject(operation, forKey: .fileProvderOperationTypeKey)
         progress.kind = .file
         progress.isCancellable = false
         progress.setUserInfoObject(Progress.FileOperationKind.receiving, forKey: .fileOperationKindKey)
+        
         func urlofpath(path: String) -> URL {
             if path.hasPrefix("file://") {
                 let removedSchemePath = path.replacingOccurrences(of: "file://", with: "", options: .anchored)
@@ -309,13 +312,19 @@ open class LocalFileProvider: FileProvider, FileProviderMonitor, FileProvideUndo
         let source: URL = urlofpath(path: sourcePath)
         progress.setUserInfoObject(source, forKey: .fileURLKey)
         
-        let dest: URL?
-        if let destPath = destPath {
-            dest = urlofpath(path: destPath)
-        } else {
-            dest = nil
+        let dest = destPath.map(urlofpath(path:))
+        
+        if !overwrite, let dest = dest, /* fileExists */ ((try? dest.checkResourceIsReachable()) ?? false) ||
+            ((try? dest.checkPromisedItemIsReachable()) ?? false) {
+            let e = self.cocoaError(destPath!, code: .fileWriteFileExists)
+            dispatch_queue.async {
+                completionHandler?(e)
+            }
+            self.delegateNotify(operation, error: e)
+            return nil
         }
         
+        #if os(macOS) || os(iOS) || os(tvOS)
         if let undoManager = self.undoManager, let undoOp = self.undoOperation(for: operation) {
             let undoBox = UndoBox(provider: self, operation: operation, undoOperation: undoOp)
             undoManager.beginUndoGrouping()
@@ -325,6 +334,7 @@ open class LocalFileProvider: FileProvider, FileProviderMonitor, FileProvideUndo
         }
         
         var successfulSecurityScopedResourceAccess = false
+        #endif
         
         let operationHandler: (URL, URL?) -> Void = { source, dest in
             do {
@@ -335,11 +345,11 @@ open class LocalFileProvider: FileProvider, FileProviderMonitor, FileProvideUndo
                         progress.totalUnitCount = 1
                         try self.opFileManager.createDirectory(at: source, withIntermediateDirectories: true, attributes: [:])
                     } else {
-                        progress.totalUnitCount = Int64(data?.count ?? 0)
+                        progress.totalUnitCount = Int64(data?.count ?? -1)
                         try data?.write(to: source, options: .atomic)
                     }
                 case .modify:
-                    progress.totalUnitCount = Int64(data?.count ?? 0)
+                    progress.totalUnitCount = Int64(data?.count ?? -1)
                     try data?.write(to: source, options: atomically ? [.atomic] : [])
                 case .copy:
                     guard let dest = dest else { return }
@@ -357,27 +367,32 @@ open class LocalFileProvider: FileProvider, FileProviderMonitor, FileProvideUndo
                 default:
                     return
                 }
+                #if os(macOS) || os(iOS) || os(tvOS)
                 if successfulSecurityScopedResourceAccess {
                     source.stopAccessingSecurityScopedResource()
                 }
+                #endif
 
                 progress.completedUnitCount = progress.totalUnitCount
                 self.dispatch_queue.async {
                     completionHandler?(nil)
                 }
                 self.delegateNotify(operation)
-            } catch let e {
+            } catch {
+                #if os(macOS) || os(iOS) || os(tvOS)
                 if successfulSecurityScopedResourceAccess {
                     source.stopAccessingSecurityScopedResource()
                 }
+                #endif
                 progress.cancel()
                 self.dispatch_queue.async {
-                    completionHandler?(e)
+                    completionHandler?(error)
                 }
-                self.delegateNotify(operation, error: e)
+                self.delegateNotify(operation, error: error)
             }
         }
         
+        #if os(macOS) || os(iOS) || os(tvOS)
         if isCoorinating {
             successfulSecurityScopedResourceAccess = source.startAccessingSecurityScopedResource()
             var intents = [NSFileAccessIntent]()
@@ -397,7 +412,7 @@ open class LocalFileProvider: FileProvider, FileProviderMonitor, FileProvideUndo
             default:
                 return nil
             }
-            self.coordinated(intents: intents, operationHandler: operationHandler, errorHandler: { error in
+            self.coordinated(intents: intents, moving: true, operationHandler: operationHandler, errorHandler: { error in
                 self.dispatch_queue.async {
                     completionHandler?(error)
                 }
@@ -408,6 +423,11 @@ open class LocalFileProvider: FileProvider, FileProviderMonitor, FileProvideUndo
                 operationHandler(source, dest)
             }
         }
+        #else
+        operation_queue.addOperation {
+            operationHandler(source, dest)
+        }
+        #endif
         return progress
     }
     
@@ -416,13 +436,12 @@ open class LocalFileProvider: FileProvider, FileProviderMonitor, FileProvideUndo
         let operation = FileOperationType.fetch(path: path)
         let url = self.url(of: path)
         
-        let progress = Progress(parent: nil, userInfo: nil)
+        let progress = Progress(totalUnitCount: url.fileSize)
         progress.setUserInfoObject(operation, forKey: .fileProvderOperationTypeKey)
         progress.kind = .file
         progress.isCancellable = false
         progress.setUserInfoObject(Progress.FileOperationKind.receiving, forKey: .fileOperationKindKey)
         progress.setUserInfoObject(url, forKey: .fileURLKey)
-        progress.totalUnitCount = url.fileSize
         
         let operationHandler: (URL) -> Void = { url in
             progress.setUserInfoObject(Date(), forKey: .startingTimeKey)
@@ -433,15 +452,16 @@ open class LocalFileProvider: FileProvider, FileProviderMonitor, FileProvideUndo
                     completionHandler(data, nil)
                 }
                 self.delegateNotify(operation)
-            } catch let e {
+            } catch {
                 progress.cancel()
                 self.dispatch_queue.async {
-                    completionHandler(nil, e)
+                    completionHandler(nil, error)
                 }
-                self.delegateNotify(operation, error: e)
+                self.delegateNotify(operation, error: error)
             }
         }
         
+        #if os(macOS) || os(iOS) || os(tvOS)
         if isCoorinating {
             let intent = NSFileAccessIntent.readingIntent(with: url, options: .withoutChanges)
             coordinated(intents: [intent], operationHandler: operationHandler, errorHandler: { error in
@@ -455,12 +475,17 @@ open class LocalFileProvider: FileProvider, FileProviderMonitor, FileProvideUndo
                 operationHandler(url)
             }
         }
+        #else
+        dispatch_queue.async {
+            operationHandler(url)
+        }
+        #endif
 
         return progress
     }
     
     @discardableResult
-    open func contents(path: String, offset: Int64, length: Int, completionHandler: @escaping ((_ contents: Data?, _ error: Error?) -> Void)) -> Progress? {
+    open func contents(path: String, offset: Int64, length: Int, completionHandler: @escaping (_ contents: Data?, _ error: Error?) -> Void) -> Progress? {
         if length == 0 || offset < 0 {
             dispatch_queue.async {
                 completionHandler(Data(), nil)
@@ -475,7 +500,7 @@ open class LocalFileProvider: FileProvider, FileProviderMonitor, FileProvideUndo
         let operation = FileOperationType.fetch(path: path)
         let url = self.url(of: path)
         
-        let progress = Progress(parent: nil, userInfo: nil)
+        let progress = Progress(totalUnitCount: -1)
         progress.setUserInfoObject(operation, forKey: .fileProvderOperationTypeKey)
         progress.kind = .file
         progress.isCancellable = false
@@ -483,50 +508,44 @@ open class LocalFileProvider: FileProvider, FileProviderMonitor, FileProvideUndo
         progress.setUserInfoObject(Progress.FileOperationKind.receiving, forKey: .fileOperationKindKey)
         
         let operationHandler: (URL) -> Void = { url in
-            guard let handle = FileHandle(forReadingAtPath: url.path) else {
-                self.dispatch_queue.async {
-                    let e = self.throwError(path, code: CocoaError.fileNoSuchFile)
-                    completionHandler(nil, e)
-                    self.delegateNotify(operation, error: e)
+            do {
+                guard let handle = FileHandle(forReadingAtPath: url.path) else {
+                    throw self.cocoaError(path, code: .fileNoSuchFile)
                 }
-                return
-            }
-            
-            defer {
-                handle.closeFile()
-            }
-
-            let size = LocalFileObject(fileWithURL: url)?.size ?? -1
-            progress.totalUnitCount = size
-            guard size > offset else {
-                progress.cancel()
-                self.dispatch_queue.async {
-                    let e = self.throwError(path, code: CocoaError.fileReadTooLarge)
-                    completionHandler(nil, e)
-                    self.delegateNotify(operation, error: e)
+                
+                defer {
+                    handle.closeFile()
                 }
-                return
-            }
-            progress.setUserInfoObject(Date(), forKey: .startingTimeKey)
-            handle.seek(toFileOffset: UInt64(offset))
-            guard Int64(handle.offsetInFile) == offset else {
-                progress.cancel()
-                self.dispatch_queue.async {
-                    let e = self.throwError(path, code: CocoaError.fileReadTooLarge)
-                    completionHandler(nil, e)
-                    self.delegateNotify(operation, error: e)
+                
+                let size = LocalFileObject(fileWithURL: url)?.size ?? -1
+                progress.totalUnitCount = size
+                guard size > offset else {
+                    progress.cancel()
+                    throw self.cocoaError(path, code: .fileReadTooLarge)
                 }
-                return
+                progress.setUserInfoObject(Date(), forKey: .startingTimeKey)
+                handle.seek(toFileOffset: UInt64(offset))
+                guard Int64(handle.offsetInFile) == offset else {
+                    progress.cancel()
+                    throw self.cocoaError(path, code: .fileReadTooLarge)
+                }
+                
+                let data = handle.readData(ofLength: length)
+                progress.completedUnitCount = progress.totalUnitCount
+                self.dispatch_queue.async {
+                    completionHandler(data, nil)
+                    self.delegateNotify(operation)
+                }
             }
-            
-            let data = handle.readData(ofLength: length)
-            progress.completedUnitCount = progress.totalUnitCount
-            self.dispatch_queue.async {
-                completionHandler(data, nil)
-                self.delegateNotify(operation)
+            catch {
+                self.dispatch_queue.async {
+                    completionHandler(nil, error)
+                    self.delegateNotify(operation, error: error)
+                }
             }
         }
         
+        #if os(macOS) || os(iOS) || os(tvOS)
         if isCoorinating {
             let intent = NSFileAccessIntent.readingIntent(with: url, options: .withoutChanges)
             coordinated(intents: [intent], operationHandler: operationHandler, errorHandler: { error in
@@ -538,7 +557,11 @@ open class LocalFileProvider: FileProvider, FileProviderMonitor, FileProvideUndo
                 operationHandler(url)
             }
         }
-        
+        #else
+        dispatch_queue.async {
+            operationHandler(url)
+        }
+        #endif
         return progress
     }
     
@@ -547,7 +570,7 @@ open class LocalFileProvider: FileProvider, FileProviderMonitor, FileProvideUndo
         let fileExists = ((try? self.url(of: path).checkResourceIsReachable()) ?? false) ||
             ((try? self.url(of: path).checkPromisedItemIsReachable()) ?? false)
         if !overwrite && fileExists {
-            let e = self.throwError(path, code: CocoaError.fileWriteFileExists)
+            let e = self.cocoaError(path, code: .fileWriteFileExists)
             dispatch_queue.async {
                 completionHandler?(e)
             }
@@ -559,16 +582,12 @@ open class LocalFileProvider: FileProvider, FileProviderMonitor, FileProvideUndo
         return self.doOperation(operation, data: data ?? Data(), atomically: atomically, completionHandler: completionHandler)
     }
     
-    fileprivate var monitors = [LocalFolderMonitor]()
+    fileprivate var monitors = [LocalFileMonitor]()
     
     open func registerNotifcation(path: String, eventHandler: @escaping (() -> Void)) {
         self.unregisterNotifcation(path: path)
-        let dirurl = self.url(of: path)
-        let isdir = (try? dirurl.resourceValues(forKeys: [.isDirectoryKey]))?.isDirectory ?? false
-        if !isdir {
-            return
-        }
-        let monitor = LocalFolderMonitor(url: dirurl) {
+        let url = self.url(of: path)
+        let monitor = LocalFileMonitor(url: url) {
             eventHandler()
         }
         monitor.start()
@@ -576,7 +595,7 @@ open class LocalFileProvider: FileProvider, FileProviderMonitor, FileProvideUndo
     }
     
     open func unregisterNotifcation(path: String) {
-        var removedMonitor: LocalFolderMonitor?
+        var removedMonitor: LocalFileMonitor?
         for (i, monitor) in monitors.enumerated() {
             if self.relativePathOf(url: monitor.url) == path {
                 removedMonitor = monitors.remove(at: i)
@@ -608,9 +627,9 @@ open class LocalFileProvider: FileProvider, FileProviderMonitor, FileProvideUndo
                 try self.opFileManager.createSymbolicLink(at: self.url(of: path), withDestinationURL: self.url(of: destPath))
                 completionHandler?(nil)
                 self.delegateNotify(operation)
-            } catch let e {
-                completionHandler?(e)
-                self.delegateNotify(operation, error: e)
+            } catch {
+                completionHandler?(error)
+                self.delegateNotify(operation, error: error)
             }
         }
     }
@@ -626,12 +645,16 @@ open class LocalFileProvider: FileProvider, FileProviderMonitor, FileProvideUndo
                 let destPath = try self.opFileManager.destinationOfSymbolicLink(atPath: self.url(of: path).path)
                 let destUrl = URL(fileURLWithPath: destPath)
                 completionHandler(destUrl, nil)
-            } catch let e{
-                completionHandler(nil, e)
+            } catch {
+                completionHandler(nil, error)
             }
         }
     }
 }
+
+#if os(macOS) || os(iOS) || os(tvOS)
+    
+extension LocalFileProvider: FileProvideUndoable { }
 
 internal extension LocalFileProvider {
     func coordinated(intents: [NSFileAccessIntent], operationHandler: @escaping (_ url: URL) -> Void, errorHandler: ((_ error: Error) -> Void)? = nil) {
@@ -664,3 +687,5 @@ internal extension LocalFileProvider {
         }
     }
 }
+#endif
+

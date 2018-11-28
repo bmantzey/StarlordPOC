@@ -1,6 +1,6 @@
-![File Provider](fileprovider.png)
+![File Provider](Docs/fileprovider.png)
 
->This Swift library provide a swifty way to deal with local and remote files and directories in a unified way.
+> This Swift library provide a swifty way to deal with local and remote files and directories in a unified way.
 
 <center>
 
@@ -15,10 +15,6 @@
 [![Carthage compatible][carthage-image]](https://github.com/Carthage/Carthage)
 [![Cocoapods Downloads][cocoapods-downloads]][cocoapods]
 [![Cocoapods Apps][cocoapods-apps]][cocoapods]
-
-Old Cocoapods repo stats:
-[![Cocoapods Downloads][cocoapods-downloads-old]][cocoapods-old]
-[![Cocoapods Apps][cocoapods-apps-old]][cocoapods-old]
 
 </center>
 
@@ -40,7 +36,6 @@ All functions do async calls and it wont block your main thread.
 - [x] **DropboxFileProvider** A wrapper around Dropbox Web API.
     * For now it has limitation in uploading files up to 150MB.
 - [x] **OneDriveFileProvider** A wrapper around OneDrive REST API, works with `onedrive.com` and compatible (business) servers.
-    * For now it has limitation in uploading files up to 100MB.
 - [ ] **AmazonS3FileProvider** Amazon storage backend. Used by many sites.
 - [ ] **GoogleFileProvider** A wrapper around Goodle Drive REST API.
 - [ ] **SMBFileProvider** SMB2/3 introduced in 2006, which is a file and printer sharing protocol originated from Microsoft Windows and now is replacing AFP protocol on macOS.
@@ -49,11 +44,11 @@ All functions do async calls and it wont block your main thread.
 
 ## Requirements
 
-- **Swift 3.0 or higher**
+- **Swift 4.0 or higher**
 - iOS 8.0 , OSX 10.10
-- XCode 8.0
+- XCode 9.0
 
-Legacy version is available in swift-2 branch.
+Legacy version is available in swift-3 branch.
 
 ## Installation
 
@@ -105,13 +100,19 @@ Then you can do either:
 
 * Drop `FilesProvider.xcodeproj` to you Xcode workspace and add the framework to your Embeded Binaries in target.
 
+## Design
+
+To find design concepts and how to implement a custom provider, read [Concepts and Design document](Docs/DESIGN.md).
+
 ## Usage
 
-Each provider has a specific class which conforms to FileProvider protocol and share same syntax
+Each provider has a specific class which conforms to FileProvider protocol and share same syntax.
+
+Find a [sample code for iOS here](Docs/Sample-iOS.swift).
 
 ### Initialization
 
-For LocalFileProvider if you want to deal with `Documents` folder
+For LocalFileProvider if you want to deal with `Documents` folder:
 
 ```	swift
 import FilesProvider
@@ -157,11 +158,11 @@ let webdavProvider = WebDAVFileProvider(baseURL: URL(string: "http://www.example
 
 * In case you want to connect non-secure servers for WebDAV (http) or FTP in iOS 9+ / macOS 10.11+ you should disable App Transport Security (ATS) according to [this guide.](https://gist.github.com/mlynch/284699d676fe9ed0abfa)
 
-* For Dropbox & OneDrive, user is clientID and password is Token which both must be retrieved via [OAuth2 API of Dropbox](https://www.dropbox.com/developers/reference/oauth-guide). There are libraries like [p2/OAuth2](https://github.com/p2/OAuth2) or [OAuthSwift](https://github.com/OAuthSwift/OAuthSwift) which can facilate the procedure to retrieve token. The latter is easier to use and prefered.
+* For Dropbox & OneDrive, user is clientID and password is Token which both must be retrieved via OAuth2 API o. There are libraries like [p2/OAuth2](https://github.com/p2/OAuth2) or [OAuthSwift](https://github.com/OAuthSwift/OAuthSwift) which can facilate the procedure to retrieve token. The latter is easier to use and prefered. Please see [OAuth example for Dropbox and OneDrive](Docs/OAuth.md) for detailed instruction.
 	
-For interaction with UI, set delegate variable of `FileProvider` object
+For interaction with UI, set delegate property of `FileProvider` object.
 
-You can use `url(of:)` method if provider to get direct access url (local or remote files) for some file systems which allows to do so (Dropbox doesn't support and returns path simply wrapped in URL)
+You can use `url(of:)` method if provider to get direct access url (local or remote files) for some file systems which allows to do so (Dropbox doesn't support and returns path simply wrapped in URL).
 
 ### Delegates
 
@@ -470,7 +471,7 @@ We would love for you to contribute to **FileProvider**, check the `LICENSE` fil
 Things you may consider to help us:
 
 - [ ] Implement request/response stack for `SMBClient`
-- [ ] Implement Test-case (`XCTest`)
+- [x] Implement Test-case (`XCTest`)
 - [ ] Add Sample project for iOS
 - [ ] Add Sample project for macOS
 
@@ -493,14 +494,14 @@ Distributed under the MIT license. See `LICENSE` for more information.
 
 [cocoapods]: https://cocoapods.org/pods/FilesProvider
 [cocoapods-old]: https://cocoapods.org/pods/FileProvider
-[swift-image]: https://img.shields.io/badge/swift-3.0,%203.1-orange.svg
+[swift-image]: https://img.shields.io/badge/swift-4.0-orange.svg
 [swift-url]: https://swift.org/
 [platform-image]: https://img.shields.io/cocoapods/p/FilesProvider.svg
 [license-image]: https://img.shields.io/github/license/amosavian/FileProvider.svg
 [license-url]: LICENSE
 [codebeat-image]: https://codebeat.co/badges/7b359f48-78eb-4647-ab22-56262a827517
 [codebeat-url]: https://codebeat.co/projects/github-com-amosavian-fileprovider
-[travis-image]: https://img.shields.io/travis/amosavian/FileProvider/master.svg
+[travis-image]: https://travis-ci.org/amosavian/FileProvider.svg
 [travis-url]: https://travis-ci.org/amosavian/FileProvider
 [release-url]: https://github.com/amosavian/FileProvider/releases
 [release-image]: https://img.shields.io/github/release/amosavian/FileProvider.svg
@@ -511,3 +512,7 @@ Distributed under the MIT license. See `LICENSE` for more information.
 [cocoapods-apps]: https://img.shields.io/cocoapods/at/FilesProvider.svg
 [docs-image]: https://img.shields.io/cocoapods/metrics/doc-percent/FilesProvider.svg
 [docs-url]: http://cocoadocs.org/docsets/FilesProvider/
+## Support on Beerpay
+Hey dude! Help me out for a couple of :beers:!
+
+[![Beerpay](https://beerpay.io/amosavian/FileProvider/badge.svg?style=beer-square)](https://beerpay.io/amosavian/FileProvider)  [![Beerpay](https://beerpay.io/amosavian/FileProvider/make-wish.svg?style=flat-square)](https://beerpay.io/amosavian/FileProvider?focus=wish)

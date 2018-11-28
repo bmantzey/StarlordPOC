@@ -7,7 +7,9 @@
 //
 
 import Foundation
+#if os(macOS) || os(iOS) || os(tvOS)
 import CoreGraphics
+#endif
 
 /**
  Allows accessing to WebDAV server files. This provider doesn't cache or save files internally, however you can
@@ -22,6 +24,9 @@ import CoreGraphics
 */
 open class WebDAVFileProvider: HTTPFileProvider, FileProviderSharing {
     override open class var type: String { return "WebDAV" }
+    
+    /// An enum which defines HTTP Authentication method, usually you should it default `.digest`.
+    /// If the server uses OAuth authentication, credential must be set with token as `password`, like Dropbox.
     public var credentialType: URLRequest.AuthenticationType = .digest
     
     /**
@@ -36,24 +41,22 @@ open class WebDAVFileProvider: HTTPFileProvider, FileProviderSharing {
         if  !["http", "https"].contains(baseURL.uw_scheme.lowercased()) {
             return nil
         }
-        let refinedBaseURL = (baseURL.absoluteString.hasSuffix("/") ? baseURL : baseURL.appendingPathComponent("")).absoluteURL
-        super.init(baseURL: refinedBaseURL, credential: credential, cache: cache)
+        let refinedBaseURL = (baseURL.absoluteString.hasSuffix("/") ? baseURL : baseURL.appendingPathComponent(""))
+        super.init(baseURL: refinedBaseURL.absoluteURL, credential: credential, cache: cache)
     }
     
     public required convenience init?(coder aDecoder: NSCoder) {
-        guard let baseURL = aDecoder.decodeObject(forKey: "baseURL") as? URL else {
+        guard let baseURL = aDecoder.decodeObject(of: NSURL.self, forKey: "baseURL") as URL? else {
             return nil
         }
         self.init(baseURL: baseURL,
-                  credential: aDecoder.decodeObject(forKey: "credential") as? URLCredential)
-        self.currentPath   = aDecoder.decodeObject(forKey: "currentPath") as? String ?? ""
+                  credential: aDecoder.decodeObject(of: URLCredential.self, forKey: "credential"))
         self.useCache        = aDecoder.decodeBool(forKey: "useCache")
         self.validatingCache = aDecoder.decodeBool(forKey: "validatingCache")
     }
     
     override open func copy(with zone: NSZone? = nil) -> Any {
         let copy = WebDAVFileProvider(baseURL: self.baseURL!, credential: self.credential, cache: self.cache)!
-        copy.currentPath = self.currentPath
         copy.delegate = self.delegate
         copy.fileOperationDelegate = self.fileOperationDelegate
         copy.useCache = self.useCache
@@ -61,8 +64,20 @@ open class WebDAVFileProvider: HTTPFileProvider, FileProviderSharing {
         return copy
     }
     
+    /**
+     Returns an Array of `FileObject`s identifying the the directory entries via asynchronous completion handler.
+     
+     If the directory contains no entries or an error is occured, this method will return the empty array.
+     
+     - Parameters:
+       - path: path to target directory. If empty, root will be iterated.
+       - completionHandler: a closure with result of directory entries or error.
+       - contents: An array of `FileObject` identifying the the directory entries.
+       - error: Error returned by system.
+     */
     override open func contentsOfDirectory(path: String, completionHandler: @escaping (([FileObject], Error?) -> Void)) {
-        self.contentsOfDirectory(path: path, including: [], completionHandler: completionHandler)
+        let query = NSPredicate(format: "TRUEPREDICATE")
+        _ = searchFiles(path: path, recursive: false, query: query, including: [], foundItemHandler: nil, completionHandler: completionHandler)
     }
     
     /**
@@ -73,39 +88,15 @@ open class WebDAVFileProvider: HTTPFileProvider, FileProviderSharing {
      - Parameter path: path to target directory. If empty, root will be iterated.
      - Parameter including: An array which determines which file properties should be considered to fetch.
      - Parameter completionHandler: a closure with result of directory entries or error.
-         - `contents`: An array of `FileObject` identifying the the directory entries.
-         - `error`: Error returned by system.
+     - Parameter contents: An array of `FileObject` identifying the the directory entries.
+     - Parameter error: Error returned by system.
      */
-    open func contentsOfDirectory(path: String, including: [URLResourceKey], completionHandler: @escaping ((_ contents: [FileObject], _ error: Error?) -> Void)) {
-        let operation = FileOperationType.fetch(path: path)
-        let url = self.url(of: path).appendingPathComponent("")
-        var request = URLRequest(url: url)
-        request.httpMethod = "PROPFIND"
-        request.setValue("1", forHTTPHeaderField: "Depth")
-        request.set(httpAuthentication: credential, with: credentialType)
-        request.set(httpContentType: .xml, charset: .utf8)
-        request.httpBody = "<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n<D:propfind xmlns:D=\"DAV:\">\n\(WebDavFileObject.propString(including))\n</D:propfind>".data(using: .utf8)
-        request.setValue(String(request.httpBody!.count), forHTTPHeaderField: "Content-Length")
-        runDataTask(with: request, operation: operation, completionHandler: { (data, response, error) in
-            var responseError: FileProviderWebDavError?
-            if let code = (response as? HTTPURLResponse)?.statusCode , code >= 300, let rCode = FileProviderHTTPErrorCode(rawValue: code) {
-                responseError = FileProviderWebDavError(code: rCode, path: path, errorDescription: String(data: data ?? Data(), encoding: .utf8), url: url)
-            }
-            var fileObjects = [WebDavFileObject]()
-            if let data = data {
-                let xresponse = DavResponse.parse(xmlResponse: data, baseURL: self.baseURL)
-                for attr in xresponse where attr.href != url {
-                    if attr.href.path == url.path {
-                        continue
-                    }
-                    fileObjects.append(WebDavFileObject(attr))
-                }
-            }
-            completionHandler(fileObjects, responseError ?? error)
-        })
+    open func contentsOfDirectory(path: String, including: [URLResourceKey], completionHandler: @escaping (_ contents: [FileObject], _ error: Error?) -> Void) {
+        let query = NSPredicate(format: "TRUEPREDICATE")
+        _ = searchFiles(path: path, recursive: false, query: query, including: including, foundItemHandler: nil, completionHandler: completionHandler)
     }
     
-    override open func attributesOfItem(path: String, completionHandler: @escaping ((_ attributes: FileObject?, _ error: Error?) -> Void)) {
+    override open func attributesOfItem(path: String, completionHandler: @escaping (_ attributes: FileObject?, _ error: Error?) -> Void) {
         self.attributesOfItem(path: path, including: [], completionHandler: completionHandler)
     }
     
@@ -114,25 +105,24 @@ open class WebDAVFileProvider: HTTPFileProvider, FileProviderSharing {
      
      If the directory contains no entries or an error is occured, this method will return the empty `FileObject`.
      
-     - Parameter path: path to target directory. If empty, attributes of root will be returned.
-     - Parameter including: An array which determines which file properties should be considered to fetch.
-     - Parameter completionHandler: a closure with result of directory entries or error.
-         - `attributes`: A `FileObject` containing the attributes of the item.
-         - `error`: Error returned by system.
+     - Parameters:
+       - path: path to target directory. If empty, attributes of root will be returned.
+       - completionHandler: a closure with result of directory entries or error.
+       - attributes: A `FileObject` containing the attributes of the item.
+       - error: Error returned by system.
      */
-    open func attributesOfItem(path: String, including: [URLResourceKey], completionHandler: @escaping ((_ attributes: FileObject?, _ error: Error?) -> Void)) {
+    open func attributesOfItem(path: String, including: [URLResourceKey], completionHandler: @escaping (_ attributes: FileObject?, _ error: Error?) -> Void) {
         let url = self.url(of: path)
         var request = URLRequest(url: url)
         request.httpMethod = "PROPFIND"
         request.setValue("0", forHTTPHeaderField: "Depth")
-        request.set(httpAuthentication: credential, with: credentialType)
-        request.set(httpContentType: .xml, charset: .utf8)
-        request.httpBody = "<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n<D:propfind xmlns:D=\"DAV:\">\n\(WebDavFileObject.propString(including))\n</D:propfind>".data(using: .utf8)
-        request.setValue(String(request.httpBody!.count), forHTTPHeaderField: "Content-Length")
+        request.setValue(authentication: credential, with: credentialType)
+        request.setValue(contentType: .xml, charset: .utf8)
+        request.httpBody = WebDavFileObject.xmlProp(including)
         runDataTask(with: request, completionHandler: { (data, response, error) in
-            var responseError: FileProviderWebDavError?
+            var responseError: FileProviderHTTPError?
             if let code = (response as? HTTPURLResponse)?.statusCode, code >= 300, let rCode = FileProviderHTTPErrorCode(rawValue: code) {
-                responseError = FileProviderWebDavError(code: rCode, path: path, errorDescription: String(data: data ?? Data(), encoding: .utf8), url: url)
+                responseError = self.serverError(with: rCode, path: path, data: data)
             }
             if let data = data {
                 let xresponse = DavResponse.parse(xmlResponse: data, baseURL: self.baseURL)
@@ -145,7 +135,9 @@ open class WebDAVFileProvider: HTTPFileProvider, FileProviderSharing {
         })
     }
     
-    override open func storageProperties(completionHandler: @escaping ((_ total: Int64, _ used: Int64) -> Void)) {
+    /// Returns volume/provider information asynchronously.
+    /// - Parameter volumeInfo: Information of filesystem/Provider returned by system/server.
+    override open func storageProperties(completionHandler: @escaping (_ volumeInfo: VolumeObject?) -> Void) {
         // Not all WebDAV clients implements RFC2518 which allows geting storage quota.
         // In this case you won't get error. totalSize is NSURLSessionTransferSizeUnknown
         // and used space is zero.
@@ -155,58 +147,117 @@ open class WebDAVFileProvider: HTTPFileProvider, FileProviderSharing {
         var request = URLRequest(url: baseURL)
         request.httpMethod = "PROPFIND"
         request.setValue("0", forHTTPHeaderField: "Depth")
-        request.set(httpAuthentication: credential, with: credentialType)
-        request.set(httpContentType: .xml, charset: .utf8)
-        request.httpBody = "<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n<D:propfind xmlns:D=\"DAV:\">\n<D:prop><D:quota-available-bytes/><D:quota-used-bytes/></D:prop>\n</D:propfind>".data(using: .utf8)
-        request.setValue(String(request.httpBody!.count), forHTTPHeaderField: "Content-Length")
+        request.setValue(authentication: credential, with: credentialType)
+        request.setValue(contentType: .xml, charset: .utf8)
+        request.httpBody = WebDavFileObject.xmlProp([.volumeTotalCapacityKey, .volumeAvailableCapacityKey, .creationDateKey])
         runDataTask(with: request, completionHandler: { (data, response, error) in
-            var totalSize: Int64 = -1
-            var usedSize: Int64 = 0
-            if let data = data {
-                let xresponse = DavResponse.parse(xmlResponse: data, baseURL: self.baseURL)
-                if let attr = xresponse.first {
-                    totalSize = Int64(attr.prop["quota-available-bytes"] ?? "") ?? -1
-                    usedSize = Int64(attr.prop["quota-used-bytes"] ?? "") ?? 0
-                }
+            guard let data = data, let attr = DavResponse.parse(xmlResponse: data, baseURL: self.baseURL).first else {
+                completionHandler(nil)
+                return
             }
-            completionHandler(totalSize, usedSize)
+            
+            let volume = VolumeObject(allValues: [:])
+            volume.creationDate = attr.prop["creationdate"].flatMap { Date(rfcString: $0) }
+            volume.availableCapacity = attr.prop["quota-available-bytes"].flatMap({ Int64($0) }) ?? 0
+            if let usage = attr.prop["quota-used-bytes"].flatMap({ Int64($0) }) {
+                volume.totalCapacity = volume.availableCapacity + usage
+            }
+            completionHandler(volume)
         })
     }
     
-    override open func searchFiles(path: String, recursive: Bool, query: NSPredicate, foundItemHandler: ((FileObject) -> Void)?, completionHandler: @escaping ((_ files: [FileObject], _ error: Error?) -> Void)) -> Progress? {
+    /**
+     Search files inside directory using query asynchronously.
+     
+     Sample predicates:
+     ```
+     NSPredicate(format: "(name CONTAINS[c] 'hello') && (fileSize >= 10000)")
+     NSPredicate(format: "(modifiedDate >= %@)", Date())
+     NSPredicate(format: "(path BEGINSWITH %@)", "folder/child folder")
+     ```
+     
+     - Note: Don't pass Spotlight predicates to this method directly, use `FileProvider.convertSpotlightPredicateTo()` method to get usable predicate.
+     
+     - Important: A file name criteria should be provided for Dropbox.
+     
+     - Parameters:
+       - path: location of directory to start search
+       - recursive: Searching subdirectories of path
+       - query: An `NSPredicate` object with keys like `FileObject` members, except `size` which becomes `filesize`.
+       - foundItemHandler: Closure which is called when a file is found
+       - completionHandler: Closure which will be called after finishing search. Returns an arry of `FileObject` or error if occured.
+       - files: all files meat the `query` criteria.
+       - error: `Error` returned by server if occured.
+     - Returns: An `Progress` to get progress or cancel progress. Use `completedUnitCount` to iterate count of found items.
+     */
+    @discardableResult
+    open override func searchFiles(path: String, recursive: Bool, query: NSPredicate, foundItemHandler: ((FileObject) -> Void)?, completionHandler: @escaping ([FileObject], Error?) -> Void) -> Progress? {
+        return searchFiles(path: path, recursive: recursive, query: query, including: [], foundItemHandler: foundItemHandler, completionHandler: completionHandler)
+    }
+    
+    /**
+     Search files inside directory using query asynchronously.
+     
+     Sample predicates:
+     ```
+     NSPredicate(format: "(name CONTAINS[c] 'hello') && (fileSize >= 10000)")
+     NSPredicate(format: "(modifiedDate >= %@)", Date())
+     NSPredicate(format: "(path BEGINSWITH %@)", "folder/child folder")
+     ```
+     
+     - Note: Don't pass Spotlight predicates to this method directly, use `FileProvider.convertSpotlightPredicateTo()` method to get usable predicate.
+     
+     - Important: A file name criteria should be provided for Dropbox.
+     
+     - Parameters:
+       - path: location of directory to start search
+       - recursive: Searching subdirectories of path
+       - query: An `NSPredicate` object with keys like `FileObject` members, except `size` which becomes `filesize`.
+       - including: An array which determines which file properties should be considered to fetch.
+       - foundItemHandler: Closure which is called when a file is found
+       - completionHandler: Closure which will be called after finishing search. Returns an arry of `FileObject` or error if occured.
+       - files: all files meat the `query` criteria.
+       - error: `Error` returned by server if occured.
+     - Returns: An `Progress` to get progress or cancel progress. Use `completedUnitCount` to iterate count of found items.
+     */
+    @discardableResult
+    open func searchFiles(path: String, recursive: Bool, query: NSPredicate, including: [URLResourceKey], foundItemHandler: ((FileObject) -> Void)?, completionHandler: @escaping (_ files: [FileObject], _ error: Error?) -> Void) -> Progress? {
         let url = self.url(of: path)
         var request = URLRequest(url: url)
         request.httpMethod = "PROPFIND"
         // Depth infinity is disabled on some servers. Implement workaround?!
         request.setValue(recursive ? "infinity" : "1", forHTTPHeaderField: "Depth")
-        request.set(httpAuthentication: credential, with: credentialType)
-        request.set(httpContentType: .xml, charset: .utf8)
-        request.httpBody = "<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n<D:propfind xmlns:D=\"DAV:\">\n<D:allprop/></D:propfind>".data(using: .utf8)
-        let progress = Progress(parent: nil, userInfo: nil)
+        request.setValue(authentication: credential, with: credentialType)
+        request.setValue(contentType: .xml, charset: .utf8)
+        request.httpBody = WebDavFileObject.xmlProp(including)
+        let progress = Progress(totalUnitCount: -1)
         progress.setUserInfoObject(url, forKey: .fileURLKey)
+        
+        let queryIsTruePredicate = query.predicateFormat == "TRUEPREDICATE"
         let task = session.dataTask(with: request) { (data, response, error) in
             // FIXME: paginating results
-            var responseError: FileProviderWebDavError?
+            var responseError: FileProviderHTTPError?
             if let code = (response as? HTTPURLResponse)?.statusCode , code >= 300, let rCode = FileProviderHTTPErrorCode(rawValue: code) {
-                responseError = FileProviderWebDavError(code: rCode, path: path, errorDescription: String(data: data ?? Data(), encoding: .utf8), url: url)
+                responseError = self.serverError(with: rCode, path: path, data: data)
             }
-            if let data = data {
-                let xresponse = DavResponse.parse(xmlResponse: data, baseURL: self.baseURL)
-                var fileObjects = [WebDavFileObject]()
-                for attr in xresponse {
-                    let fileObject = WebDavFileObject(attr)
-                    if !query.evaluate(with: fileObject.mapPredicate()) {
-                        continue
-                    }
-                    
-                    fileObjects.append(fileObject)
-                    progress.completedUnitCount = Int64(fileObjects.count)
-                    foundItemHandler?(fileObject)
-                }
-                completionHandler(fileObjects, responseError ?? error)
+            guard let data = data else {
+                completionHandler([], responseError ?? error)
                 return
             }
-            completionHandler([], responseError ?? error)
+            
+            let xresponse = DavResponse.parse(xmlResponse: data, baseURL: self.baseURL)
+            var fileObjects = [WebDavFileObject]()
+            for attr in xresponse where attr.href.path != url.path {
+                let fileObject = WebDavFileObject(attr)
+                if !queryIsTruePredicate && !query.evaluate(with: fileObject.mapPredicate()) {
+                    continue
+                }
+                
+                fileObjects.append(fileObject)
+                progress.completedUnitCount = Int64(fileObjects.count)
+                foundItemHandler?(fileObject)
+            }
+            completionHandler(fileObjects, responseError ?? error)
         }
         progress.cancellationHandler = { [weak task] in
             task?.cancel()
@@ -216,24 +267,29 @@ open class WebDAVFileProvider: HTTPFileProvider, FileProviderSharing {
         return progress
     }
     
-    override open func isReachable(completionHandler: @escaping (Bool) -> Void) {
+    override open func isReachable(completionHandler: @escaping (_ success: Bool, _ error: Error?) -> Void) {
         var request = URLRequest(url: baseURL!)
         request.httpMethod = "PROPFIND"
         request.setValue("0", forHTTPHeaderField: "Depth")
-        request.set(httpAuthentication: credential, with: credentialType)
-        request.set(httpContentType: .xml, charset: .utf8)
-        request.httpBody = "<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n<D:propfind xmlns:D=\"DAV:\">\n<D:prop><D:quota-available-bytes/><D:quota-used-bytes/></D:prop>\n</D:propfind>".data(using: .utf8)
-        request.setValue(String(request.httpBody!.count), forHTTPHeaderField: "Content-Length")
+        request.setValue(authentication: credential, with: credentialType)
+        request.setValue(contentType: .xml, charset: .utf8)
+        request.httpBody = WebDavFileObject.xmlProp([.volumeTotalCapacityKey, .volumeAvailableCapacityKey])
         runDataTask(with: request, completionHandler: { (data, response, error) in
             let status = (response as? HTTPURLResponse)?.statusCode ?? 400
-            completionHandler(status < 300)
+            if status >= 400, let code = FileProviderHTTPErrorCode(rawValue: status) {
+                let errorDesc = data.flatMap({ String(data: $0, encoding: .utf8) })
+                let error = FileProviderWebDavError(code: code, path: "", serverDescription: errorDesc, url: self.baseURL!)
+                completionHandler(false, error)
+                return
+            }
+            completionHandler(status < 300, error)
         })
     }
     
     open func publicLink(to path: String, completionHandler: @escaping ((URL?, FileObject?, Date?, Error?) -> Void)) {
         guard self.baseURL?.host?.contains("dav.yandex.") ?? false else {
             dispatch_queue.async {
-                completionHandler(nil, nil, nil, self.throwError(path, code: URLError.resourceUnavailable))
+                completionHandler(nil, nil, nil, self.urlError(path, code: .resourceUnavailable))
             }
             return
         }
@@ -241,15 +297,14 @@ open class WebDAVFileProvider: HTTPFileProvider, FileProviderSharing {
         let url = self.url(of: path)
         var request = URLRequest(url: url)
         request.httpMethod = "PROPPATCH"
-        request.set(httpAuthentication: credential, with: credentialType)
-        request.set(httpContentType: .xml, charset: .utf8)
+        request.setValue(authentication: credential, with: credentialType)
+        request.setValue(contentType: .xml, charset: .utf8)
         let body = "<propertyupdate xmlns=\"DAV:\">\n<set><prop>\n<public_url xmlns=\"urn:yandex:disk:meta\">true</public_url>\n</prop></set>\n</propertyupdate>"
         request.httpBody = body.data(using: .utf8)
-        request.setValue(String(request.httpBody!.count), forHTTPHeaderField: "Content-Length")
         runDataTask(with: request, completionHandler: { (data, response, error) in
-            var responseError: FileProviderWebDavError?
+            var responseError: FileProviderHTTPError?
             if let code = (response as? HTTPURLResponse)?.statusCode, code >= 300, let rCode = FileProviderHTTPErrorCode(rawValue: code) {
-                responseError = FileProviderWebDavError(code: rCode, path: path, errorDescription: String(data: data ?? Data(), encoding: .utf8), url: url)
+                responseError = self.serverError(with: rCode, path: path, data: data)
             }
             if let data = data {
                 let xresponse = DavResponse.parse(xmlResponse: data, baseURL: self.baseURL)
@@ -305,7 +360,7 @@ open class WebDAVFileProvider: HTTPFileProvider, FileProviderSharing {
         
         var request = URLRequest(url: url)
         request.httpMethod = method
-        request.set(httpAuthentication: credential, with: credentialType)
+        request.setValue(authentication: credential, with: credentialType)
         request.setValue(overwrite ? "T" : "F", forHTTPHeaderField: "Overwrite")
         if let dest = operation.destination, !dest.hasPrefix("file://") {
             request.setValue(self.url(of:dest).absoluteString, forHTTPHeaderField: "Destination")
@@ -315,14 +370,14 @@ open class WebDAVFileProvider: HTTPFileProvider, FileProviderSharing {
     }
     
     override func serverError(with code: FileProviderHTTPErrorCode, path: String?, data: Data?) -> FileProviderHTTPError {
-        return FileProviderWebDavError(code: code, path: path ?? "", errorDescription:  data.flatMap({ String(data: $0, encoding: .utf8) }), url: self.url(of: path ?? ""))
+        return FileProviderWebDavError(code: code, path: path ?? "", serverDescription:  data.flatMap({ String(data: $0, encoding: .utf8) }), url: self.url(of: path ?? ""))
     }
     
     override func multiStatusHandler(source: String, data: Data, completionHandler: SimpleCompletionHandler) {
         let xresponses = DavResponse.parse(xmlResponse: data, baseURL: self.baseURL)
         for xresponse in xresponses where (xresponse.status ?? 0) >= 300 {
             let code = xresponse.status.flatMap { FileProviderHTTPErrorCode(rawValue: $0) } ?? .internalServerError
-            let error = FileProviderWebDavError(code: code, path: source, errorDescription: String(data: data, encoding: .utf8), url: self.url(of: source))
+            let error = self.serverError(with: code, path: source, data: data)
             completionHandler?(error)
         }
     }
@@ -344,6 +399,7 @@ open class WebDAVFileProvider: HTTPFileProvider, FileProviderSharing {
 }
 
 extension WebDAVFileProvider: ExtendedFileProvider {
+    #if os(macOS) || os(iOS) || os(tvOS)
     open func thumbnailOfFileSupported(path: String) -> Bool {
         guard self.baseURL?.host?.contains("dav.yandex.") ?? false else {
             return false
@@ -352,23 +408,24 @@ extension WebDAVFileProvider: ExtendedFileProvider {
         return supportedExt.contains((path as NSString).pathExtension)
     }
     
-    open func thumbnailOfFile(path: String, dimension: CGSize?, completionHandler: @escaping ((ImageClass?, Error?) -> Void)) {
+    @discardableResult
+    open func thumbnailOfFile(path: String, dimension: CGSize?, completionHandler: @escaping ((ImageClass?, Error?) -> Void)) -> Progress? {
         guard self.baseURL?.host?.contains("dav.yandex.") ?? false else {
             dispatch_queue.async {
-                completionHandler(nil, self.throwError(path, code: URLError.resourceUnavailable))
+                completionHandler(nil, self.urlError(path, code: .resourceUnavailable))
             }
-            return
+            return nil
         }
         
         let dimension = dimension ?? CGSize(width: 64, height: 64)
         let url = URL(string: self.url(of: path).absoluteString + "?preview&size=\(dimension.width)x\(dimension.height)")!
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
-        request.set(httpAuthentication: credential, with: credentialType)
+        request.setValue(authentication: credential, with: credentialType)
         let task = session.dataTask(with: request, completionHandler: { (data, response, error) in
-            var responseError: FileProviderWebDavError?
+            var responseError: FileProviderHTTPError?
             if let code = (response as? HTTPURLResponse)?.statusCode , code >= 300, let rCode = FileProviderHTTPErrorCode(rawValue: code) {
-                responseError = FileProviderWebDavError(code: rCode, path: url.relativePath, errorDescription: String(data: data ?? Data(), encoding: .utf8), url: url)
+                responseError = self.serverError(with: rCode, path: url.relativePath, data: data)
                 completionHandler(nil, responseError ?? error)
                 return
             }
@@ -376,16 +433,20 @@ extension WebDAVFileProvider: ExtendedFileProvider {
             completionHandler(data.flatMap({ ImageClass(data: $0) }), nil)
         })
         task.resume()
+        return nil
     }
+    #endif
     
     open func propertiesOfFileSupported(path: String) -> Bool {
         return false
     }
     
-    open func propertiesOfFile(path: String, completionHandler: @escaping (([String : Any], [String], Error?) -> Void)) {
+    @discardableResult
+    open func propertiesOfFile(path: String, completionHandler: @escaping (([String : Any], [String], Error?) -> Void)) -> Progress? {
         dispatch_queue.async {
-            completionHandler([:], [], self.throwError(path, code: URLError.resourceUnavailable))
+            completionHandler([:], [], self.urlError(path, code: .resourceUnavailable))
         }
+        return nil
     }
 }
 
@@ -397,10 +458,16 @@ struct DavResponse {
     let status: Int?
     let prop: [String: String]
     
+    static let urlAllowed = CharacterSet(charactersIn: " ").inverted
+    
     init? (_ node: AEXMLElement, baseURL: URL?) {
         
         func standardizePath(_ str: String) -> String {
+            #if swift(>=4.0)
+            let trimmedStr = str.hasPrefix("/") ? String(str[str.index(after: str.startIndex)...]) : str
+            #else
             let trimmedStr = str.hasPrefix("/") ? str.substring(from: str.index(after: str.startIndex)) : str
+            #endif
             return trimmedStr.addingPercentEncoding(withAllowedCharacters: .filePathAllowed) ?? str
         }
         
@@ -422,8 +489,10 @@ struct DavResponse {
         
         guard let hrefString = node[hreftag].value else { return nil }
         
+        // Percent-encoding space, some servers return invalid urls which space is not encoded to %20
+        let hrefStrPercented = hrefString.addingPercentEncoding(withAllowedCharacters: DavResponse.urlAllowed) ?? hrefString
         // trying to figure out relative path out of href
-        let hrefAbsolute = URL(string: hrefString, relativeTo: baseURL)?.absoluteURL
+        let hrefAbsolute = URL(string: hrefStrPercented, relativeTo: baseURL)?.absoluteURL
         let relativePath: String
         if hrefAbsolute?.host?.replacingOccurrences(of: "www.", with: "", options: .anchored) == baseURL?.host?.replacingOccurrences(of: "www.", with: "", options: .anchored) {
             relativePath = hrefAbsolute?.path.replacingOccurrences(of: baseURL?.absoluteURL.path ?? "", with: "", options: .anchored, range: nil) ?? hrefString
@@ -456,9 +525,11 @@ struct DavResponse {
             break
         }
         for propItemNode in propStatNode[proptag].children {
-            propDic[propItemNode.name.components(separatedBy: ":").last!.lowercased()] = propItemNode.value
-            if propItemNode.name.hasSuffix("resourcetype") && propItemNode.xml.contains("collection") {
-                propDic["getcontenttype"] = "httpd/unix-directory"
+            let key = propItemNode.name.components(separatedBy: ":").last!.lowercased()
+            guard propDic.index(forKey: key) == nil else { continue }
+            propDic[key] = propItemNode.value
+            if key == "resourcetype" && propItemNode.xml.contains("collection") {
+                propDic["getcontenttype"] = ContentMIMEType.directory.rawValue
             }
         }
         self.href = href
@@ -497,21 +568,22 @@ public final class WebDavFileObject: FileObject {
         let path = relativePath.hasPrefix("/") ? relativePath : ("/" + relativePath)
         super.init(url: href, name: name, path: path)
         self.size = Int64(davResponse.prop["getcontentlength"] ?? "-1") ?? NSURLSessionTransferSizeUnknown
-        self.creationDate = Date(rfcString: davResponse.prop["creationdate"] ?? "")
-        self.modifiedDate = Date(rfcString: davResponse.prop["getlastmodified"] ?? "")
-        self.contentType = davResponse.prop["getcontenttype"] ?? "octet/stream"
+        self.creationDate = davResponse.prop["creationdate"].flatMap { Date(rfcString: $0) }
+        self.modifiedDate = davResponse.prop["getlastmodified"].flatMap { Date(rfcString: $0) }
+        self.contentType = davResponse.prop["getcontenttype"].flatMap(ContentMIMEType.init(rawValue:)) ?? .stream
         self.isHidden = (Int(davResponse.prop["ishidden"] ?? "0") ?? 0) > 0
-        self.type = self.contentType == "httpd/unix-directory" ? .directory : .regular
+        self.isReadOnly = (Int(davResponse.prop["isreadonly"] ?? "0") ?? 0) > 0
+        self.type = (self.contentType == .directory) ? .directory : .regular
         self.entryTag = davResponse.prop["getetag"]
     }
     
     /// MIME type of the file.
-    open internal(set) var contentType: String {
+    open internal(set) var contentType: ContentMIMEType {
         get {
-            return allValues[.mimeTypeKey] as? String ?? ""
+            return (allValues[.mimeTypeKey] as? String).flatMap(ContentMIMEType.init(rawValue:)) ?? .stream
         }
         set {
-            allValues[.mimeTypeKey] = newValue
+            allValues[.mimeTypeKey] = newValue.rawValue
         }
     }
     
@@ -539,6 +611,11 @@ public final class WebDavFileObject: FileObject {
             return "ishidden"
         case URLResourceKey.entryTagKey:
             return "getetag"
+        case URLResourceKey.volumeTotalCapacityKey:
+            // WebDAV doesn't have total capacity, but it's can be calculated via used capacity
+            return "quota-used-bytes"
+        case URLResourceKey.volumeAvailableCapacityKey:
+            return "quota-available-bytes"
         default:
             return nil
         }
@@ -553,8 +630,14 @@ public final class WebDavFileObject: FileObject {
         }
         if propKeys.isEmpty {
             propKeys = "<D:allprop/>"
+        } else {
+            propKeys += "<D:prop><D:resourcetype/></D:prop>"
         }
         return propKeys
+    }
+    
+    internal class func xmlProp(_ keys: [URLResourceKey]) -> Data {
+        return "<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n<D:propfind xmlns:D=\"DAV:\">\n\(WebDavFileObject.propString(keys))\n</D:propfind>".data(using: .utf8)!
     }
 }
 
@@ -562,7 +645,7 @@ public final class WebDavFileObject: FileObject {
 public struct FileProviderWebDavError: FileProviderHTTPError {
     public let code: FileProviderHTTPErrorCode
     public let path: String
-    public let errorDescription: String?
+    public let serverDescription: String?
     /// URL of resource caused error.
     public let url: URL
 }

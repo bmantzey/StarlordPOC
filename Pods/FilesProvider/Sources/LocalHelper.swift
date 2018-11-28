@@ -17,11 +17,8 @@ public final class LocalFileObject: FileObject {
     /// Initiates a `LocalFileObject` with attributes of file in path.
     public convenience init? (fileWithPath path: String, relativeTo relativeURL: URL?) {
         var fileURL: URL?
-        var rpath = path.replacingOccurrences(of: relativeURL?.path ?? "", with: "", options: .anchored)
-        if relativeURL != nil && rpath.hasPrefix("/") {
-            _=rpath.characters.removeFirst()
-        }
-        if #available(iOS 9.0, macOS 10.11, tvOS 9.0, *) {
+        var rpath = path.replacingOccurrences(of: relativeURL?.path ?? "", with: "", options: .anchored).replacingOccurrences(of: "/", with: "", options: .anchored)
+        if #available(iOS 9.0, macOS 10.11, *) {
             fileURL = URL(fileURLWithPath: rpath, relativeTo: relativeURL)
         } else {
             rpath = rpath.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? rpath
@@ -80,21 +77,33 @@ public final class LocalFileObject: FileObject {
             return data?.map { String(format: "%02hhx", $0) }.joined()
         }
     }
+    
+    /// Count of children items of a driectory. It costs disk access for local directories.
+    open public(set) override var childrensCount: Int? {
+        get {
+            return try? FileManager.default.contentsOfDirectory(atPath: self.url.path).count
+        }
+        set {
+            //
+        }
+    }
 }
 
-internal final class LocalFolderMonitor {
+public final class LocalFileMonitor {
     fileprivate let source: DispatchSourceFileSystemObject
     fileprivate let descriptor: CInt
     fileprivate let qq: DispatchQueue = DispatchQueue.global(qos: .default)
     fileprivate var state: Bool = false
     fileprivate var monitoredTime: TimeInterval = Date().timeIntervalSinceReferenceDate
-    var url: URL
+    public var url: URL
     
     /// Creates a folder monitor object with monitoring enabled.
-    init(url: URL, handler: @escaping ()->Void) {
+    public init(url: URL, handler: @escaping ()->Void) {
         self.url = url
-        descriptor = open((url as NSURL).fileSystemRepresentation, O_EVTONLY)
-        source = DispatchSource.makeFileSystemObjectSource(fileDescriptor: descriptor, eventMask: .write, queue: qq)
+        descriptor = open((url.absoluteURL as NSURL).fileSystemRepresentation, O_EVTONLY)
+        let event: DispatchSource.FileSystemEvent = url.fileIsDirectory ? [.write] : .all
+        source = DispatchSource.makeFileSystemObjectSource(fileDescriptor: descriptor, eventMask: event, queue: qq)
+        
         // Folder monitoring is recursive and deep. Monitoring a root folder may be very costly
         // We have a 0.2 second delay to ensure we wont call handler 1000s times when there is
         // a huge file operation. This ensures app will work smoothly while this 250 milisec won't
@@ -119,7 +128,7 @@ internal final class LocalFolderMonitor {
     }
     
     /// Starts sending notifications if currently stopped
-    func start() {
+    public func start() {
         if !state {
             state = true
             source.resume()
@@ -127,7 +136,7 @@ internal final class LocalFolderMonitor {
     }
     
     /// Stops sending notifications if currently enabled
-    func stop() {
+    public func stop() {
         if state {
             state = false
             source.suspend()
@@ -217,6 +226,7 @@ internal class LocalFileProviderManagerDelegate: NSObject, FileManagerDelegate {
     }
 }
 
+#if os(macOS) || os(iOS) || os(tvOS)
 class UndoBox: NSObject {
     weak var provider: FileProvideUndoable?
     let operation: FileOperationType
@@ -228,3 +238,4 @@ class UndoBox: NSObject {
         self.undoOperation = undoOperation
     }
 }
+#endif

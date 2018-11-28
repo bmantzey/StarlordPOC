@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "CDB71E2CC1F97B09DDAE802B94988BB8"
+               BlueprintIdentifier = "9387494A5C4C41169C385DBF08E4A847"
                BuildableName = "Pods_SandiskConnectPOC.framework"
                BlueprintName = "Pods-SandiskConnectPOC"
                ReferencedContainer = "container:Pods.xcodeproj">
@@ -45,7 +45,7 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "CDB71E2CC1F97B09DDAE802B94988BB8"
+            BlueprintIdentifier = "9387494A5C4C41169C385DBF08E4A847"
             BuildableName = "Pods_SandiskConnectPOC.framework"
             BlueprintName = "Pods-SandiskConnectPOC"
             ReferencedContainer = "container:Pods.xcodeproj">

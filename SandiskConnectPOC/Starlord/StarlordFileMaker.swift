@@ -24,7 +24,7 @@ class StarlordFileMaker {
 
                 
                 
-                print("\(data)")
+                print("\(data.count)")
             } catch {
                 print("k")
             }

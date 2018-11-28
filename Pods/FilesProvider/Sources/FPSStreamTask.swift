@@ -8,14 +8,67 @@
 
 import Foundation
 
-private var lasttaskIdAssociated = 1_000_000_000
+private var _lasttaskIdAssociated = 1_000_000_000
+let _lasttaskIdAssociated_lock: NSLock = NSLock()
+var lasttaskIdAssociated: Int {
+    get {
+        _lasttaskIdAssociated_lock.try()
+        defer {
+            _lasttaskIdAssociated_lock.unlock()
+        }
+        return _lasttaskIdAssociated
+    }
+    set {
+        _lasttaskIdAssociated_lock.try()
+        defer {
+            _lasttaskIdAssociated_lock.unlock()
+        }
+        _lasttaskIdAssociated = newValue
+    }
+}
 
-
+// codebeat:disable[TOTAL_LOC,TOO_MANY_IVARS]
 /// This class is a replica of NSURLSessionStreamTask with same api for iOS 7/8
 /// while it can actually fallback to NSURLSessionStreamTask in iOS 9.
 public class FileProviderStreamTask: URLSessionTask, StreamDelegate {
-    fileprivate var inputStream: InputStream?
-    fileprivate var outputStream: OutputStream?
+    fileprivate var _inputStream: InputStream?
+    fileprivate var _outputStream: OutputStream?
+    
+    let _inputStream_lock: NSLock = NSLock()
+    var inputStream: InputStream? {
+        get {
+            _inputStream_lock.try()
+            defer {
+                _inputStream_lock.unlock()
+            }
+            return _inputStream
+        }
+        set {
+            _inputStream_lock.try()
+            defer {
+                _inputStream_lock.unlock()
+            }
+            _inputStream = newValue
+        }
+    }
+    
+    let _outputStream_lock: NSLock = NSLock()
+    var outputStream: OutputStream? {
+        get {
+            _outputStream_lock.try()
+            defer {
+                _outputStream_lock.unlock()
+            }
+            return _outputStream
+        }
+        set {
+            _outputStream_lock.try()
+            defer {
+                _outputStream_lock.unlock()
+            }
+            _outputStream = newValue
+        }
+    }
     
     fileprivate var operation_queue: OperationQueue!
     internal var _underlyingSession: URLSession
@@ -27,10 +80,10 @@ public class FileProviderStreamTask: URLSessionTask, StreamDelegate {
     
     /// Force using `URLSessionStreamTask` for iOS 9 and later
     public let useURLSession: Bool
-    @available(iOS 9.0, OSX 10.11, *)
+    @available(iOS 9.0, macOS 10.11, *)
     fileprivate static var streamTasks = [Int: URLSessionStreamTask]()
     
-    @available(iOS 9.0, OSX 10.11, *)
+    @available(iOS 9.0, macOS 10.11, *)
     internal var _underlyingTask: URLSessionStreamTask? {
         return FileProviderStreamTask.streamTasks[_taskIdentifier]
     }
@@ -42,7 +95,7 @@ public class FileProviderStreamTask: URLSessionTask, StreamDelegate {
      * tasks in other sessions may have the same `taskIdentifier` value.
      */
     open override var taskIdentifier: Int {
-        if #available(iOS 9.0, OSX 10.11, *) {
+        if #available(iOS 9.0, macOS 10.11, *) {
             if self.useURLSession {
                 return _underlyingTask!.taskIdentifier
             }
@@ -57,7 +110,7 @@ public class FileProviderStreamTask: URLSessionTask, StreamDelegate {
     /// then display to the user as part of your app’s user interface.
     open override var taskDescription: String? {
         get {
-            if #available(iOS 9.0, OSX 10.11, *) {
+            if #available(iOS 9.0, macOS 10.11, *) {
                 if self.useURLSession {
                     return _underlyingTask!.taskDescription
                 }
@@ -67,7 +120,7 @@ public class FileProviderStreamTask: URLSessionTask, StreamDelegate {
         }
         @objc(setTaskDescription:)
         set {
-            if #available(iOS 9.0, OSX 10.11, *) {
+            if #available(iOS 9.0, macOS 10.11, *) {
                 if self.useURLSession {
                     _underlyingTask!.taskDescription = newValue
                     return
@@ -84,7 +137,7 @@ public class FileProviderStreamTask: URLSessionTask, StreamDelegate {
      * of being canceled, or completed.
     */
     override open var state: URLSessionTask.State {
-        if #available(iOS 9.0, OSX 10.11, *) {
+        if #available(iOS 9.0, macOS 10.11, *) {
             if self.useURLSession {
                 return _underlyingTask!.state
             }
@@ -99,7 +152,7 @@ public class FileProviderStreamTask: URLSessionTask, StreamDelegate {
      * except when the server has responded to the initial request with a redirect to a different URL.
     */
     override open var originalRequest: URLRequest? {
-        if #available(iOS 9.0, OSX 10.11, *) {
+        if #available(iOS 9.0, macOS 10.11, *) {
             if self.useURLSession {
                 return _underlyingTask!.originalRequest
             }
@@ -114,7 +167,7 @@ public class FileProviderStreamTask: URLSessionTask, StreamDelegate {
      * except when the server has responded to the initial request with a redirect to a different URL.
     */
     override open var currentRequest: URLRequest? {
-        if #available(iOS 9.0, OSX 10.11, *) {
+        if #available(iOS 9.0, macOS 10.11, *) {
             return _underlyingTask!.currentRequest
         } else {
             return nil
@@ -172,7 +225,7 @@ public class FileProviderStreamTask: URLSessionTask, StreamDelegate {
      * or the `urlSession(_:downloadTask:didWriteData:totalBytesWritten:totalBytesExpectedToWrite:)` method (for download tasks).
     */
     override open var countOfBytesReceived: Int64 {
-        if #available(iOS 9.0, OSX 10.11, *) {
+        if #available(iOS 9.0, macOS 10.11, *) {
             if self.useURLSession {
                 return _underlyingTask!.countOfBytesReceived
             }
@@ -192,7 +245,7 @@ public class FileProviderStreamTask: URLSessionTask, StreamDelegate {
      * Otherwise, the value is `NSURLSessionTransferSizeUnknown` (`-1`) if you provided a stream or body data object, or zero (`0`) if you did not.
     */
     override open var countOfBytesExpectedToSend: Int64 {
-        if #available(iOS 9.0, OSX 10.11, *) {
+        if #available(iOS 9.0, macOS 10.11, *) {
             return _underlyingTask!.countOfBytesExpectedToSend
         } else {
             return Int64(dataToBeSent.count)
@@ -206,7 +259,7 @@ public class FileProviderStreamTask: URLSessionTask, StreamDelegate {
      * If that header is absent, the value is `NSURLSessionTransferSizeUnknown`.
     */
     override open var countOfBytesExpectedToReceive: Int64 {
-        if #available(iOS 9.0, OSX 10.11, *) {
+        if #available(iOS 9.0, macOS 10.11, *) {
             if self.useURLSession {
                 return _underlyingTask!.countOfBytesExpectedToReceive
             }
@@ -265,10 +318,12 @@ public class FileProviderStreamTask: URLSessionTask, StreamDelegate {
     fileprivate var host: (hostname: String, port: Int)?
     fileprivate var service: NetService?
     
-    internal init(session: URLSession, host: String, port: Int, useURLSession: Bool = true) {
+    internal static let defaultUseURLSession = false
+    
+    internal init(session: URLSession, host: String, port: Int, useURLSession: Bool = defaultUseURLSession) {
         self._underlyingSession = session
         self.useURLSession = useURLSession
-        if #available(iOS 9.0, OSX 10.11, *) {
+        if #available(iOS 9.0, macOS 10.11, *) {
             if useURLSession {
                 let task = session.streamTask(withHostName: host, port: port)
                 self._taskIdentifier = task.taskIdentifier
@@ -285,10 +340,10 @@ public class FileProviderStreamTask: URLSessionTask, StreamDelegate {
         self.operation_queue.maxConcurrentOperationCount = 1
     }
     
-    internal init(session: URLSession, netService: NetService, useURLSession: Bool = true) {
+    internal init(session: URLSession, netService: NetService, useURLSession: Bool = defaultUseURLSession) {
         self._underlyingSession = session
         self.useURLSession = useURLSession
-        if #available(iOS 9.0, OSX 10.11, *) {
+        if #available(iOS 9.0, macOS 10.11, *) {
             if useURLSession {
                 let task = session.streamTask(with: netService)
                 self._taskIdentifier = task.taskIdentifier
@@ -305,6 +360,12 @@ public class FileProviderStreamTask: URLSessionTask, StreamDelegate {
         self.operation_queue.maxConcurrentOperationCount = 1
     }
     
+    deinit {
+        if !self.useURLSession {
+            self.cancel()
+        }
+    }
+    
     /**
      * Cancels the task.
      *
@@ -316,25 +377,24 @@ public class FileProviderStreamTask: URLSessionTask, StreamDelegate {
      * This method may be called on a task that is suspended.
     */
     override open func cancel() {
-        if #available(iOS 9.0, OSX 10.11, *) {
+        if #available(iOS 9.0, macOS 10.11, *) {
             if self.useURLSession {
                 _underlyingTask!.cancel()
                 return
             }
         }
         
+        self.operation_queue.isSuspended = true
         self._state = .canceling
-        inputStream?.setValue(kCFBooleanTrue, forKey: kCFStreamPropertyShouldCloseNativeSocket as String)
-        outputStream?.setValue(kCFBooleanTrue, forKey: kCFStreamPropertyShouldCloseNativeSocket as String)
+        
+        self.inputStream?.delegate = nil
+        self.outputStream?.delegate = nil
         
         self.inputStream?.close()
         self.outputStream?.close()
         
         self.inputStream?.remove(from: RunLoop.main, forMode: .defaultRunLoopMode)
         self.outputStream?.remove(from: RunLoop.main, forMode: .defaultRunLoopMode)
-        
-        self.inputStream?.delegate = nil
-        self.outputStream?.delegate = nil
         
         self.inputStream = nil
         self.outputStream = nil
@@ -344,7 +404,25 @@ public class FileProviderStreamTask: URLSessionTask, StreamDelegate {
         self._countOfBytesRecieved = 0
     }
     
-    var _error: Error? = nil
+    var __error: Error? = nil
+    
+    let _error_lock: NSLock = NSLock()
+    var _error: Error? {
+        get {
+            _error_lock.try()
+            defer {
+                _error_lock.unlock()
+            }
+            return __error
+        }
+        set {
+            _error_lock.try()
+            defer {
+                _error_lock.unlock()
+            }
+            __error = newValue
+        }
+    }
     
     /**
      * An error object that indicates why the task failed.
@@ -352,7 +430,7 @@ public class FileProviderStreamTask: URLSessionTask, StreamDelegate {
      * This value is `NULL` if the task is still active or if the transfer completed successfully.
     */
     override open var error: Error? {
-        if #available(iOS 9.0, OSX 10.11, *) {
+        if #available(iOS 9.0, macOS 10.11, *) {
             if useURLSession {
                 return _underlyingTask!.error
             }
@@ -369,7 +447,7 @@ public class FileProviderStreamTask: URLSessionTask, StreamDelegate {
      * All other tasks must start over when resumed.
     */
     override open func suspend() {
-        if #available(iOS 9.0, OSX 10.11, *) {
+        if #available(iOS 9.0, macOS 10.11, *) {
             if self.useURLSession {
                 _underlyingTask!.suspend()
                 return
@@ -382,7 +460,7 @@ public class FileProviderStreamTask: URLSessionTask, StreamDelegate {
     
     // Resumes the task, if it is suspended.
     override open func resume() {
-        if #available(iOS 9.0, OSX 10.11, *) {
+        if #available(iOS 9.0, macOS 10.11, *) {
             if self.useURLSession {
                 _underlyingTask!.resume()
                 return
@@ -392,43 +470,74 @@ public class FileProviderStreamTask: URLSessionTask, StreamDelegate {
         var readStream : Unmanaged<CFReadStream>?
         var writeStream : Unmanaged<CFWriteStream>?
         
-        if inputStream == nil || outputStream == nil {
-            if let host = host {
+        if self.inputStream == nil || self.outputStream == nil {
+            if let host = self.host {
                 CFStreamCreatePairWithSocketToHost(kCFAllocatorDefault, host.hostname as CFString, UInt32(host.port), &readStream, &writeStream)
-            } else if let service = service {
+            } else if let service = self.service {
                 let cfnetService = CFNetServiceCreate(kCFAllocatorDefault, service.domain as CFString, service.type as CFString, service.name as CFString, Int32(service.port))
                 CFStreamCreatePairWithSocketToNetService(kCFAllocatorDefault, cfnetService.takeRetainedValue(), &readStream, &writeStream)
             }
             
-            inputStream = readStream?.takeRetainedValue()
-            outputStream = writeStream?.takeRetainedValue()
-            guard let inputStream = inputStream, let outputStream = outputStream else {
+            self.inputStream = readStream?.takeRetainedValue()
+            self.outputStream = writeStream?.takeRetainedValue()
+            guard let inputStream = self.inputStream, let outputStream = self.outputStream else {
                 return
             }
-            streamDelegate?.urlSession?(self._underlyingSession, streamTask: self, didBecome: inputStream, outputStream: outputStream)
+            self.streamDelegate?.urlSession?(self._underlyingSession, streamTask: self, didBecome: inputStream, outputStream: outputStream)
         }
         
-        guard let inputStream = inputStream, let outputStream = outputStream else {
+        guard let inputStream = self.inputStream, let outputStream = self.outputStream else {
             return
+        }
+        
+        if self.isSecure {
+            inputStream.setProperty(self.securityLevel.rawValue, forKey: .socketSecurityLevelKey)
+            outputStream.setProperty(self.securityLevel.rawValue, forKey: .socketSecurityLevelKey)
+        } else {
+            inputStream.setProperty(StreamSocketSecurityLevel.none.rawValue, forKey: .socketSecurityLevelKey)
+            outputStream.setProperty(StreamSocketSecurityLevel.none.rawValue, forKey: .socketSecurityLevelKey)
         }
         
         inputStream.delegate = self
         outputStream.delegate = self
         
-        operation_queue.addOperation {
-            inputStream.schedule(in: RunLoop.main, forMode: .defaultRunLoopMode)
-            outputStream.schedule(in: RunLoop.main, forMode: .defaultRunLoopMode)
-        }
+        inputStream.schedule(in: RunLoop.main, forMode: .defaultRunLoopMode)
+        outputStream.schedule(in: RunLoop.main, forMode: .defaultRunLoopMode)
         
         inputStream.open()
         outputStream.open()
         
-        operation_queue.isSuspended = false
-        _state = .running
+        self.operation_queue.isSuspended = false
+        self._state = .running
     }
     
     fileprivate var dataToBeSent: Data = Data()
-    fileprivate var dataReceived: Data = Data()
+    fileprivate var _dataReceived: Data = Data()
+    
+    // We are updating `dataReceived` from main thread while reading it from operation_queue.
+    let _dataReceived_lock: NSLock = NSLock()
+    
+    var dataReceived: Data {
+        get {
+            if !_dataReceived_lock.try() {
+                print("not locked")
+            }
+            
+            defer {
+                _dataReceived_lock.unlock()
+            }
+            return _dataReceived
+        }
+        set {
+            if !_dataReceived_lock.try() {
+                print("not locked")
+            }
+            defer {
+                _dataReceived_lock.unlock()
+            }
+            _dataReceived = newValue
+        }
+    }
     
     /**
      * Asynchronously reads a number of bytes from the stream, and calls a handler upon completion.
@@ -439,12 +548,12 @@ public class FileProviderStreamTask: URLSessionTask, StreamDelegate {
      *        the read is canceled and the completionHandler is called with an error. Pass `0` to prevent a read from timing out.
      * - Parameter completionHandler: The completion handler to call when all bytes are read, or an error occurs.
      *        This handler is executed on the delegate queue. This completion handler takes the following parameters:
-     *     - data: The data read from the stream.
-     *     - atEOF: Whether or not the stream reached end-of-file (`EOF`), such that no more data can be read.
-     *     - error: An error object that indicates why the read failed, or `nil` if the read was successful.
+     * - Parameter data: The data read from the stream.
+     * - Parameter atEOF: Whether or not the stream reached end-of-file (`EOF`), such that no more data can be read.
+     * - Parameter error: An error object that indicates why the read failed, or `nil` if the read was successful.
     */
     open func readData(ofMinLength minBytes: Int, maxLength maxBytes: Int, timeout: TimeInterval, completionHandler: @escaping (_ data: Data?, _ atEOF: Bool, _ error :Error?) -> Void) {
-        if #available(iOS 9.0, OSX 10.11, *) {
+        if #available(iOS 9.0, macOS 10.11, *) {
             if self.useURLSession {
                 _underlyingTask!.readData(ofMinLength: minBytes, maxLength: maxBytes, timeout: timeout, completionHandler: completionHandler)
                 return
@@ -459,6 +568,11 @@ public class FileProviderStreamTask: URLSessionTask, StreamDelegate {
         operation_queue.addOperation {
             var timedOut: Bool = false
             while (self.dataReceived.count == 0 || self.dataReceived.count < minBytes) && !timedOut {
+                if let error = inputStream.streamError {
+                    completionHandler(nil, inputStream.streamStatus == .atEnd, error)
+                    return
+                }
+                
                 Thread.sleep(forTimeInterval: 0.1)
                 timedOut = expireDate < Date()
             }
@@ -466,11 +580,11 @@ public class FileProviderStreamTask: URLSessionTask, StreamDelegate {
             if self.dataReceived.count > maxBytes {
                 let range: Range = 0..<maxBytes
                 dR = self.dataReceived.subdata(in: range)
-                self.dataReceived.replaceSubrange(range, with: Data())
+                self.dataReceived.removeFirst(maxBytes)
             } else {
                 if self.dataReceived.count > 0 {
                     dR = self.dataReceived
-                    self.dataReceived.count = 0
+                    self.dataReceived.removeAll(keepingCapacity: false)
                 }
             }
             let isEOF = inputStream.streamStatus == .atEnd && self.dataReceived.count == 0
@@ -491,10 +605,10 @@ public class FileProviderStreamTask: URLSessionTask, StreamDelegate {
      * - Parameter completionHandler: The completion handler to call when all bytes are written, or an error occurs.
      *      This handler is executed on the delegate queue.
      *      This completion handler takes the following parameter:
-     *      - error: An error object that indicates why the write failed, or nil if the write was successful.
+     * - Parameter error: An error object that indicates why the write failed, or `nil` if the write was successful.
     */
     open func write(_ data: Data, timeout: TimeInterval, completionHandler: @escaping (_ error: Error?) -> Void) {
-        if #available(iOS 9.0, OSX 10.11, *) {
+        if #available(iOS 9.0, macOS 10.11, *) {
             if self.useURLSession {
                 _underlyingTask!.write(data, timeout: timeout, completionHandler: completionHandler)
                 return
@@ -509,7 +623,7 @@ public class FileProviderStreamTask: URLSessionTask, StreamDelegate {
             self.dataToBeSent.append(data)
             let result = self.write(timeout: timeout, close: false)
             if result < 0 {
-                let error = self.outputStream?.streamError ?? NSError(domain: URLError.errorDomain, code: URLError.cannotWriteToFile.rawValue, userInfo: nil)
+                let error = self.outputStream?.streamError ?? URLError(.cannotWriteToFile)
                 completionHandler(error)
             } else {
                 completionHandler(nil)
@@ -522,7 +636,7 @@ public class FileProviderStreamTask: URLSessionTask, StreamDelegate {
      * `urlSession(_:streamTask:didBecome:outputStream:)` delegate message.
     */
     open func captureStreams() {
-        if #available(iOS 9.0, OSX 10.11, *) {
+        if #available(iOS 9.0, macOS 10.11, *) {
             if self.useURLSession {
                 _underlyingTask!.captureStreams()
                 return
@@ -552,7 +666,7 @@ public class FileProviderStreamTask: URLSessionTask, StreamDelegate {
      * you continue reading until the stream reaches end-of-file (EOF).
     */
     open func closeWrite() {
-        if #available(iOS 9.0, OSX 10.11, *) {
+        if #available(iOS 9.0, macOS 10.11, *) {
             if self.useURLSession {
                 _underlyingTask!.closeWrite()
                 return
@@ -572,6 +686,10 @@ public class FileProviderStreamTask: URLSessionTask, StreamDelegate {
         var byteSent: Int = 0
         let expireDate = Date(timeIntervalSinceNow: timeout)
         while self.dataToBeSent.count > 0 && (timeout == 0 || expireDate > Date()) {
+            if let _ = outputStream.streamError {
+                return byteSent == 0 ? -1 : byteSent
+            }
+            
             let bytesWritten = self.dataToBeSent.withUnsafeBytes {
                 outputStream.write($0, maxLength: self.dataToBeSent.count)
             }
@@ -604,7 +722,7 @@ public class FileProviderStreamTask: URLSessionTask, StreamDelegate {
      * after calling this method will result in an error.
     */
     open func closeRead() {
-        if #available(iOS 9.0, OSX 10.11, *) {
+        if #available(iOS 9.0, macOS 10.11, *) {
             if self.useURLSession {
                 _underlyingTask!.closeRead()
                 return
@@ -623,6 +741,9 @@ public class FileProviderStreamTask: URLSessionTask, StreamDelegate {
         }
     }
     
+    fileprivate var isSecure = false
+    
+    public var securityLevel: StreamSocketSecurityLevel = .negotiatedSSL
     /**
      * Completes any enqueued reads and writes, and establishes a secure connection.
      *
@@ -630,16 +751,20 @@ public class FileProviderStreamTask: URLSessionTask, StreamDelegate {
      * `urlSession(_:task:didReceive:completionHandler:)` method.
     */
     open func startSecureConnection() {
-        if #available(iOS 9.0, OSX 10.11, *) {
+        if #available(iOS 9.0, macOS 10.11, *) {
             if self.useURLSession {
                 _underlyingTask!.startSecureConnection()
                 return
             }
         }
         
+        isSecure = true
         operation_queue.addOperation {
-            self.inputStream!.setProperty(StreamSocketSecurityLevel.negotiatedSSL.rawValue, forKey: .socketSecurityLevelKey)
-            self.outputStream!.setProperty(StreamSocketSecurityLevel.negotiatedSSL.rawValue, forKey: .socketSecurityLevelKey)
+            if let inputStream = self.inputStream, let outputStream = self.outputStream,
+                inputStream.property(forKey: .socketSecurityLevelKey) as? String == StreamSocketSecurityLevel.none.rawValue {
+                inputStream.setProperty(self.securityLevel.rawValue, forKey: .socketSecurityLevelKey)
+                outputStream.setProperty(self.securityLevel.rawValue, forKey: .socketSecurityLevelKey)
+            }
         }
     }
     
@@ -647,30 +772,53 @@ public class FileProviderStreamTask: URLSessionTask, StreamDelegate {
      * Completes any enqueued reads and writes, and closes the secure connection.
     */
     open func stopSecureConnection() {
-        if #available(iOS 9.0, OSX 10.11, *) {
+        if #available(iOS 9.0, macOS 10.11, *) {
             if self.useURLSession {
                 _underlyingTask!.stopSecureConnection()
                 return
             }
         }
+        
+        isSecure = false
         operation_queue.addOperation {
-            self.inputStream!.setProperty(StreamSocketSecurityLevel.none.rawValue, forKey: .socketSecurityLevelKey)
-            self.outputStream!.setProperty(StreamSocketSecurityLevel.none.rawValue, forKey: .socketSecurityLevelKey)
+            if let inputStream = self.inputStream, let outputStream = self.outputStream,
+                inputStream.property(forKey: .socketSecurityLevelKey) as? String != StreamSocketSecurityLevel.none.rawValue {
+                
+                inputStream.setProperty(StreamSocketSecurityLevel.none.rawValue, forKey: .socketSecurityLevelKey)
+                outputStream.setProperty(StreamSocketSecurityLevel.none.rawValue, forKey: .socketSecurityLevelKey)
+            }
         }
     }
     
+    private var _retriesForInputStream: Int = 0
+    private var _retriesForOutputStream: Int = 0
     open func stream(_ aStream: Stream, handle eventCode: Stream.Event) {
         if eventCode.contains(.errorOccurred) {
-            self._error = aStream.streamError
-            streamDelegate?.urlSession?(_underlyingSession, task: self, didCompleteWithError: error)
+            let retries: Int
+            if aStream == self.inputStream {
+                retries = _retriesForInputStream
+                _retriesForInputStream += 1
+            } else if aStream == self.outputStream {
+                retries = _retriesForOutputStream
+                _retriesForOutputStream += 1
+            } else {
+                return
+            }
+            
+            if retries < 3 {
+                aStream.open()
+            } else {
+                self._error = aStream.streamError
+                streamDelegate?.urlSession?(_underlyingSession, task: self, didCompleteWithError: error)
+            }
         }
         
-        if aStream == inputStream && eventCode.contains(.hasBytesAvailable) {
-            while (inputStream!.hasBytesAvailable) {
+        if aStream == self.inputStream && eventCode.contains(.hasBytesAvailable) {
+            while (self.inputStream!.hasBytesAvailable) {
                 var buffer = [UInt8](repeating: 0, count: 2048)
-                let len = inputStream!.read(&buffer, maxLength: buffer.count)
+                let len = self.inputStream!.read(&buffer, maxLength: buffer.count)
                 if len > 0 {
-                    dataReceived.append(&buffer, count: len)
+                    self.dataReceived.append(&buffer, count: len)
                     self._countOfBytesRecieved += Int64(len)
                 }
             }
@@ -735,6 +883,7 @@ internal protocol FPSStreamDelegate : URLSessionTaskDelegate {
      */
     @objc optional func urlSession(_ session: URLSession, streamTask: FileProviderStreamTask, didBecome inputStream: InputStream, outputStream: OutputStream)
 }
+// codebeat:enable[TOTAL_LOC,TOO_MANY_IVARS]
 
 private let ports: [String: Int] = ["http": 80, "https": 443, "smb": 445,"ftp": 21,
                                     "telnet": 23, "pop": 110, "smtp": 25, "imap": 143]

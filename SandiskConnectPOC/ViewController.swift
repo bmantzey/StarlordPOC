@@ -31,6 +31,8 @@ class ViewController: UIViewController {
         
         let fileMakerTest = StarlordFileMaker()
         //        fileMakerTest.tempRead()
+        fileMakerTest.tempMessagePackTest()
+        
         writeData = fileMakerTest.tempWrite()
         
         super.viewDidLoad()

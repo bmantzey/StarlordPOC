@@ -9,21 +9,21 @@
 import Foundation
 
 protocol StarlordUncrashableEnum {
-    static func createInstance(from val: UInt8) -> StarlordUncrashableEnum
+    static func createInstance(from val: UInt64) -> StarlordUncrashableEnum
 }
 
-enum BarrierActionEnumeration: UInt8, StarlordUncrashableEnum {
+enum BarrierActionEnumeration: UInt64, StarlordUncrashableEnum {
     case stop = 0
     case reverse = 1
     case undefined = 255
     
-    static func createInstance(from val: UInt8) -> StarlordUncrashableEnum {
+    static func createInstance(from val: UInt64) -> StarlordUncrashableEnum {
         let instance = BarrierActionEnumeration(rawValue: val) ?? .undefined
         return instance
     }
 }
 
-enum AnalogInputEnumeration: UInt8, StarlordUncrashableEnum {
+enum AnalogInputEnumeration: UInt64, StarlordUncrashableEnum {
     case analog1 = 0
     case analog2 = 1
     case analog3 = 2
@@ -33,13 +33,13 @@ enum AnalogInputEnumeration: UInt8, StarlordUncrashableEnum {
     case unassigned = 7
     case undefined = 255
     
-    static func createInstance(from val: UInt8) -> StarlordUncrashableEnum {
+    static func createInstance(from val: UInt64) -> StarlordUncrashableEnum {
         let instance = AnalogInputEnumeration(rawValue: val) ?? .undefined
         return instance
     }
 }
 
-enum DigitalInputEnumeration: UInt8, StarlordUncrashableEnum {
+enum DigitalInputEnumeration: UInt64, StarlordUncrashableEnum {
     case digital1 = 0
     case digital2 = 1
     case digital3 = 2
@@ -53,13 +53,13 @@ enum DigitalInputEnumeration: UInt8, StarlordUncrashableEnum {
     case unassigned = 11
     case undefined = 255
 
-    static func createInstance(from val: UInt8) -> StarlordUncrashableEnum {
+    static func createInstance(from val: UInt64) -> StarlordUncrashableEnum {
         let instance = DigitalInputEnumeration(rawValue: val) ?? .undefined
         return instance
     }
 }
 
-enum TriggerTypeEnumeration: UInt8, StarlordUncrashableEnum {
+enum TriggerTypeEnumeration: UInt64, StarlordUncrashableEnum {
     case levelLow = 8
     case levelHigh = 12
     case edgeRising = 9
@@ -67,13 +67,13 @@ enum TriggerTypeEnumeration: UInt8, StarlordUncrashableEnum {
     case edgeBoth = 11
     case undefined = 255
 
-    static func createInstance(from val: UInt8) -> StarlordUncrashableEnum {
+    static func createInstance(from val: UInt64) -> StarlordUncrashableEnum {
         let instance = TriggerTypeEnumeration(rawValue: val) ?? .undefined
         return instance
     }
 }
 
-enum AccessoryEnumeration: UInt8, StarlordUncrashableEnum {
+enum AccessoryEnumeration: UInt64, StarlordUncrashableEnum {
     case accessory1 = 0
     case accessory2 = 1
     case accessory3 = 2
@@ -83,26 +83,26 @@ enum AccessoryEnumeration: UInt8, StarlordUncrashableEnum {
     case gnssEndgun2 = 6
     case undefined = 255
 
-    static func createInstance(from val: UInt8) -> StarlordUncrashableEnum {
+    static func createInstance(from val: UInt64) -> StarlordUncrashableEnum {
         let instance = AccessoryEnumeration(rawValue: val) ?? .undefined
         return instance
     }
 }
 
-enum AccessoryConfigurationEnumeration: UInt8, StarlordUncrashableEnum {
+enum AccessoryConfigurationEnumeration: UInt64, StarlordUncrashableEnum {
     case alwaysOn = 0
     case pivotOn = 1
     case wetOn = 2
     case endgun = 3
     case undefined = 255
 
-    static func createInstance(from val: UInt8) -> StarlordUncrashableEnum {
+    static func createInstance(from val: UInt64) -> StarlordUncrashableEnum {
         let instance = AccessoryConfigurationEnumeration(rawValue: val) ?? .undefined
         return instance
     }
 }
 
-enum CustomInputEnumeration: UInt8, StarlordUncrashableEnum {
+enum CustomInputEnumeration: UInt64, StarlordUncrashableEnum {
     case customAnalog1 = 0
     case customAnalog2 = 1
     case customAnalog3 = 2
@@ -115,26 +115,26 @@ enum CustomInputEnumeration: UInt8, StarlordUncrashableEnum {
     case customDigital5 = 9
     case undefined = 255
 
-    static func createInstance(from val: UInt8) -> StarlordUncrashableEnum {
+    static func createInstance(from val: UInt64) -> StarlordUncrashableEnum {
         let instance = CustomInputEnumeration(rawValue: val) ?? .undefined
         return instance
     }
 }
 
-enum EndgunEnumeration: UInt8, StarlordUncrashableEnum {
+enum EndgunEnumeration: UInt64, StarlordUncrashableEnum {
     case endgun1 = 0
     case endgun2 = 1
     case endgun3 = 2
     case endgun4 = 3
     case undefined = 255
 
-    static func createInstance(from val: UInt8) -> StarlordUncrashableEnum {
+    static func createInstance(from val: UInt64) -> StarlordUncrashableEnum {
         let instance = EndgunEnumeration(rawValue: val) ?? .undefined
         return instance
     }
 }
 
-enum DayEnumeration: UInt8, StarlordUncrashableEnum {
+enum DayEnumeration: UInt64, StarlordUncrashableEnum {
     case sunday = 0
     case monday = 1
     case tuesday = 2
@@ -144,7 +144,7 @@ enum DayEnumeration: UInt8, StarlordUncrashableEnum {
     case saturday = 6
     case undefined = 255
 
-    static func createInstance(from val: UInt8) -> StarlordUncrashableEnum {
+    static func createInstance(from val: UInt64) -> StarlordUncrashableEnum {
         let instance = DayEnumeration(rawValue: val) ?? .undefined
         return instance
     }

@@ -34,6 +34,10 @@ class StarlordFileMaker {
         }
     }
     
+    func tempMessagePackTest() {
+        
+    }
+    
     func tempWrite() -> Data {
         let fileHeader = StarlordFileHeader(index: 0, corvairProductID: 2876, headerCRC: 0)
         let telemetryRecord = StarlordTelemetryRecord()

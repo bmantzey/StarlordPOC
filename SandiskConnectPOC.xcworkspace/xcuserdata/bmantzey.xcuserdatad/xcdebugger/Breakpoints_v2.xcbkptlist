@@ -67,38 +67,6 @@
             endingLineNumber = "51"
             landmarkName = "execute(command:on:minLength:afterSend:completionHandler:)"
             landmarkType = "7">
-            <Locations>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "closure #1 (Swift.Optional&lt;Swift.Error&gt;) -&gt; () in FilesProvider.FTPFileProvider.execute(command: Swift.String, on: FilesProvider.FileProviderStreamTask, minLength: Swift.Int, afterSend: Swift.Optional&lt;(Swift.Optional&lt;Swift.Error&gt;) -&gt; ()&gt;, completionHandler: (Swift.Optional&lt;Swift.String&gt;, Swift.Optional&lt;Swift.Error&gt;) -&gt; ()) -&gt; ()"
-                  moduleName = "FilesProvider"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/bmantzey/Documents/Work/Elecsys/Projects/SandiskConnectPOC/Pods/FilesProvider/Sources/FTPHelper.swift"
-                  timestampString = "560384146.5853111"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "51"
-                  endingLineNumber = "51"
-                  offsetFromSymbolStart = "567">
-               </Location>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "closure #1 (Swift.Optional&lt;Foundation.Data&gt;, Swift.Bool, Swift.Optional&lt;Swift.Error&gt;) -&gt; () in closure #1 (Swift.Optional&lt;Swift.Error&gt;) -&gt; () in FilesProvider.FTPFileProvider.execute(command: Swift.String, on: FilesProvider.FileProviderStreamTask, minLength: Swift.Int, afterSend: Swift.Optional&lt;(Swift.Optional&lt;Swift.Error&gt;) -&gt; ()&gt;, completionHandler: (Swift.Optional&lt;Swift.String&gt;, Swift.Optional&lt;Swift.Error&gt;) -&gt; ()) -&gt; ()"
-                  moduleName = "FilesProvider"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/bmantzey/Documents/Work/Elecsys/Projects/SandiskConnectPOC/Pods/FilesProvider/Sources/FTPHelper.swift"
-                  timestampString = "560384146.587944"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "52"
-                  endingLineNumber = "52"
-                  offsetFromSymbolStart = "83">
-               </Location>
-            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
